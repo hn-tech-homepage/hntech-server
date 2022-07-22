@@ -13,10 +13,10 @@ class Category (
     var type: String = "", // 자료실, 제품, 자료
 
     @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
-    var archives: MutableSet<Archive> = HashSet(),
+    var archives: MutableList<Archive> = mutableListOf(),
 
     @OneToMany(mappedBy = "itemCategory", cascade = [CascadeType.ALL])
-    var items: MutableSet<Item> = HashSet(),
+    var items: MutableList<Item> = mutableListOf(),
 )
 
 @Entity
@@ -25,14 +25,14 @@ class Archive(
     @Column(name = "archive_id")
     var id: Long? = null,
 
-    var isNotice: Boolean = false,
+    var isNotice: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     var archiveCategory: Category,
 
     @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL])
-    var files: MutableSet<File> = HashSet(),
+    var files: MutableList<File> = mutableListOf(),
 
     // 중복되는 부분
     var title: String = "",
@@ -46,16 +46,17 @@ class File(
     @Column(name = "file_id")
     var id: Long? = null,
 
-    var fileName: String = "",
-    var src: String = "",
+    var originFileName: String,
+    var serverFileName: String,
+    var savedPath: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id")
-    var fileArchive: Archive,
+    var fileArchive: Archive? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
-    var fileItem: Item,
+    var fileItem: Item? = null,
 )
 
 @Entity
@@ -72,10 +73,10 @@ class Item(
     var description: String = "",
 
     @OneToMany(mappedBy = "fileItem", cascade = [CascadeType.ALL])
-    var files: MutableSet<File> = HashSet(),
+    var files: MutableList<File> = mutableListOf(),
 
     @OneToMany(mappedBy = "imageItem", cascade = [CascadeType.ALL])
-    var images: MutableSet<ItemImage> = HashSet(),
+    var images: MutableList<ItemImage> = mutableListOf(),
 )
 
 @Entity
