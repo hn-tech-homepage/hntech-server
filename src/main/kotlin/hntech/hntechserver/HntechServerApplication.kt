@@ -8,4 +8,4 @@ class HntechServerApplication
 
 fun main(args: Array<String>) {
 	runApplication<HntechServerApplication>(*args)
-} //
+}
