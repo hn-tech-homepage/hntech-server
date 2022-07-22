@@ -9,7 +9,7 @@ class Category (
     var id: Long? = null,
 
     var categoryName: String = "",
-    var order: Int = 0,
+    var sequence: Int = 0,
     var type: String = "", // 자료실, 제품, 자료
 
     @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])

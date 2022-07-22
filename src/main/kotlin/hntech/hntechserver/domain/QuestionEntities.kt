@@ -32,7 +32,7 @@ class Comment (
     @JoinColumn(name = "question_id")
     var question: Question,
 
-    var order: Int = 0,
+    var sequence: Int = 0,
 
     // 중복되는 부분
     var content: String = "",
