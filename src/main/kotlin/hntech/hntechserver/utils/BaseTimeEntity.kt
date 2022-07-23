@@ -1,9 +1,9 @@
-package hntech.hntechserver.domain
+package hntech.hntechserver.utils
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.MappedSuperclass
 
 @MappedSuperclass
 abstract class BaseTimeEntity {
@@ -12,13 +12,3 @@ abstract class BaseTimeEntity {
     @LastModifiedDate
     lateinit var updateTime: LocalDateTime
 }
-
-@Entity
-class Admin(
-    @Id @GeneratedValue
-    @Column(name = "admin_id")
-    var id: Long? = null,
-
-    var password: String = "",
-    var info: String = "",
-)
