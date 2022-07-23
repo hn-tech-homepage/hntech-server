@@ -1,7 +1,5 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.domain.File
-
 data class FileResponse(
     var id: Long? = null,
     var originFileName: String,

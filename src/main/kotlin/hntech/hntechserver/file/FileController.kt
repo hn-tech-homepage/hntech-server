@@ -1,9 +1,6 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.FileUploadException
-import hntech.hntechserver.archive.FileRepository
-import hntech.hntechserver.domain.File
-import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.logger
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping

@@ -1,5 +1,6 @@
-package hntech.hntechserver.domain
+package hntech.hntechserver.question.entity
 
+import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
 
@@ -19,7 +20,6 @@ class Question(
 
     var title: String = "",
     var content: String = "",
-    var viewCount: Int = 0,
 ) : BaseTimeEntity()
 
 @Entity
@@ -32,7 +32,6 @@ class Comment (
     @JoinColumn(name = "question_id")
     var question: Question,
 
-    var isAdmin: Boolean,
     var sequence: Int = 0,
 
     // 중복되는 부분
