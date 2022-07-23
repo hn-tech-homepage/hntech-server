@@ -1,8 +1,7 @@
 package hntech.hntechserver.question.dto
 
-import hntech.hntechserver.domain.Admin
-import hntech.hntechserver.domain.Comment
-import hntech.hntechserver.domain.Question
+import hntech.hntechserver.question.entity.Comment
+import hntech.hntechserver.question.entity.Question
 
 data class QuestionCreateForm(
     var writer: String,
@@ -18,7 +17,6 @@ data class QuestionCreateForm(
                 status = "대기",
                 title = question.title,
                 content = question.content,
-                viewCount = 0
             )
         }
     }

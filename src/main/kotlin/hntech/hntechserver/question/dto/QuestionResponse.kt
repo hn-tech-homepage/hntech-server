@@ -1,9 +1,8 @@
 package hntech.hntechserver.question.dto
 
-import hntech.hntechserver.domain.Comment
-import hntech.hntechserver.domain.Question
+import hntech.hntechserver.question.entity.Comment
+import hntech.hntechserver.question.entity.Question
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import java.time.LocalDateTime
 
 data class QuestionPagedResponse(
@@ -30,7 +29,6 @@ data class QuestionSimpleResponse(
     var id: Long?,
     var title: String,
     var status: String,
-    var viewCount: Int,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
 ) {
@@ -40,7 +38,6 @@ data class QuestionSimpleResponse(
                 question.id,
                 question.title,
                 question.status,
-                question.viewCount,
                 question.createTime,
                 question.updateTime
             )
@@ -56,7 +53,6 @@ data class QuestionDetailResponse(
     var comments: MutableSet<Comment>,
     var title: String,
     var content: String,
-    var viewCount: Int,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
 ) {
@@ -70,7 +66,6 @@ data class QuestionDetailResponse(
                 question.comments,
                 question.title,
                 question.content,
-                question.viewCount,
                 question.createTime,
                 question.updateTime
             )

@@ -1,6 +1,5 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.domain.Comment
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.springframework.data.domain.Pageable

@@ -1,11 +1,11 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.domain.Comment
-import hntech.hntechserver.domain.Question
 import hntech.hntechserver.question.dto.CommentCreateForm
 import hntech.hntechserver.question.dto.CommentUpdateForm
 import hntech.hntechserver.question.dto.QuestionCreateForm
 import hntech.hntechserver.question.dto.QuestionUpdateForm
+import hntech.hntechserver.question.entity.Comment
+import hntech.hntechserver.question.entity.Question
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
