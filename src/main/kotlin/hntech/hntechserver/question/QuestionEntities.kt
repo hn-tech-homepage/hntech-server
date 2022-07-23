@@ -1,9 +1,7 @@
-package hntech.hntechserver.question.entity
+package hntech.hntechserver.question
 
 import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
-
-
 
 @Entity
 class Question(
