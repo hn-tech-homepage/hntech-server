@@ -1,9 +1,7 @@
-package hntech.hntechserver.question.entity
+package hntech.hntechserver.question
 
 import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
-
-
 
 @Entity
 class Question(
@@ -12,7 +10,7 @@ class Question(
     var id: Long? = null,
 
     var writer: String = "",
-    var password: Int = 0,
+    var password: String = "",
     var status: String = "", // 대기, 진행중, 완료
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL])
@@ -32,6 +30,7 @@ class Comment (
     @JoinColumn(name = "question_id")
     var question: Question,
 
+    var isAdmin: Boolean,
     var sequence: Int = 0,
 
     // 중복되는 부분

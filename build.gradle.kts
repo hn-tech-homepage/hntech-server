@@ -6,6 +6,8 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
+	kotlin("plugin.allopen") version "1.6.21"
+	kotlin("plugin.noarg") version "1.6.21"
 }
 
 group = "hntech"
@@ -32,6 +34,10 @@ allOpen {
 	annotation("javax.persistence.Entity")
 	annotation("javax.persistence.MappedSuperclass")
 	annotation("javax.persistence.Embeddable")
+}
+
+noArg {
+	annotation("javax.persistence.Entity")
 }
 
 tasks.withType<KotlinCompile> {
