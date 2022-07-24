@@ -8,19 +8,7 @@ data class QuestionCreateForm(
     var password: String,
     var title: String,
     var content: String
-) {
-    companion object {
-        @JvmStatic fun toEntity(question : QuestionCreateForm): Question {
-            return Question(
-                writer = question.writer,
-                password = question.password,
-                status = "대기",
-                title = question.title,
-                content = question.content,
-            )
-        }
-    }
-}
+)
 
 data class QuestionUpdateForm(
     var writer: String,
@@ -31,18 +19,25 @@ data class QuestionUpdateForm(
 data class CommentCreateForm(
     var content: String,
     var isAdmin: Boolean
-) {
-    companion object {
-        @JvmStatic fun toEntity(comment: CommentCreateForm, question: Question): Comment {
-            return Comment(
-                question = question,
-                isAdmin = comment.isAdmin,
-                content = comment.content
-            )
-        }
-    }
-}
+)
 
 data class CommentUpdateForm(
     var content: String
 )
+
+fun convertEntity(question : QuestionCreateForm): Question {
+    return Question(
+        writer = question.writer,
+        password = question.password,
+        status = "대기",
+        title = question.title,
+        content = question.content,
+    )
+}
+fun convertEntity(comment: CommentCreateForm, question: Question): Comment {
+    return Comment(
+        question = question,
+        isAdmin = comment.isAdmin,
+        content = comment.content
+    )
+}

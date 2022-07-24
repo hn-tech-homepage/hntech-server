@@ -14,26 +14,26 @@ class QuestionController(private val questionService: QuestionService) {
 
     @PostMapping
     fun createQuestion(@RequestBody question: QuestionCreateForm): QuestionDetailResponse {
-        return QuestionDetailResponse.toQuestionDetailResponse(questionService.createQuestion(question))
+        return convertDto(questionService.createQuestion(question), true)
     }
 
     @GetMapping
     fun getAllQuestions(
         @PageableDefault(size = 10, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): QuestionPagedResponse {
-        return QuestionPagedResponse.toQuestionPagedResponse(questionService.findAllQuestions(pageable))
+        return convertDto(questionService.findAllQuestions(pageable))
     }
 
     // 비밀번호로 문의사항 상세 조회
     @PostMapping("/{question_id}")
     fun getQuestion(@PathVariable("question_id") id: Long, password: String): QuestionDetailResponse {
-        return QuestionDetailResponse.toQuestionDetailResponse(questionService.findQuestionByIdAndPassword(id, password))
+        return convertDto(questionService.findQuestionByIdAndPassword(id, password), true)
     }
 
     @PutMapping("/{question_id}")
     fun updateQuestion(@PathVariable("question_id") id: Long,
                        @RequestBody form: QuestionUpdateForm): QuestionDetailResponse {
-        return QuestionDetailResponse.toQuestionDetailResponse(questionService.updateQuestion(id, form))
+        return convertDto(questionService.updateQuestion(id, form), true)
     }
 
     @DeleteMapping("/{question_id}")
@@ -46,7 +46,7 @@ class CommentController(private val commentService: CommentService) {
 
     @PostMapping("/{question_id}")
     fun createComment(@PathVariable("question_id") questionId: Long, form: CommentCreateForm): CommentResponse {
-        return CommentResponse.toCommentResponse(commentService.createComment(questionId, form))
+        return convertDto(commentService.createComment(questionId, form))
     }
 
     @PutMapping("/{question_id}/{comment_id}")
