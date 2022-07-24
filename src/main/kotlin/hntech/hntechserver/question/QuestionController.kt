@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*
 class QuestionController(private val questionService: QuestionService) {
     val log = logger()
 
-    @PostMapping("/question")
-    fun createQuestion(question: QuestionCreateForm): QuestionDetailResponse {
+    @PostMapping
+    fun createQuestion(@RequestBody question: QuestionCreateForm): QuestionDetailResponse {
         return QuestionDetailResponse.toQuestionDetailResponse(questionService.createQuestion(question))
     }
 
@@ -25,17 +25,18 @@ class QuestionController(private val questionService: QuestionService) {
     }
 
     // 비밀번호로 문의사항 상세 조회
-    @PostMapping("/question/{question_id}")
+    @PostMapping("/{question_id}")
     fun getQuestion(@PathVariable("question_id") id: Long, password: String): QuestionDetailResponse {
         return QuestionDetailResponse.toQuestionDetailResponse(questionService.findQuestionByIdAndPassword(id, password))
     }
 
-    @PutMapping("/question/{question_id}")
-    fun updateQuestion(@PathVariable("question_id") id: Long, form: QuestionUpdateForm): QuestionDetailResponse {
+    @PutMapping("/{question_id}")
+    fun updateQuestion(@PathVariable("question_id") id: Long,
+                       @RequestBody form: QuestionUpdateForm): QuestionDetailResponse {
         return QuestionDetailResponse.toQuestionDetailResponse(questionService.updateQuestion(id, form))
     }
 
-    @DeleteMapping("/question/{question_id}")
+    @DeleteMapping("/{question_id}")
     fun deleteQuestion(@PathVariable("question_id") id: Long) = questionService.deleteQuestion(id)
 }
 

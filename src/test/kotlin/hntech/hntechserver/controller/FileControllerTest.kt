@@ -1,6 +1,5 @@
 package hntech.hntechserver.controller
 
-import hntech.hntechserver.file.FileService
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +9,6 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.mock.web.MockPart
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.multipart
-import org.springframework.test.web.servlet.post
 import org.springframework.transaction.annotation.Transactional
 import java.nio.charset.StandardCharsets
 

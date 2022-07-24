@@ -1,7 +1,7 @@
 package hntech.hntechserver.question.dto
 
-import hntech.hntechserver.question.entity.Comment
-import hntech.hntechserver.question.entity.Question
+import hntech.hntechserver.question.Comment
+import hntech.hntechserver.question.Question
 
 data class QuestionCreateForm(
     var writer: String,
