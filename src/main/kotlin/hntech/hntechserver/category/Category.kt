@@ -11,8 +11,8 @@ class Category (
     var id: Long? = null,
 
     var categoryName: String = "",
-    var sequence: Int = 0,
     var type: String = "", // 자료실, 제품, 자료
+    var categoryImagePath: String = "", // 제품 한정 카테고리 대표 이미지 경로 저장
 
     @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
     var archives: MutableList<Archive> = mutableListOf(),
