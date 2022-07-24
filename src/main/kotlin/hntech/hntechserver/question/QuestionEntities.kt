@@ -10,7 +10,7 @@ class Question(
     var id: Long? = null,
 
     var writer: String = "",
-    var password: Int = 0,
+    var password: String = "",
     var status: String = "", // 대기, 진행중, 완료
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL])

@@ -32,7 +32,7 @@ class QuestionService(private val questionRepository: QuestionRepository) {
         question.writer = writer
         question.title = title
         question.content = content
-        return question
+        return questionRepository.save(question)
     }
     
     // 문의사항 삭제

@@ -27,6 +27,7 @@ data class QuestionPagedResponse(
 
 data class QuestionSimpleResponse(
     var id: Long?,
+    var writer: String,
     var title: String,
     var status: String,
     var createTime: LocalDateTime,
@@ -36,6 +37,7 @@ data class QuestionSimpleResponse(
         @JvmStatic fun toQuestionSimpleResponse(question: Question): QuestionSimpleResponse {
             return QuestionSimpleResponse(
                 question.id,
+                question.writer,
                 question.title,
                 question.status,
                 question.createTime,
@@ -48,7 +50,7 @@ data class QuestionSimpleResponse(
 data class QuestionDetailResponse(
     var id: Long?,
     var writer: String,
-    var password: Int,
+    var password: String,
     var status: String,
     var comments: MutableSet<Comment>,
     var title: String,

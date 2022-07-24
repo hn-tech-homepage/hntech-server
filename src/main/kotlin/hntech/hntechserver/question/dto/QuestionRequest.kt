@@ -5,7 +5,7 @@ import hntech.hntechserver.question.Question
 
 data class QuestionCreateForm(
     var writer: String,
-    var password: Int,
+    var password: String,
     var title: String,
     var content: String
 ) {
