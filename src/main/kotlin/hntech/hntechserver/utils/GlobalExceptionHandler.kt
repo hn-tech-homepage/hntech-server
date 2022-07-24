@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
 
     @ExceptionHandler(FileUploadException::class)
-    fun fileUploadErrorHandle(ex: FileUploadException): ResponseEntity<String?>? {
-        return RestResponse.badRequest(ex.message)
-    }
+    fun fileUploadErrorHandle(ex: FileUploadException) = badRequest(ex.message)
+
 
 }
