@@ -1,9 +1,6 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.question.dto.CommentCreateForm
-import hntech.hntechserver.question.dto.CommentUpdateForm
-import hntech.hntechserver.question.dto.QuestionCreateForm
-import hntech.hntechserver.question.dto.QuestionUpdateForm
+import hntech.hntechserver.question.dto.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -12,7 +9,7 @@ import org.springframework.stereotype.Service
 class QuestionService(private val questionRepository: QuestionRepository) {
 
     fun createQuestion(question: QuestionCreateForm): Question {
-        return questionRepository.save(QuestionCreateForm.toEntity(question))
+        return questionRepository.save(convertEntity(question))
     }
 
     // 전체 문의사항 페이징해서 간략 포맷 반환
@@ -47,7 +44,7 @@ class CommentService(
 
     fun createComment(questionId: Long, form: CommentCreateForm): Comment {
         val question = questionRepository.findById(questionId).orElseThrow { throw NoSuchElementException("해당 문의사항이 없습니다.") }
-        return commentRepository.save(CommentCreateForm.toEntity(form, question))
+        return commentRepository.save(convertEntity(form, question))
     }
 
     fun updateComment(questionId: Long, commentId: Long, form: CommentUpdateForm): Comment {

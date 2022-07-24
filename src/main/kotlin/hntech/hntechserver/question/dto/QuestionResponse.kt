@@ -9,21 +9,7 @@ data class QuestionPagedResponse(
     var currentPage: Int,
     var totalPage: Int,
     var questions: List<QuestionSimpleResponse>
-) {
-    companion object {
-        @JvmStatic fun toQuestionPagedResponse(questions: Page<Question>): QuestionPagedResponse {
-            var questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
-            questions.forEach { question ->
-                questionList.add(QuestionSimpleResponse.toQuestionSimpleResponse(question))
-            }
-            return QuestionPagedResponse(
-                questions.number,
-                questions.totalPages,
-                questionList
-            )
-        }
-    }
-}
+)
 
 data class QuestionSimpleResponse(
     var id: Long?,
@@ -32,20 +18,7 @@ data class QuestionSimpleResponse(
     var status: String,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
-) {
-    companion object {
-        @JvmStatic fun toQuestionSimpleResponse(question: Question): QuestionSimpleResponse {
-            return QuestionSimpleResponse(
-                question.id,
-                question.writer,
-                question.title,
-                question.status,
-                question.createTime,
-                question.updateTime
-            )
-        }
-    }
-}
+)
 
 data class QuestionDetailResponse(
     var id: Long?,
@@ -57,23 +30,7 @@ data class QuestionDetailResponse(
     var content: String,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
-) {
-    companion object {
-        @JvmStatic fun toQuestionDetailResponse(question: Question): QuestionDetailResponse {
-            return QuestionDetailResponse(
-                question.id,
-                question.writer,
-                question.password,
-                question.status,
-                question.comments,
-                question.title,
-                question.content,
-                question.createTime,
-                question.updateTime
-            )
-        }
-    }
-}
+)
 
 data class CommentResponse(
     var id: Long?,
@@ -81,16 +38,50 @@ data class CommentResponse(
     var isAdmin: Boolean,
     var sequence: Int,
     var content: String
-) {
-    companion object {
-        @JvmStatic fun toCommentResponse(comment: Comment): CommentResponse {
-            return CommentResponse(
-                comment.id,
-                comment.question,
-                comment.isAdmin,
-                comment.sequence,
-                comment.content
-            )
-        }
+)
+
+fun convertDto(questions: Page<Question>): QuestionPagedResponse {
+    var questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
+    questions.forEach { question ->
+        questionList.add(convertDto(question, false))
     }
+    return QuestionPagedResponse(
+        questions.number,
+        questions.totalPages,
+        questionList
+    )
+}
+fun <T> convertDto(question: Question, isDetail: Boolean): T {
+    if (isDetail) {
+        return QuestionDetailResponse(
+            question.id,
+            question.writer,
+            question.password,
+            question.status,
+            question.comments,
+            question.title,
+            question.content,
+            question.createTime,
+            question.updateTime
+        ) as T
+    }
+    else {
+        return QuestionSimpleResponse(
+            question.id,
+            question.writer,
+            question.title,
+            question.status,
+            question.createTime,
+            question.updateTime
+        ) as T
+    }
+}
+fun convertDto(comment: Comment): CommentResponse {
+    return CommentResponse(
+        comment.id,
+        comment.question,
+        comment.isAdmin,
+        comment.sequence,
+        comment.content
+    )
 }
