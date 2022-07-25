@@ -8,7 +8,7 @@ import javax.persistence.*
 class File(
     @Id @GeneratedValue
     @Column(name = "file_id")
-    var id: Long? = null,
+    val id: Long? = null,
 
     var originFileName: String,
     var serverFileName: String,

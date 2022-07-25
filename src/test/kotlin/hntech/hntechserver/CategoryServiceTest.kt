@@ -35,7 +35,7 @@ class CategoryServiceTest {
 
     @AfterEach
     fun deleteMockImage() {
-        val names: List<String> = listOf("스프링클러", "스프링클러1", "스프링클러2", "스프링클러3")
+        val names: List<String> = listOf("스프링클러", "스프링클러1", "스프링클러2", "스프링클러3", "신축배관")
         for (name: String in names) {
             val category = categoryRepository.findByCategoryName(name) ?: continue
             val testedFile = File(category.categoryImagePath)
@@ -44,11 +44,11 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("제품 카테고리 생성")
+    @DisplayName("제품 카테고리 생성 성공")
     fun createItemCategory() {
         // given
         val img = MockMultipartFile("image", "test.jpg", "image/jpeg", "test".byteInputStream())
-        val form: ItemCategoryRequest = ItemCategoryRequest(categoryName = "스프링클러", image = img)
+        val form = ItemCategoryRequest(categoryName = "스프링클러", image = img)
 
         // when
         val expected = categoryService.createItemCategory(form)
@@ -60,7 +60,19 @@ class CategoryServiceTest {
     }
 
     @Test
-    @DisplayName("자료실 카테고리 생성")
+    @DisplayName("제품 카테고리 생성 실패 - 이미지 null")
+    fun createFailImageNull() {
+        val emptyFile = MockMultipartFile("null", null)
+        val form = ItemCategoryRequest(categoryName = "스프링클러", image = emptyFile)
+
+        assertThatThrownBy {
+            categoryService.createItemCategory(form)
+        }.isInstanceOf(CategoryException::class.java)
+            .hasMessage("대표 이미지를 설정해야 합니다.")
+    }
+
+    @Test
+    @DisplayName("자료실 카테고리 생성 성공")
     fun createArchiveCategory() {
         // given
         val form = ArchiveCategoryRequest(categoryName = "일반자료")
@@ -76,7 +88,7 @@ class CategoryServiceTest {
 
     @Test
     @DisplayName("카테고리 생성 실패 - 중복 이름")
-    fun duplicateCategoryName() {
+    fun createFailByName() {
         // given
         val form1 = ArchiveCategoryRequest(categoryName = "일반자료")
         val form2 = ArchiveCategoryRequest(categoryName = "일반자료")
@@ -127,6 +139,96 @@ class CategoryServiceTest {
         // then
         assertThat(actual).isEqualTo(expected)
         logResult(actual, expected)
+    }
+
+    @Test
+    @DisplayName("제품 카테고리 수정 성공")
+    fun updateItemCategory() {
+        // given
+        val img = MockMultipartFile("image", "old.jpg", "image/jpeg", "test".byteInputStream())
+        val form = ItemCategoryRequest(categoryName = "스프링클러", image = img)
+        val category: Category = categoryService.createItemCategory(form)
+
+        val newImg = MockMultipartFile("image", "new.jpg", "image/jpeg", "test".byteInputStream())
+        val updateForm = ItemCategoryRequest(categoryName = "신축배관", image = newImg)
+
+        // when
+        val expected: List<Category> = categoryService.updateItemCategory(category.id!!, updateForm)
+        val actual: Category = categoryRepository.findByCategoryName("신축배관")!!
+
+        // then
+        assertThat(expected).contains(actual)
+        logResult(
+            actual = convertItemDto(actual),
+            expected = ItemCategoryListResponse(expected.map { convertItemDto(it) })
+        )
+    }
+
+    @Test
+    @DisplayName("제품 카테고리 수정 성공 - 대표 이미지 변경X")
+    fun updateItemCategoryNoImage() {
+        // given
+        val img = MockMultipartFile("image", "old.jpg", "image/jpeg", "test".byteInputStream())
+        val form = ItemCategoryRequest(categoryName = "스프링클러", image = img)
+        val category: Category = categoryService.createItemCategory(form)
+
+        val updateForm = ItemCategoryRequest(categoryName = "신축배관", image = MockMultipartFile("null", null))
+
+        // when
+        val expected: List<Category> = categoryService.updateItemCategory(category.id!!, updateForm)
+        val actual: Category = categoryRepository.findByCategoryName("신축배관")!!
+
+        // then
+        assertThat(expected).contains(actual)
+        assertThat(actual.categoryImagePath).isEqualTo(category.categoryImagePath)
+        log.info("\npath before = {}, after = {}", category.categoryImagePath, actual.categoryImagePath)
+
+    }
+
+    @Test
+    @DisplayName("자료실 카테고리 수정 성공")
+    fun updateArchiveCategory() {
+        // given
+        val form = ArchiveCategoryRequest(categoryName = "일반자료")
+        val category: Category = categoryService.createArchiveCategory(form)
+
+        val updateForm = ArchiveCategoryRequest(categoryName = "동영상자료")
+
+        // when
+        val expected: List<Category> = categoryService.updateArchiveCategory(category.id!!, updateForm)
+        val actual: Category = categoryRepository.findByCategoryName("동영상자료")!!
+
+        // then
+        assertThat(expected).contains(actual)
+        logResult(
+            actual = convertItemDto(actual),
+            expected = ItemCategoryListResponse(expected.map { convertItemDto(it) })
+        )
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제")
+    fun deleteCategory() {
+        // given
+        val img = MockMultipartFile("image", "old.jpg", "image/jpeg", "test".byteInputStream())
+        val form1 = ItemCategoryRequest(categoryName = "스프링클러", image = img)
+        val itemCategory: Category = categoryService.createItemCategory(form1)
+
+        val form2 = ArchiveCategoryRequest(categoryName = "일반자료")
+        val archiveCategory: Category = categoryService.createArchiveCategory(form2)
+
+        // when
+        val expected1: Boolean = categoryService.deleteCategory(itemCategory.id!!)
+        val actual1: Boolean = !categoryRepository.existsById(itemCategory.id!!)
+
+        val expected2: Boolean = categoryService.deleteCategory(archiveCategory.id!!)
+        val actual2: Boolean = !categoryRepository.existsById(archiveCategory.id!!)
+
+        // then
+        assertThat(expected1).isEqualTo(actual1)
+        logResult(actual1, expected1)
+        assertThat(expected2).isEqualTo(actual2)
+        logResult(actual2, expected2)
     }
 
 
