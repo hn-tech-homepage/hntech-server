@@ -1,19 +1,25 @@
 package hntech.hntechserver.question
 
+import hntech.hntechserver.ValidationException
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
+import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/question")
+@RequestMapping("/question")
 class QuestionController(private val questionService: QuestionService) {
     val log = logger()
 
     @PostMapping
-    fun createQuestion(@RequestBody question: QuestionCreateForm): QuestionDetailResponse {
+    fun createQuestion(@RequestBody @Validated question: QuestionCreateForm,
+                       bindingResult: BindingResult
+    ): QuestionDetailResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
         return convertDto(questionService.createQuestion(question), true)
     }
 
@@ -26,14 +32,32 @@ class QuestionController(private val questionService: QuestionService) {
 
     // 비밀번호로 문의사항 상세 조회
     @PostMapping("/{question_id}")
-    fun getQuestion(@PathVariable("question_id") id: Long, password: String): QuestionDetailResponse {
-        return convertDto(questionService.findQuestionByIdAndPassword(id, password), true)
+    fun getQuestion(@PathVariable("question_id") id: Long,
+                    @RequestBody @Validated form: QuestionFindForm,
+                    bindingResult: BindingResult
+    ): QuestionCompleteResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        return questionService.findQuestionByIdAndPassword(id, form.password)
     }
 
+    // 문의사항 제목, 내용 수정
     @PutMapping("/{question_id}")
-    fun updateQuestion(@PathVariable("question_id") id: Long,
-                       @RequestBody form: QuestionUpdateForm): QuestionDetailResponse {
+    fun updateQuestionForm(@PathVariable("question_id") id: Long,
+                       @RequestBody @Validated form: QuestionUpdateForm,
+                       bindingResult: BindingResult
+    ): QuestionDetailResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
         return convertDto(questionService.updateQuestion(id, form), true)
+    }
+    
+    // 문의사항 처리 상태 수정
+    @PatchMapping("/{question_id}")
+    fun updateQuestionStatus(@PathVariable("question_id") id: Long,
+                             @RequestBody @Validated form: QuestionStatusUpdateForm,
+                             bindingResult: BindingResult
+    ): QuestionSimpleResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        return convertDto(questionService.updateQuestion(id, form), false)
     }
 
     @DeleteMapping("/{question_id}")
@@ -41,28 +65,27 @@ class QuestionController(private val questionService: QuestionService) {
 }
 
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/comment")
 class CommentController(private val commentService: CommentService) {
 
     @PostMapping("/{question_id}")
-    fun createComment(@PathVariable("question_id") questionId: Long, form: CommentCreateForm): CommentResponse {
+    fun createComment(@PathVariable("question_id") questionId: Long,
+                      @RequestBody @Validated form: CommentCreateForm,
+                      bindingResult: BindingResult
+    ): CommentResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
         return convertDto(commentService.createComment(questionId, form))
     }
 
-    @PutMapping("/{question_id}/{comment_id}")
-    fun updateComment(
-        @PathVariable("question_id") questionId: Long,
-        @PathVariable("comment_id") commentId: Long,
-        form: CommentUpdateForm
-    ) {
-        commentService.updateComment(questionId, commentId, form)
+    @PutMapping("/{comment_id}")
+    fun updateComment(@PathVariable("comment_id") commentId: Long,
+                      @RequestBody @Validated form: CommentUpdateForm,
+                      bindingResult: BindingResult
+    ): CommentResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        return convertDto(commentService.updateComment(commentId, form))
     }
 
-    @DeleteMapping("/{question_id}/{comment_id}")
-    fun deleteComment(
-        @PathVariable("question_id") questionId: Long,
-        @PathVariable("comment_id") commentId: Long
-    ) {
-        commentService.deleteComment(questionId, commentId)
-    }
+    @DeleteMapping("/{comment_id}")
+    fun deleteComment(@PathVariable("comment_id") commentId: Long) = commentService.deleteComment(commentId)
 }
