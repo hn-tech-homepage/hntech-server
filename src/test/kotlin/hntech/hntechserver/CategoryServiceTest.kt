@@ -48,11 +48,11 @@ class CategoryServiceTest {
     fun createItemCategory() {
         // given
         val img = MockMultipartFile("image", "test.jpg", "image/jpeg", "test".byteInputStream())
-        val form = CreateItemCategoryRequest(categoryName = "스프링클러", image = img)
+        val form: ItemCategoryRequest = ItemCategoryRequest(categoryName = "스프링클러", image = img)
 
         // when
         val expected = categoryService.createItemCategory(form)
-        val actual = convertItemDto(categoryRepository.findByCategoryName("스프링클러")!!)
+        val actual = categoryRepository.findByCategoryName("스프링클러")!!
 
         // then
         assertThat(actual).isEqualTo(expected)
@@ -63,11 +63,11 @@ class CategoryServiceTest {
     @DisplayName("자료실 카테고리 생성")
     fun createArchiveCategory() {
         // given
-        val form = CreateArchiveCategoryRequest(categoryName = "일반자료")
+        val form = ArchiveCategoryRequest(categoryName = "일반자료")
 
         // when
         val expected = categoryService.createArchiveCategory(form)
-        val actual = convertArchiveDto(categoryRepository.findByCategoryName("일반자료")!!)
+        val actual = categoryRepository.findByCategoryName("일반자료")!!
 
         // then
         assertThat(actual).isEqualTo(expected)
@@ -78,8 +78,8 @@ class CategoryServiceTest {
     @DisplayName("카테고리 생성 실패 - 중복 이름")
     fun duplicateCategoryName() {
         // given
-        val form1 = CreateArchiveCategoryRequest(categoryName = "일반자료")
-        val form2 = CreateArchiveCategoryRequest(categoryName = "일반자료")
+        val form1 = ArchiveCategoryRequest(categoryName = "일반자료")
+        val form2 = ArchiveCategoryRequest(categoryName = "일반자료")
 
         // when
         categoryService.createArchiveCategory(form1)
@@ -97,9 +97,9 @@ class CategoryServiceTest {
         val img = MockMultipartFile("image", "test.jpg", "image/jpeg", "test".byteInputStream())
         val temp = mutableListOf<ItemCategoryResponse>()
         for (i: Int in 1..3) {
-            val form = CreateItemCategoryRequest(categoryName = "스프링클러$i", image = img)
+            val form = ItemCategoryRequest(categoryName = "스프링클러$i", image = img)
             val itemCategory = categoryService.createItemCategory(form)
-            temp.add(itemCategory)
+            temp.add(convertItemDto(itemCategory))
         }
 
         // when
@@ -115,16 +115,15 @@ class CategoryServiceTest {
     @DisplayName("자료실 카테고리 전체 조회")
     fun getAllArchiveCategories() {
         // given
-        val temp = mutableListOf<ArchiveCategoryResponse>()
+        val actual = mutableListOf<ArchiveCategoryResponse>()
         for (i: Int in 1..3) {
-            val form = CreateArchiveCategoryRequest(categoryName = "일반자료$i")
-            val itemCategory = categoryService.createArchiveCategory(form)
-            temp.add(itemCategory)
+            val form = ArchiveCategoryRequest(categoryName = "일반자료$i")
+            val archiveCategory = categoryService.createArchiveCategory(form)
+            actual.add(convertArchiveDto(archiveCategory))
         }
 
         // when
         val expected = categoryService.getAllArchiveCategories()
-        val actual = ArchiveCategoryListResponse(temp)
 
         // then
         assertThat(actual).isEqualTo(expected)

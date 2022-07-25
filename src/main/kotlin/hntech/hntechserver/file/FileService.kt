@@ -1,6 +1,6 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.FileUploadException
+import hntech.hntechserver.FileException
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,7 +32,7 @@ class FileService(private val fileRepository: FileRepository) {
 
         } catch (e: Exception) {
             log.error("파일 업로드 오류")
-            throw FileUploadException(e.message.toString())
+            throw FileException(e.message.toString())
         }
     }
 
@@ -46,6 +46,18 @@ class FileService(private val fileRepository: FileRepository) {
             result.add(createResponse(saveFile(it)))
         }
         return FileListResponse(result)
+    }
+
+
+    // 파일 삭제
+    @Transactional
+    fun deleteFile(savedPath: String) {
+        val targetFile = java.io.File(savedPath)
+        if (targetFile.exists()) {
+            targetFile.delete()
+            fileRepository.deleteBySavedPath(savedPath)
+        }
+        else throw FileException("파일 삭제 실패")
     }
 
 }
