@@ -8,7 +8,7 @@ import javax.persistence.*
 class Category (
     @Id @GeneratedValue
     @Column(name = "category_id")
-    var id: Long? = null,
+    val id: Long? = null,
 
     var categoryName: String = "",
     var type: String = "", // 자료실, 제품, 자료

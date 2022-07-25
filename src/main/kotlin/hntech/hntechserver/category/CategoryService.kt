@@ -3,6 +3,7 @@ package hntech.hntechserver.category
 import hntech.hntechserver.CategoryException
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -11,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional
 class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val fileService: FileService,
-    ) {
+    )
+{
     private val ARCHIVE_TYPE = "자료실"
     private val ITEM_TYPE = "제품"
+    val log = logger()
 
     /**
      * 카테고리 생성
@@ -26,6 +29,8 @@ class CategoryService(
 
     // 제품 카테고리 생성
     fun createItemCategory(form: ItemCategoryRequest): Category {
+        if (form.image.isEmpty) throw CategoryException("대표 이미지를 설정해야 합니다.")
+
         // 제품 대표 이미지 업로드
         val savedImage: File = fileService.saveFile(form.image)
 
@@ -100,7 +105,7 @@ class CategoryService(
     // 제품 카테고리 삭제
     fun deleteCategory(categoryId: Long): Boolean {
         categoryRepository.deleteById(categoryId)
-        return true
+        return !categoryRepository.existsById(categoryId)
     }
 
 
