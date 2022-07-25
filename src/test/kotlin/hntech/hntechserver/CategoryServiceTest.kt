@@ -95,31 +95,30 @@ class CategoryServiceTest {
     fun getAllItemCategories() {
         // given
         val img = MockMultipartFile("image", "test.jpg", "image/jpeg", "test".byteInputStream())
-        val temp = mutableListOf<ItemCategoryResponse>()
+        val temp = mutableListOf<Category>()
         for (i: Int in 1..3) {
             val form = ItemCategoryRequest(categoryName = "스프링클러$i", image = img)
             val itemCategory = categoryService.createItemCategory(form)
-            temp.add(convertItemDto(itemCategory))
+            temp.add(itemCategory)
         }
 
         // when
         val expected = categoryService.getAllItemCategories()
-        val actual = ItemCategoryListResponse(temp)
 
         // then
-        assertThat(actual).isEqualTo(expected)
-        logResult(actual, expected)
+        assertThat(temp).isEqualTo(expected)
+        logResult(temp, expected)
     }
 
     @Test
     @DisplayName("자료실 카테고리 전체 조회")
     fun getAllArchiveCategories() {
         // given
-        val actual = mutableListOf<ArchiveCategoryResponse>()
+        val actual = mutableListOf<Category>()
         for (i: Int in 1..3) {
             val form = ArchiveCategoryRequest(categoryName = "일반자료$i")
             val archiveCategory = categoryService.createArchiveCategory(form)
-            actual.add(convertArchiveDto(archiveCategory))
+            actual.add(archiveCategory)
         }
 
         // when
