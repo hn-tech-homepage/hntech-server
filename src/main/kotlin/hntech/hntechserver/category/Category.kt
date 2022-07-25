@@ -19,4 +19,11 @@ class Category (
 
     @OneToMany(mappedBy = "itemCategory", cascade = [CascadeType.ALL])
     var items: MutableList<Item> = mutableListOf(),
-)
+) {
+    // 카테고리 수정
+    fun update(newName: String) { this.categoryName = newName }
+    fun update(newName: String, newPath: String) {
+        this.categoryName = newName
+        this.categoryImagePath = newPath
+    }
+}

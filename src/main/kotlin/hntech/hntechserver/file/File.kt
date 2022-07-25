@@ -12,7 +12,7 @@ class File(
 
     var originFileName: String,
     var serverFileName: String,
-    var savedPath: String = "",
+    var savedPath: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id")
