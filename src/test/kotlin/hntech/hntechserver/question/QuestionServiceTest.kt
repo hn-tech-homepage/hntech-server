@@ -1,12 +1,8 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.question.dto.QuestionCreateForm
-import hntech.hntechserver.question.dto.QuestionDetailResponse
-import hntech.hntechserver.question.dto.QuestionPagedResponse
-import hntech.hntechserver.question.dto.QuestionUpdateForm
+import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.*
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -41,8 +37,8 @@ internal class QuestionServiceTest {
         val form = QuestionCreateForm("userA", "1111", "test title1", "test contents1")
 
         // when
-        val expected = QuestionDetailResponse.toQuestionDetailResponse(questionService.createQuestion(form))
-        val actual = QuestionDetailResponse.toQuestionDetailResponse(questionRepository.findByWriter(form.writer)!!)
+        val expected = convertDto<QuestionDetailResponse>(questionService.createQuestion(form), true)
+        val actual = convertDto<QuestionDetailResponse>(questionRepository.findByWriter(form.writer)!!, true)
 
         // then
         assertThat(actual).isEqualTo(expected)
@@ -60,8 +56,8 @@ internal class QuestionServiceTest {
         }
 
         // when
-        val expected = QuestionPagedResponse.toQuestionPagedResponse(questionService.findAllQuestions(pageable))
-        val actual = QuestionPagedResponse.toQuestionPagedResponse(questionRepository.findAll(pageable))
+        val expected = convertDto(questionService.findAllQuestions(pageable))
+        val actual = convertDto(questionRepository.findAll(pageable))
 
         // then
         assertThat(actual).isEqualTo(expected)
@@ -80,17 +76,17 @@ internal class QuestionServiceTest {
             questionService.findQuestionByIdAndPassword(actual.id!!, actual.password)
 
         // then
-        assertThat(actual).isEqualTo(expected)
+        assertThat(actual.id).isEqualTo(expected.id)
         logResult(actual, expected)
     }
 
     @Test
-    @DisplayName("문의사항 수정")
+    @DisplayName("문의사항 내용 수정")
     fun updateQuestion() {
         // given
         val origin =
             questionService.createQuestion(QuestionCreateForm("userA", "1111", "test title1", "test contents1"))
-        val updateForm = QuestionUpdateForm("userB", "test title2", "test contents2")
+        val updateForm = QuestionUpdateForm("test title2", "test contents2")
 
         // when
         val expected = questionService.updateQuestion(origin.id!!, updateForm)
@@ -99,6 +95,23 @@ internal class QuestionServiceTest {
         // then
         assertThat(actual).isEqualTo(expected)
         logResult(actual, expected)
+    }
+    
+    @Test
+    @DisplayName("문의사항 처리 상태 수정")
+    fun updateQuestionStatus() {
+        // given
+        val origin =
+            questionService.createQuestion(QuestionCreateForm("user", "1234", "제목", "내용"))
+        val updateForm = QuestionStatusUpdateForm("처리중")
+
+        // when
+        val expected = questionService.updateQuestion(origin.id!!, updateForm)
+        val actual = questionRepository.findById(origin.id!!).get()
+
+        // then
+        assertThat(actual).isEqualTo(expected)
+        logResult(actual.status, expected.status)
     }
 
     @Test
@@ -113,7 +126,7 @@ internal class QuestionServiceTest {
 
         // then
         assertThatThrownBy {
-            questionRepository.findById(testQuestion.id!!).orElseThrow { throw NoSuchElementException() }
+            questionService.findQuestionByIdAndPassword(testQuestion.id!!, testQuestion.password)
         }.isInstanceOf(NoSuchElementException::class.java)
     }
 }

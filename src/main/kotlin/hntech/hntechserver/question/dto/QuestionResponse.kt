@@ -12,7 +12,7 @@ data class QuestionPagedResponse(
 )
 
 data class QuestionSimpleResponse(
-    var id: Long?,
+    var id: Long,
     var writer: String,
     var title: String,
     var status: String,
@@ -21,21 +21,31 @@ data class QuestionSimpleResponse(
 )
 
 data class QuestionDetailResponse(
-    var id: Long?,
+    var id: Long,
     var writer: String,
     var password: String,
     var status: String,
-    var comments: MutableSet<Comment>,
     var title: String,
     var content: String,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
 )
 
+data class QuestionCompleteResponse(
+    var id: Long,
+    var writer: String,
+    var password: String,
+    var status: String,
+    var title: String,
+    var content: String,
+    var comments: List<CommentResponse>,
+    var createTime: LocalDateTime,
+    var updateTime: LocalDateTime
+)
+
 data class CommentResponse(
-    var id: Long?,
-    var question: Question,
-    var isAdmin: Boolean,
+    var id: Long,
+    var writer: String,
     var sequence: Int,
     var content: String
 )
@@ -46,42 +56,53 @@ fun convertDto(questions: Page<Question>): QuestionPagedResponse {
         questionList.add(convertDto(question, false))
     }
     return QuestionPagedResponse(
-        questions.number,
-        questions.totalPages,
-        questionList
+        currentPage = questions.number,
+        totalPage = questions.totalPages,
+        questions = questionList
     )
 }
 fun <T> convertDto(question: Question, isDetail: Boolean): T {
     if (isDetail) {
         return QuestionDetailResponse(
-            question.id,
-            question.writer,
-            question.password,
-            question.status,
-            question.comments,
-            question.title,
-            question.content,
-            question.createTime,
-            question.updateTime
+            id = question.id!!,
+            writer = question.writer,
+            password = question.password,
+            status = question.status,
+            title = question.title,
+            content = question.content,
+            createTime = question.createTime,
+            updateTime = question.updateTime
         ) as T
     }
     else {
         return QuestionSimpleResponse(
-            question.id,
-            question.writer,
-            question.title,
-            question.status,
-            question.createTime,
-            question.updateTime
+            id = question.id!!,
+            writer = question.writer,
+            title = question.title,
+            status = question.status,
+            createTime = question.createTime,
+            updateTime = question.updateTime
         ) as T
     }
 }
+fun convertDto(question: Question, comments: List<CommentResponse>): QuestionCompleteResponse {
+    return QuestionCompleteResponse(
+        id = question.id!!,
+        writer = question.writer,
+        password = question.password,
+        status = question.status,
+        title = question.title,
+        content = question.content,
+        comments = comments,
+        createTime = question.createTime,
+        updateTime = question.updateTime
+    )
+}
 fun convertDto(comment: Comment): CommentResponse {
     return CommentResponse(
-        comment.id,
-        comment.question,
-        comment.isAdmin,
-        comment.sequence,
-        comment.content
+        id = comment.id!!,
+        writer = comment.writer,
+        sequence = comment.sequence,
+        content = comment.content
     )
 }
