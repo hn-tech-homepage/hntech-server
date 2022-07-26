@@ -30,7 +30,7 @@ class CategoryController(private val categoryService: CategoryService) {
      * 카테고리 조회
      */
     // 제품 카테고리 전체 조회
-    @GetMapping("/item")
+    @GetMapping("/items")
     fun getAllItemCategories()
     = ItemCategoryListResponse(
         categoryService.getAllItemCategories().map { convertItemDto(it) }
@@ -39,7 +39,7 @@ class CategoryController(private val categoryService: CategoryService) {
 
 
     // 자료실 카테고리 전체 조회
-    @GetMapping("/archive")
+    @GetMapping("/archives")
     fun getAllArchiveCategories()
     = ArchiveCategoryListResponse(
         categoryService.getAllArchiveCategories().map { convertArchiveDto(it) }
@@ -47,18 +47,19 @@ class CategoryController(private val categoryService: CategoryService) {
 
     /**
      * 카테고리 수정 -> 수정된 제품을 포함한 카테고리 리스트 반환
+     * PUT은 Multipart 폼을 지원X 그래서 POST로 수정 요청 쏴야 함
      */
     // 제품 카테고리 수정
-    @PutMapping("/item/{categoryId}")
+    @PostMapping("/item/{categoryId}")
     fun updateItemCategory(
         @PathVariable("categoryId") categoryId: Long,
-        @RequestBody form: ItemCategoryRequest)
+        @ModelAttribute form: ItemCategoryRequest)
     = ItemCategoryListResponse(
         categoryService.updateItemCategory(categoryId, form).map { convertItemDto(it) }
     )
 
     // 자료실 카테고리 수정
-    @PutMapping("/archive/{categoryId}")
+    @PostMapping("/archive/{categoryId}")
     fun updateArchiveCategory(
         @PathVariable("categoryId") categoryId: Long,
         @RequestBody form: ArchiveCategoryRequest)
