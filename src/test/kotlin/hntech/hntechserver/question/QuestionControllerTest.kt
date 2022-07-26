@@ -71,18 +71,11 @@ internal class QuestionControllerTest {
             content { mapper.writeValueAsString(actual) }
         }
     }
-    fun isSuccess(test: ResultActionsDsl) {
-        test.andExpect { status { isOk() } }
-    }
-    fun isFailWithValidationError(test: ResultActionsDsl) {
-        test.andExpect { status { isBadRequest() } }
-    }
-    fun isFailWithNotFoundError(test: ResultActionsDsl) {
-        test.andExpect { status { isNotFound() } }
-    }
+    fun isSuccess(test: ResultActionsDsl) = test.andExpect { status { isOk() } }
+    fun isFailWithValidationError(test: ResultActionsDsl) = test.andExpect { status { isBadRequest() } }
+    fun isFailWithNotFoundError(test: ResultActionsDsl) = test.andExpect { status { isNotFound() } }
 
-    @Test
-    @DisplayName("문의사항 등록")
+    @Test @DisplayName("문의사항 등록")
     fun createQuestion() {
         // given
         val uri = "/question"
@@ -101,8 +94,7 @@ internal class QuestionControllerTest {
         isSuccess(test, actual)
     }
     
-    @Test
-    @DisplayName("문의사항 등록 실패(검증 오류)")
+    @Test @DisplayName("문의사항 등록 실패(검증 오류)")
     fun createQuestionFail() {
         // given
         val uri = "/question"
@@ -127,8 +119,7 @@ internal class QuestionControllerTest {
         isFailWithValidationError(test5)
     }
 
-    @Test
-    @DisplayName("문의사항 조회 페이징")
+    @Test @DisplayName("문의사항 조회 페이징")
     fun getAllQuestions() {
         // given
         val uri = "/question"
@@ -137,11 +128,12 @@ internal class QuestionControllerTest {
         for (i in 1..30) {
             questionRepository.save(convertEntity(
                 QuestionCreateForm(
-                writer = "user$i",
-                password = "1234",
-                title = "title$i",
-                content = "문의 내용..."
-            )))
+                    writer = "user$i",
+                    password = "1234",
+                    title = "title$i",
+                    content = "문의 내용..."
+                )
+            ))
         }
 
         // when
@@ -152,8 +144,7 @@ internal class QuestionControllerTest {
         isSuccess(test, actual)
     }
 
-    @Test
-    @DisplayName("문의사항 상세 조회")
+    @Test @DisplayName("문의사항 상세 조회")
     fun getQuestion() {
         // given
         val question = questionService.createQuestion(
@@ -169,8 +160,7 @@ internal class QuestionControllerTest {
         isSuccess(test, actual)
     }
     
-    @Test
-    @DisplayName("문의사항 상세 조회 실패(검증 오류)")
+    @Test @DisplayName("문의사항 상세 조회 실패(검증 오류)")
     fun getQuestionFail() {
         // given
         val question = questionService.createQuestion(
@@ -185,8 +175,7 @@ internal class QuestionControllerTest {
         isFailWithValidationError(test)
     }
 
-    @Test
-    @DisplayName("문의사항 상세 조회 실패(없는 문의사항)")
+    @Test @DisplayName("문의사항 상세 조회 실패(없는 문의사항)")
     fun getQuestionFail1() {
         // given
         val form = QuestionFindForm("1234")
@@ -199,8 +188,7 @@ internal class QuestionControllerTest {
         isFailWithNotFoundError(test)
     }
 
-    @Test
-    @DisplayName("문의사항 상세 조회 실패(비밀번호 불일치)")
+    @Test @DisplayName("문의사항 상세 조회 실패(비밀번호 불일치)")
     fun getQuestionFail2() {
         // given
         val question = questionService.createQuestion(
@@ -215,8 +203,7 @@ internal class QuestionControllerTest {
         isFailWithNotFoundError(test)
     }
 
-    @Test
-    @DisplayName("문의사항 내용 수정")
+    @Test @DisplayName("문의사항 내용 수정")
     fun updateQuestionForm() {
         // given
         val origin = questionService.createQuestion(
@@ -234,8 +221,7 @@ internal class QuestionControllerTest {
         assertThat(actual.content).isEqualTo(updateForm.content)
     }
     
-    @Test
-    @DisplayName("문의사항 내용 수정 실패(검증 오류)")
+    @Test @DisplayName("문의사항 내용 수정 실패(검증 오류)")
     fun updateQuestionFormFail() {
         // given
         val origin = questionService.createQuestion(
@@ -250,8 +236,7 @@ internal class QuestionControllerTest {
         isFailWithValidationError(test)
     }
 
-    @Test
-    @DisplayName("문의사항 내용 수정 실패(없는 문의사항)")
+    @Test @DisplayName("문의사항 내용 수정 실패(없는 문의사항)")
     fun updateQuestionFormFail1() {
         // given
         val updateForm = QuestionUpdateForm("modified title", "modified content")
@@ -264,8 +249,7 @@ internal class QuestionControllerTest {
         isFailWithNotFoundError(test)
     }
     
-    @Test
-    @DisplayName("문의사항 처리 상태 수정")
+    @Test @DisplayName("문의사항 처리 상태 수정")
     fun updateQuestionStatus() {
         // given
         val origin = questionService.createQuestion(
@@ -281,8 +265,7 @@ internal class QuestionControllerTest {
         assertThat(questionRepository.findById(origin.id!!).get().status).isEqualTo(updateForm.status)
     }
     
-    @Test
-    @DisplayName("문의사항 처리 상태 수정 실패(없는 문의사항)")
+    @Test @DisplayName("문의사항 처리 상태 수정 실패(없는 문의사항)")
     fun updateQuestionStatusFail() {
         // given
         val uri = "/question/0"
@@ -295,8 +278,7 @@ internal class QuestionControllerTest {
         isFailWithNotFoundError(test)
     }
 
-    @Test
-    @DisplayName("문의사항 처리 상태 수정 실패(검증 오류)")
+    @Test @DisplayName("문의사항 처리 상태 수정 실패(검증 오류)")
     fun updateQuestionStatusFail1() {
         // given
         val origin = questionService.createQuestion(
@@ -314,8 +296,7 @@ internal class QuestionControllerTest {
         isFailWithValidationError(test2)
     }
 
-    @Test
-    @DisplayName("문의사항 삭제")
+    @Test @DisplayName("문의사항 삭제")
     fun deleteQuestion() {
         // given
         val origin = questionService.createQuestion(
@@ -332,8 +313,7 @@ internal class QuestionControllerTest {
         }.isInstanceOf(NoSuchElementException::class.java)
     }
 
-    @Test
-    @DisplayName("문의사항 삭제 실패(없는 문의사항)")
+    @Test @DisplayName("문의사항 삭제 실패(없는 문의사항)")
     fun deleteQuestionFail() {
         // given
         val uri = "/question/0"
