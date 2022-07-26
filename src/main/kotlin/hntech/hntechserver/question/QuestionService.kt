@@ -47,7 +47,10 @@ class QuestionService(
     
     // 문의사항 삭제
     @Transactional
-    fun deleteQuestion(id: Long) = questionRepository.deleteById(id)
+    fun deleteQuestion(id: Long) {
+        questionRepository.findById(id).orElseThrow { throw NoSuchElementException("해당 문의사항을 찾을 수 없습니다.") }
+        questionRepository.deleteById(id)
+    }
 }
 
 @Service
@@ -72,5 +75,8 @@ class CommentService(
     }
 
     @Transactional
-    fun deleteComment(commentId: Long) = commentRepository.deleteById(commentId)
+    fun deleteComment(commentId: Long) {
+        commentRepository.findById(commentId).orElseThrow { throw NoSuchElementException("해당 댓글이 없습니다.") }
+        commentRepository.deleteById(commentId)
+    }
 }
