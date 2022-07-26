@@ -21,7 +21,7 @@ internal class CommentServiceTest {
     @Autowired lateinit var commentService: CommentService
     @Autowired lateinit var commentRepository: CommentRepository
 
-    // 테스트용 문의사항의 id
+    // 테스트용 문의사항
     lateinit var targetQuestion: Question
 
     fun <T> logResult(actual: T, expected: T) {
@@ -42,18 +42,18 @@ internal class CommentServiceTest {
     @DisplayName("댓글 등록")
     fun createComment() {
         // given
-        val form = CommentCreateForm("userA", "댓글 내용..")
+        val form1 = CommentCreateForm("userA", "댓글 내용..")
         val form2 = CommentCreateForm("userB", "댓글 내용..")
 
         // when
-        val expected = convertDto(commentService.createComment(targetQuestion.id!!, form))
+        val expected = convertDto(commentService.createComment(targetQuestion.id!!, form1))
         commentService.createComment(targetQuestion.id!!, form2)
         val actual =
             questionService.findQuestionByIdAndPassword(targetQuestion.id!!, targetQuestion.password).comments
 
         // then
         assertThat(actual).contains(expected)
-        assertThat(actual.get(0).writer).isEqualTo(form.writer)
+        assertThat(actual.get(0).writer).isEqualTo(form1.writer)
         assertThat(actual.get(1).writer).isEqualTo(form2.writer)
         logResult(actual, expected)
     }
