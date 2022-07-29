@@ -1,7 +1,7 @@
 package hntech.hntechserver.item
 
 import hntech.hntechserver.category.Category
-import hntech.hntechserver.file.File
+import hntech.hntechserver.file.ItemFile
 import javax.persistence.*
 
 @Entity
@@ -18,7 +18,7 @@ class Item(
     var description: String = "",
 
     @OneToMany(mappedBy = "fileItem", cascade = [CascadeType.ALL])
-    var files: MutableList<File> = mutableListOf(),
+    var files: MutableList<ItemFile> = mutableListOf(),
 
     @OneToMany(mappedBy = "imageItem", cascade = [CascadeType.ALL])
     var images: MutableList<ItemImage> = mutableListOf(),

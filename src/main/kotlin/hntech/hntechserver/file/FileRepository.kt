@@ -7,3 +7,7 @@ interface FileRepository : JpaRepository<File, Long> {
     fun findBySavedPath(savedPath: String) : File?
     fun deleteBySavedPath(savedPath: String) : Int
 }
+
+interface ArchiveFileRepository : JpaRepository<ArchiveFile, Long> {
+
+}
