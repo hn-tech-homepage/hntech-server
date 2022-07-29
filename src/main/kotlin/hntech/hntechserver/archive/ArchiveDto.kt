@@ -1,5 +1,7 @@
 package hntech.hntechserver.archive
 
+import org.springframework.web.multipart.MultipartFile
+
 
 //data class FileRequest(
 //    var fileName: String,
@@ -12,7 +14,7 @@ data class ArchiveRequest(
     var itemType: String,
     var isNotice: String,
     var content: String,
-    var filesWithOriginFilename: List<String>,
+    var files: List<MultipartFile>,
 )
 
 data class ArchiveSimpleResponse(
