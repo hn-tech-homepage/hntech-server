@@ -1,6 +1,8 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.FileException
+import hntech.hntechserver.archive.Archive
+import hntech.hntechserver.archive.ArchiveRepository
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -8,11 +10,14 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Service
-class FileService(private val fileRepository: FileRepository) {
+class FileService(
+    private val fileRepository: FileRepository,
+    private val archiveRepository: ArchiveRepository,
+
+    ) {
     val log = logger()
     private val FILE_PATH = "C:\\dev\\"
 
-    @Transactional
     fun saveFile(file: MultipartFile): File {
         try {
             val originFilename: String = file.originalFilename.toString()
@@ -25,16 +30,29 @@ class FileService(private val fileRepository: FileRepository) {
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
-            // 디비에 파일 정보 저장
-            val dbFile = File(originFileName = originFilename, serverFileName = serverFileName, savedPath = savedPath)
-            fileRepository.save(dbFile)
-            return dbFile
+//            // 디비에 파일 정보 저장
+            return File(originFileName = originFilename, serverFileName = serverFileName, savedPath = savedPath)
 
         } catch (e: Exception) {
             log.error("파일 업로드 오류")
             throw FileException(e.message.toString())
         }
     }
+
+    @Transactional
+    fun saveArchiveFiles(files: List<MultipartFile>, archive: Archive): MutableList<ArchiveFile> {
+        val archiveFiles: MutableList<ArchiveFile> = mutableListOf()
+
+        files.forEach {
+            val savedFile: File = saveFile(it)
+            val dbArchiveFile = ArchiveFile(savedFile.originFileName, savedFile.serverFileName, savedFile.savedPath, archive)
+            archiveFiles.add(dbArchiveFile)
+            fileRepository.save(dbArchiveFile)
+        }
+
+        return archiveFiles
+    }
+
 
     // 단일 업로드
     fun upload(file: MultipartFile) = createResponse(saveFile(file))
