@@ -1,11 +1,12 @@
 package hntech.hntechserver.category
 
-import hntech.hntechserver.CategoryException
+import hntech.hntechserver.utils.error.CategoryException
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.error.CATEGORY_NOT_FOUND
+import hntech.hntechserver.utils.error.DUPLICATE_CATEGORY_NAME
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 import kotlin.NoSuchElementException
 
 @Service
@@ -14,19 +15,16 @@ class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val fileService: FileService
 ) {
-
     val log = logger()
-    private final val UPLOAD_PATH = "C:\\dev\\"
 
     // 카테고리 중복 여부 검사
     private fun checkCategoryName(name: String) {
-        if (categoryRepository.existsByCategoryName(name)) throw CategoryException("카테고리 이름 중복")
+        if (categoryRepository.existsByCategoryName(name)) throw CategoryException(DUPLICATE_CATEGORY_NAME)
     }
 
     // 카테고리 생성
     @Transactional
     fun createCategory(form: CategoryRequest): Category {
-
         // 카테고리 중복 여부 검사
         checkCategoryName(form.categoryName)
 
@@ -51,12 +49,12 @@ class CategoryService(
     // 카테고리 ID로 조회
     @Transactional(readOnly = true)
     fun getCategory(id: Long): Category
-    = categoryRepository.findById(id).orElseThrow { throw CategoryException("해당 카테고리가 존재하지 않습니다.") }
+    = categoryRepository.findById(id).orElseThrow { throw CategoryException(CATEGORY_NOT_FOUND) }
     
     // 카테고리 이름으로 조회
     @Transactional(readOnly = true)
     fun getCategory(categoryName: String): Category
-    = categoryRepository.findByCategoryName(categoryName) ?: throw CategoryException("해당 카테고리가 존재하지 않습니다.")
+    = categoryRepository.findByCategoryName(categoryName) ?: throw CategoryException(CATEGORY_NOT_FOUND)
 
     // 카테고리 수정
     @Transactional
@@ -64,8 +62,7 @@ class CategoryService(
 
         checkCategoryName(form.categoryName)
 
-        val category: Category = categoryRepository.findById(categoryId)
-            .orElseThrow { throw NoSuchElementException("해당 카테고리가 존재하지 않습니다.") }
+        val category: Category = getCategory(categoryId)
 
         // 이름과 대표 사진 둘 다 변경
         if (!form.image.isEmpty) {
@@ -84,9 +81,7 @@ class CategoryService(
     // 카테고리 삭제
     @Transactional
     fun deleteCategory(categoryId: Long) {
-        val category = getCategory(categoryId)
-        fileService.deleteFile(category.categoryImagePath)
-        fileService.deleteCategoryFiles(category)
+        fileService.deleteCategoryFiles(getCategory(categoryId))
         categoryRepository.deleteById(categoryId)
     }
 }

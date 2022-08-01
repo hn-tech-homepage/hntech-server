@@ -1,5 +1,8 @@
 package hntech.hntechserver.category
 
+import hntech.hntechserver.utils.error.ValidationException
+import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -8,8 +11,12 @@ class CategoryController(private val categoryService: CategoryService) {
 
     // 카테고리 생성 : form-data 방식으로 file value에는 이미지를, text value에는 이름을 넣는다.
     @PostMapping
-    fun createCategory(@ModelAttribute form: CategoryRequest): CategoryResponse
-    = convertDto(categoryService.createCategory(form))
+    fun createCategory(@Validated @ModelAttribute form: CategoryRequest,
+                       bindingResult: BindingResult
+    ): CategoryResponse {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        return convertDto(categoryService.createCategory(form))
+    }
 
     // 카테고리 전체 조회
     @GetMapping
@@ -23,8 +30,12 @@ class CategoryController(private val categoryService: CategoryService) {
     // 카테고리 수정
     @PostMapping("/{categoryId}")
     fun updateCategory(@PathVariable("categoryId") categoryId: Long,
-                       @ModelAttribute form: CategoryRequest)
-    = categoryService.updateCategory(categoryId, form).map { convertDto(it) }
+                       @Validated @ModelAttribute form: CategoryRequest,
+                       bindingResult: BindingResult
+    ): List<CategoryResponse> {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        return categoryService.updateCategory(categoryId, form).map { convertDto(it) }
+    }
 
     // 카테고리 삭제
     @DeleteMapping("/{categoryId}")

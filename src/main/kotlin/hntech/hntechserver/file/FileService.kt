@@ -1,12 +1,9 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.FileException
+import hntech.hntechserver.utils.error.FileException
 import hntech.hntechserver.archive.Archive
-import hntech.hntechserver.archive.ArchiveRepository
 import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
-import hntech.hntechserver.product.ProductRepository
-import hntech.hntechserver.product.ProductService
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -93,6 +90,7 @@ class FileService(
 
     @Transactional
     fun deleteCategoryFiles(category: Category) {
+        deleteFile(category.categoryImagePath)
         category.archives.forEach { deleteArchiveFiles(it) }
         category.products.forEach { deleteProductFiles(it) }
     }

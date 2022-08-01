@@ -1,5 +1,6 @@
 package hntech.hntechserver.utils
 
+import hntech.hntechserver.utils.config.ADMIN
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import javax.security.auth.login.LoginException
