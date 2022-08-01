@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface CategoryRepository : JpaRepository<Category, Long> {
     fun findByCategoryName(categoryName: String) : Category?
     fun existsByCategoryName(categoryName: String) : Boolean
-    fun findAllByType(categoryType: String) : List<Category>
+    fun deleteByCategoryImagePath(categoryImagePath: String): Int
 }
