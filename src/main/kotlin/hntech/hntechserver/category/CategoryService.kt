@@ -48,6 +48,11 @@ class CategoryService(
     @Transactional(readOnly = true)
     fun getAllCategories(): List<Category> = categoryRepository.findAll()
     
+    // 카테고리 ID로 조회
+    @Transactional(readOnly = true)
+    fun getCategory(id: Long): Category
+    = categoryRepository.findById(id).orElseThrow { throw CategoryException("해당 카테고리가 존재하지 않습니다.") }
+    
     // 카테고리 이름으로 조회
     @Transactional(readOnly = true)
     fun getCategory(categoryName: String): Category
@@ -79,9 +84,9 @@ class CategoryService(
     // 카테고리 삭제
     @Transactional
     fun deleteCategory(categoryId: Long) {
-        val category = categoryRepository.findById(categoryId)
-            .orElseThrow { throw NoSuchElementException("해당 카테고리가 존재하지 않습니다.") }
+        val category = getCategory(categoryId)
         fileService.deleteFile(category.categoryImagePath)
+        fileService.deleteCategoryFiles(category)
         categoryRepository.deleteById(categoryId)
     }
 }

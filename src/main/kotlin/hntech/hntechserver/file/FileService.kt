@@ -3,6 +3,7 @@ package hntech.hntechserver.file
 import hntech.hntechserver.FileException
 import hntech.hntechserver.archive.Archive
 import hntech.hntechserver.archive.ArchiveRepository
+import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
 import hntech.hntechserver.product.ProductRepository
 import hntech.hntechserver.product.ProductService
@@ -89,4 +90,18 @@ class FileService(
             fileRepository.deleteBySavedPath(savedPath)
         }
     }
+
+    @Transactional
+    fun deleteCategoryFiles(category: Category) {
+        category.archives.forEach { deleteArchiveFiles(it) }
+        category.products.forEach { deleteProductFiles(it) }
+    }
+
+    @Transactional
+    fun deleteProductFiles(product: Product)
+    = product.files.forEach { deleteFile(it.savedPath) }
+
+    @Transactional
+    fun deleteArchiveFiles(archive: Archive)
+    = archive.files.forEach { deleteFile(it.savedPath) }
 }

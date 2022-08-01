@@ -41,6 +41,9 @@ class ProductService(
         return product
     }
 
-    fun deleteProduct(id: Long)
-    = productRepository.deleteById(id)
+    fun deleteProduct(id: Long) {
+        val product = getProduct(id)
+        fileService.deleteProductFiles(product)
+        productRepository.delete(product)
+    }
 }
