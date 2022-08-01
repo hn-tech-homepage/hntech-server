@@ -1,6 +1,6 @@
 package hntech.hntechserver.category
 
-import hntech.hntechserver.CategoryException
+import hntech.hntechserver.utils.error.CategoryException
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

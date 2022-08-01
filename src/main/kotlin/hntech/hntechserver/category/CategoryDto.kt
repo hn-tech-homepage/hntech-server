@@ -1,8 +1,10 @@
 package hntech.hntechserver.category
 
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.constraints.NotBlank
 
 data class CategoryRequest(
+    @field:NotBlank
     var categoryName: String,
     var image: MultipartFile,
 )
