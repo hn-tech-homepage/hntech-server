@@ -3,6 +3,9 @@ package hntech.hntechserver.file
 import hntech.hntechserver.FileException
 import hntech.hntechserver.archive.Archive
 import hntech.hntechserver.archive.ArchiveRepository
+import hntech.hntechserver.product.Product
+import hntech.hntechserver.product.ProductRepository
+import hntech.hntechserver.product.ProductService
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,9 +15,7 @@ import java.util.*
 @Service
 class FileService(
     private val fileRepository: FileRepository,
-    private val archiveRepository: ArchiveRepository,
-
-    ) {
+) {
     val log = logger()
     private val FILE_PATH = "C:\\dev\\"
 
@@ -30,7 +31,7 @@ class FileService(
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
-//            // 디비에 파일 정보 저장
+            // 디비에 파일 정보 저장
             return File(originFileName = originFilename, serverFileName = serverFileName, savedPath = savedPath)
 
         } catch (e: Exception) {
@@ -49,10 +50,25 @@ class FileService(
             archiveFiles.add(dbArchiveFile)
             fileRepository.save(dbArchiveFile)
         }
-
         return archiveFiles
     }
 
+    @Transactional
+    fun saveProductFiles(files: List<MultipartFile>, product: Product): MutableList<ProductFile> {
+        // 해당 제품에 대해 서버에 저장된 기존 파일 삭제
+        product.files.forEach { deleteFile(it.savedPath) }
+
+        val productFiles: MutableList<ProductFile> = mutableListOf()
+
+        // 해당 제품의 파일들 저장
+        files.forEach {
+            val savedFile: File = saveFile(it)
+            val dbProductFile = ProductFile(savedFile.originFileName, savedFile.serverFileName, savedPath = savedFile.savedPath, product)
+            productFiles.add(dbProductFile)
+            fileRepository.save(dbProductFile)
+        }
+        return productFiles
+    }
 
     // 단일 업로드
     fun upload(file: MultipartFile) = createResponse(saveFile(file))
@@ -60,12 +76,9 @@ class FileService(
     // 여러개 업로드
     fun upload(files: List<MultipartFile>): FileListResponse {
         val result: MutableList<FileResponse> = mutableListOf()
-        files.forEach {
-            result.add(createResponse(saveFile(it)))
-        }
+        files.forEach { result.add(createResponse(saveFile(it))) }
         return FileListResponse(result)
     }
-
 
     // 파일 삭제
     @Transactional
@@ -75,7 +88,5 @@ class FileService(
             targetFile.delete()
             fileRepository.deleteBySavedPath(savedPath)
         }
-        else throw FileException("파일 삭제 실패")
     }
-
 }

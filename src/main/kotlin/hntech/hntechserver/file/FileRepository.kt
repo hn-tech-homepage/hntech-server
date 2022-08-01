@@ -9,5 +9,7 @@ interface FileRepository : JpaRepository<File, Long> {
 }
 
 interface ArchiveFileRepository : JpaRepository<ArchiveFile, Long> {
+}
 
+interface ProductFileRepository: JpaRepository<ProductFile, Long> {
 }

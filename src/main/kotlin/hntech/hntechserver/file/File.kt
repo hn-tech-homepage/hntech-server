@@ -1,7 +1,7 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.archive.Archive
-import hntech.hntechserver.item.Item
+import hntech.hntechserver.product.Product
 import javax.persistence.*
 
 @Entity
@@ -28,12 +28,12 @@ class ArchiveFile(
 ) : File()
 
 @Entity
-class ItemFile(
+class ProductFile(
     override var originFileName: String,
     override var serverFileName: String,
     override var savedPath: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    var fileItem: Item? = null,
+    @JoinColumn(name = "product_id")
+    var fileProduct: Product? = null,
 ): File()
