@@ -1,6 +1,6 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.ValidationException
+import hntech.hntechserver.utils.error.ValidationException
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.springframework.data.domain.Pageable

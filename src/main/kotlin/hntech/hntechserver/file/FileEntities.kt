@@ -5,7 +5,8 @@ import hntech.hntechserver.product.Product
 import javax.persistence.*
 
 @Entity
-@Inheritance
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
 class File(
     @Id @GeneratedValue
     @Column(name = "file_id")
@@ -13,27 +14,26 @@ class File(
 
     var originFileName: String = "",
     var serverFileName: String = "",
-    var savedPath: String = "",
 )
 
 @Entity
+@DiscriminatorValue(value = "archive")
 class ArchiveFile(
-    override var originFileName: String = "",
-    override var serverFileName: String = "",
-    override var savedPath: String = "",
+    originFileName: String,
+    serverFileName: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id")
     var fileArchive: Archive? = null
-) : File()
+) : File(originFileName = originFileName, serverFileName = serverFileName)
 
 @Entity
+@DiscriminatorValue(value = "product")
 class ProductFile(
-    override var originFileName: String,
-    override var serverFileName: String,
-    override var savedPath: String,
+    originFileName: String,
+    serverFileName: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var fileProduct: Product? = null,
-): File()
+): File(originFileName = originFileName, serverFileName = serverFileName)

@@ -1,12 +1,10 @@
 package hntech.hntechserver.category
 
-import hntech.hntechserver.CategoryException
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.error.CategoryException
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
-import kotlin.NoSuchElementException
 
 @Service
 @Transactional
@@ -31,14 +29,12 @@ class CategoryService(
         checkCategoryName(form.categoryName)
 
         // 카테고리 대표 이미지 업로드
-        val savedImage = fileService.saveFile(form.image)
+        val savedImage = fileService.uploadAndMakeEntity(form.image)
 
         return categoryRepository.save(
             Category(
                 categoryName = form.categoryName,
-                categoryImagePath = savedImage.savedPath
-            )
-        )
+        ))
     }
 
     /**
@@ -70,11 +66,11 @@ class CategoryService(
         // 이름과 대표 사진 둘 다 변경
         if (!form.image.isEmpty) {
             // 1. 기존 파일 삭제
-            fileService.deleteFile(category.categoryImagePath)
+            fileService.deleteFile(category.categoryFile!!)
 
             // 2. 새로운 파일 저장 후 디비 update
-            val newImage = fileService.saveFile(form.image)
-            category.update(form.categoryName, newImage.savedPath)
+            val newImage = fileService.uploadAndMakeEntity(form.image)
+            category.update(form.categoryName, category.categoryFile!!)
         } else {
             category.update(form.categoryName)
         }
@@ -85,8 +81,8 @@ class CategoryService(
     @Transactional
     fun deleteCategory(categoryId: Long) {
         val category = getCategory(categoryId)
-        fileService.deleteFile(category.categoryImagePath)
-        fileService.deleteCategoryFiles(category)
+        fileService.deleteFile(category.categoryFile!!)
+        fileService.deleteAllFiles(category)
         categoryRepository.deleteById(categoryId)
     }
 }

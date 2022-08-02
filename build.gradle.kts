@@ -8,6 +8,10 @@ plugins {
 	kotlin("plugin.jpa") version "1.6.21"
 	kotlin("plugin.allopen") version "1.6.21"
 	kotlin("plugin.noarg") version "1.6.21"
+
+	// ktlint (컨벤션 검사)
+	id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+	id("org.jlleitschuh.gradle.ktlint-idea") version "10.0.0"
 }
 
 group = "hntech"
@@ -28,6 +32,7 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("io.mockk:mockk:1.12.0")
 }
 
 allOpen {

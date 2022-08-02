@@ -1,107 +1,151 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.FileException
 import hntech.hntechserver.archive.Archive
-import hntech.hntechserver.archive.ArchiveRepository
 import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
-import hntech.hntechserver.product.ProductRepository
-import hntech.hntechserver.product.ProductService
+import hntech.hntechserver.utils.FILE_SAVE_PATH_WINDOW_TEST
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
+const val ARCHIVE_FILE = "archiveFile"
+const val PRODUCT_FILE = "productFile"
+const val DEFAULT_FILE = "defaultFile"
+
 @Service
+@Transactional
 class FileService(
     private val fileRepository: FileRepository,
-) {
+    private val archiveFileRepository: ArchiveFileRepository,
+    private val productFileRepository: ProductFileRepository,
+    ) {
     val log = logger()
-    private val FILE_PATH = "C:\\dev\\"
+    val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST // 나중에 EC2 띄우면 여기만 변경 (리눅스로)
 
-    fun saveFile(file: MultipartFile): File {
+    /**
+     * 파일 생성(저장)
+     */
+    // 파일을 서버에 업로드하고 엔티티화 해서 반환
+    fun uploadAndMakeEntity(
+        file: MultipartFile,
+        type: String = DEFAULT_FILE,
+        archive: Archive? = null,
+        product: Product? = null,
+    ): Any {
         try {
             val originFilename: String = file.originalFilename.toString()
             val extensionType: String = originFilename.split(".")[1] // 파일 확장자 추출하기
             val serverFileName: String = UUID.randomUUID().toString() + ".$extensionType"
-            val savedPath = FILE_PATH + serverFileName
+            val savedPath = baseFilePath + serverFileName
 
             log.info("originFilename = {}, savedPath = {}", originFilename, savedPath)
 
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
-            // 디비에 파일 정보 저장
-            return File(originFileName = originFilename, serverFileName = serverFileName, savedPath = savedPath)
+            return when(type) {
+                ARCHIVE_FILE -> ArchiveFile(originFileName = originFilename, serverFileName = serverFileName, fileArchive = archive)
+                PRODUCT_FILE -> ProductFile(originFileName = originFilename, serverFileName = serverFileName, fileProduct = product)
+                else -> File(originFileName = originFilename, serverFileName = serverFileName)
+            }
 
         } catch (e: Exception) {
-            log.error("파일 업로드 오류")
-            throw FileException(e.message.toString())
+            log.error(FILE_SAVING_ERROR)
+            throw FileException(FILE_SAVING_ERROR)
         }
     }
 
-    @Transactional
-    fun saveArchiveFiles(files: List<MultipartFile>, archive: Archive): MutableList<ArchiveFile> {
-        val archiveFiles: MutableList<ArchiveFile> = mutableListOf()
+    // 단일 파일 저장
+    fun saveFile(file: MultipartFile): File =
+        fileRepository.save(uploadAndMakeEntity(file) as File)
 
+
+    // 복수 파일 저장
+    fun saveAllFiles(files: List<MultipartFile>): MutableList<File> {
+        val result: MutableList<File> = mutableListOf()
+        files.forEach { result.add(uploadAndMakeEntity(it) as File) }
+        fileRepository.saveAll(result)
+        return result
+    }
+
+    // 자료실 파일 복수 저장
+    fun saveAllFiles(files: List<MultipartFile>, archive: Archive): MutableList<ArchiveFile> {
+        val archiveFiles: MutableList<ArchiveFile> = mutableListOf()
         files.forEach {
-            val savedFile: File = saveFile(it)
-            val dbArchiveFile = ArchiveFile(savedFile.originFileName, savedFile.serverFileName, savedFile.savedPath, archive)
-            archiveFiles.add(dbArchiveFile)
-            fileRepository.save(dbArchiveFile)
+            archiveFiles.add(
+                uploadAndMakeEntity(it, type = ARCHIVE_FILE, archive = archive) as ArchiveFile
+            )
         }
+        archiveFileRepository.saveAll(archiveFiles)
         return archiveFiles
     }
 
-    @Transactional
-    fun saveProductFiles(files: List<MultipartFile>, product: Product): MutableList<ProductFile> {
+    // 제품 파일 복수 저장
+    fun saveAllFiles(files: List<MultipartFile>, product: Product): MutableList<ProductFile> {
         // 해당 제품에 대해 서버에 저장된 기존 파일 삭제
-        product.files.forEach { deleteFile(it.savedPath) }
-
+        deleteAllFiles(product.files)
         val productFiles: MutableList<ProductFile> = mutableListOf()
-
-        // 해당 제품의 파일들 저장
         files.forEach {
-            val savedFile: File = saveFile(it)
-            val dbProductFile = ProductFile(savedFile.originFileName, savedFile.serverFileName, savedPath = savedFile.savedPath, product)
-            productFiles.add(dbProductFile)
-            fileRepository.save(dbProductFile)
+            productFiles.add(
+                uploadAndMakeEntity(it, type = PRODUCT_FILE, product = product) as ProductFile
+            )
         }
+        productFileRepository.saveAll(productFiles)
         return productFiles
     }
 
-    // 단일 업로드
-    fun upload(file: MultipartFile) = createResponse(saveFile(file))
-
-    // 여러개 업로드
-    fun upload(files: List<MultipartFile>): FileListResponse {
-        val result: MutableList<FileResponse> = mutableListOf()
-        files.forEach { result.add(createResponse(saveFile(it))) }
-        return FileListResponse(result)
-    }
-
-    // 파일 삭제
-    @Transactional
-    fun deleteFile(savedPath: String) {
+    /**
+     * 파일 삭제
+     */
+    // 단일 파일 삭제
+    fun deleteFile(file: File) {
+        val savedPath = baseFilePath + file.serverFileName
         val targetFile = java.io.File(savedPath)
         if (targetFile.exists()) {
             targetFile.delete()
-            fileRepository.deleteBySavedPath(savedPath)
+            when(file) {
+                is ArchiveFile -> archiveFileRepository.delete(file)
+                is ProductFile -> productFileRepository.delete(file)
+                else -> fileRepository.delete(file)
+            }
         }
     }
 
-    @Transactional
-    fun deleteCategoryFiles(category: Category) {
-        category.archives.forEach { deleteArchiveFiles(it) }
-        category.products.forEach { deleteProductFiles(it) }
+    // 파일 전체 삭제
+    fun <T> deleteAllFiles(files: MutableList<T>, type: String = DEFAULT_FILE) {
+        when (type) {
+            ARCHIVE_FILE -> files.forEach { deleteFile(it as ArchiveFile) }
+            PRODUCT_FILE -> files.forEach { deleteFile(it as ProductFile) }
+            else -> files.forEach { deleteFile(it as File) }
+        }
     }
 
-    @Transactional
-    fun deleteProductFiles(product: Product)
-    = product.files.forEach { deleteFile(it.savedPath) }
 
-    @Transactional
-    fun deleteArchiveFiles(archive: Archive)
-    = archive.files.forEach { deleteFile(it.savedPath) }
+    // 카테고리 파일 전체 삭제
+    fun deleteAllFiles(category: Category) {
+        category.archives.forEach { deleteAllFiles(it) }
+        category.products.forEach { deleteAllFiles(it) }
+    }
+
+    // 제품 관련 파일 전체 삭제
+    fun deleteAllFiles(product: Product) = deleteAllFiles(product.files, type = PRODUCT_FILE)
+    
+    // 자료실 관련 파일 전제 삭제
+    fun deleteAllFiles(archive: Archive) = deleteAllFiles(archive.files, type = ARCHIVE_FILE)
+
+
+    /**
+     * 파일 수정 (업데이트 : 기존파일 삭제 후 새로운 파일 저장)
+     */
+    // 단일 파일 수정
+    fun updateFile(fileEntity: File, file: MultipartFile): File {
+        deleteFile(fileEntity)
+        return when(fileEntity) {
+            is ArchiveFile -> uploadAndMakeEntity(file) as ArchiveFile
+            is ProductFile -> uploadAndMakeEntity(file) as ProductFile
+            else -> uploadAndMakeEntity(file) as File
+        }
+    }
 }

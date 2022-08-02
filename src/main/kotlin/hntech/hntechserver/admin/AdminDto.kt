@@ -2,7 +2,6 @@ package hntech.hntechserver.admin
 
 import hntech.hntechserver.file.File
 
-const val FOOTER = "footer"
 const val CI = "ci"
 const val ORG_CHART = "orgChart"
 const val HISTORY = "companyHistory"

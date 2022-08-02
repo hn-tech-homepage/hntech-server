@@ -1,6 +1,7 @@
 package hntech.hntechserver.category
 
 import hntech.hntechserver.archive.Archive
+import hntech.hntechserver.file.File
 import hntech.hntechserver.product.Product
 import javax.persistence.*
 
@@ -11,7 +12,10 @@ class Category (
     val id: Long? = null,
 
     var categoryName: String = "",
-    var categoryImagePath: String = "", // 제품 한정 카테고리 대표 이미지 경로 저장
+
+    @OneToOne
+    @JoinColumn(name = "category_file_id")
+    var categoryFile: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
 
     @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
     var archives: MutableList<Archive> = mutableListOf(),
@@ -21,8 +25,8 @@ class Category (
 ) {
     // 카테고리 수정
     fun update(newName: String) { this.categoryName = newName }
-    fun update(newName: String, newPath: String) {
+    fun update(newName: String, newFile: File) {
         this.categoryName = newName
-        this.categoryImagePath = newPath
+        this.categoryFile = newFile
     }
 }

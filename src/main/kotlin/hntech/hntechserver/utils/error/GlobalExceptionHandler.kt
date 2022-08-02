@@ -1,7 +1,6 @@
 package hntech.hntechserver.utils.error
 
-import hntech.hntechserver.FileException
-import hntech.hntechserver.ValidationException
+import hntech.hntechserver.file.FileException
 import hntech.hntechserver.utils.badRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

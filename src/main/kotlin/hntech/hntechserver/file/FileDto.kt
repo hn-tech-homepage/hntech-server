@@ -4,7 +4,7 @@ fun createResponse(f: File) =
     FileResponse(
         id = f.id,
         originFileName = f.originFileName,
-        savedPath = f.savedPath
+        savedPath = ""
     )
 
 data class FileResponse(

@@ -1,6 +1,6 @@
 package hntech.hntechserver.archive
 
-import hntech.hntechserver.CategoryException
+import hntech.hntechserver.utils.error.CategoryException
 import hntech.hntechserver.category.CategoryRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.logger
@@ -30,7 +30,7 @@ class ArchiveService(
         archiveRepository.save(archive)
 
         // 파일 지정하기
-        val saveArchiveFiles = fileService.saveArchiveFiles(form.files, archive)
+        val saveArchiveFiles = fileService.saveAllFiles(form.files, archive)
         archive.files = saveArchiveFiles
 
         return ArchiveSimpleResponse.createDto(archive, itemType = "asd")
