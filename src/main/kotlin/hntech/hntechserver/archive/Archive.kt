@@ -11,7 +11,7 @@ class Archive(
     @Column(name = "archive_id")
     var id: Long? = null,
 
-    var isNotice: String,
+    var isNotice: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

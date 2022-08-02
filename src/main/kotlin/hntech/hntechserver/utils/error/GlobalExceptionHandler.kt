@@ -1,5 +1,7 @@
 package hntech.hntechserver.utils.error
 
+
+import hntech.hntechserver.file.FileException
 import hntech.hntechserver.utils.badRequest
 import hntech.hntechserver.utils.internalServerError
 import hntech.hntechserver.utils.notFound

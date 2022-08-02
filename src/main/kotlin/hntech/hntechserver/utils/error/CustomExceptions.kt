@@ -12,5 +12,4 @@ const val DUPLICATE_PRODUCT_NAME = "해당 이름의 제품이 이미 존재합�
 
 class CategoryException(message: String) : RuntimeException(message)
 class ProductException(message: String): RuntimeException(message)
-class FileException(message: String) : RuntimeException(message)
 class ValidationException(var bindingResult: BindingResult): RuntimeException("validation error")

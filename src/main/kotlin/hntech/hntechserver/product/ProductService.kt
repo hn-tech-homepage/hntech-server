@@ -31,7 +31,7 @@ class ProductService(
         val product = productRepository.save(convertEntity(form, category))
 
         // 제품 파일 저장
-        product.updateFiles(fileService.saveProductFiles(form.files, product))
+        product.updateFiles(fileService.saveAllFiles(form.files, product))
 
         return product
     }
@@ -56,14 +56,14 @@ class ProductService(
         product.update(
             productName = form.productName,
             description = form.description,
-            files = fileService.saveProductFiles(form.files, product)
+            files = fileService.saveAllFiles(form.files, product)
         )
         return product
     }
 
     fun deleteProduct(id: Long) {
         val product = getProduct(id)
-        fileService.deleteProductFiles(product)
+        fileService.deleteAllFiles(product)
         productRepository.delete(product)
     }
 }

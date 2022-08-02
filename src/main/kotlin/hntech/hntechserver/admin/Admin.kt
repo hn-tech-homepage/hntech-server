@@ -79,4 +79,5 @@ class Admin(
         this.fax = newFax
         return this
     }
+
 }

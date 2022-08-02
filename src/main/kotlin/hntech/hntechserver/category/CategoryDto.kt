@@ -1,5 +1,6 @@
 package hntech.hntechserver.category
 
+import hntech.hntechserver.file.FileResponse
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.NotBlank
 
@@ -12,12 +13,12 @@ data class CategoryRequest(
 data class CategoryResponse(
     var id: Long,
     var categoryName: String,
-    var categoryImagePath: String
+    var categoryFile: FileResponse?
 )
 
 fun convertDto(c: Category) =
     CategoryResponse(
         id = c.id!!,
         categoryName = c.categoryName,
-        categoryImagePath = c.categoryImagePath
+        categoryFile = null
     )
