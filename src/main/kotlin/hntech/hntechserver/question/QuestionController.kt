@@ -16,7 +16,7 @@ class QuestionController(private val questionService: QuestionService) {
     val log = logger()
 
     @PostMapping
-    fun createQuestion(@RequestBody @Validated question: QuestionCreateForm,
+    fun createQuestion(@Validated @RequestBody question: QuestionCreateForm,
                        bindingResult: BindingResult
     ): QuestionDetailResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
@@ -33,7 +33,7 @@ class QuestionController(private val questionService: QuestionService) {
     // 비밀번호로 문의사항 상세 조회
     @PostMapping("/{question_id}")
     fun getQuestion(@PathVariable("question_id") id: Long,
-                    @RequestBody @Validated form: QuestionFindForm,
+                    @Validated @RequestBody form: QuestionFindForm,
                     bindingResult: BindingResult
     ): QuestionCompleteResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
@@ -43,8 +43,8 @@ class QuestionController(private val questionService: QuestionService) {
     // 문의사항 제목, 내용 수정
     @PutMapping("/{question_id}")
     fun updateQuestionForm(@PathVariable("question_id") id: Long,
-                       @RequestBody @Validated form: QuestionUpdateForm,
-                       bindingResult: BindingResult
+                           @Validated @RequestBody form: QuestionUpdateForm,
+                           bindingResult: BindingResult
     ): QuestionDetailResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
         return convertDto(questionService.updateQuestion(id, form), true)
@@ -53,7 +53,7 @@ class QuestionController(private val questionService: QuestionService) {
     // 문의사항 처리 상태 수정
     @PatchMapping("/{question_id}")
     fun updateQuestionStatus(@PathVariable("question_id") id: Long,
-                             @RequestBody @Validated form: QuestionStatusUpdateForm,
+                             @Validated @RequestBody form: QuestionStatusUpdateForm,
                              bindingResult: BindingResult
     ): QuestionSimpleResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
@@ -70,7 +70,7 @@ class CommentController(private val commentService: CommentService) {
 
     @PostMapping("/{question_id}")
     fun createComment(@PathVariable("question_id") questionId: Long,
-                      @RequestBody @Validated form: CommentCreateForm,
+                      @Validated @RequestBody form: CommentCreateForm,
                       bindingResult: BindingResult
     ): CommentResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
@@ -79,7 +79,7 @@ class CommentController(private val commentService: CommentService) {
 
     @PutMapping("/{comment_id}")
     fun updateComment(@PathVariable("comment_id") commentId: Long,
-                      @RequestBody @Validated form: CommentUpdateForm,
+                      @Validated @RequestBody form: CommentUpdateForm,
                       bindingResult: BindingResult
     ): CommentResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)

@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils
+package hntech.hntechserver.utils.config
 
 
 const val FILE_SAVE_PATH_WINDOW_TEST = "C:\\dev\\"

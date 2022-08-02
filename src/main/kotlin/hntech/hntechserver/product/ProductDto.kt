@@ -2,10 +2,23 @@ package hntech.hntechserver.product
 
 import hntech.hntechserver.category.Category
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.constraints.NotBlank
 
 data class ProductCreateForm(
+    @field:NotBlank
     var categoryName: String,
+
+    @field:NotBlank
     var productName: String,
+
+    var description: String,
+    var files: List<MultipartFile>
+)
+
+data class ProductUpdateForm(
+    @field:NotBlank
+    var productName: String,
+
     var description: String,
     var files: List<MultipartFile>
 )
@@ -16,12 +29,6 @@ data class ProductResponseForm(
     var productName: String,
     var description: String,
     var files: List<String>
-)
-
-data class ProductUpdateForm(
-    var productName: String,
-    var description: String,
-    var files: List<MultipartFile>
 )
 
 fun convertEntity(form: ProductCreateForm, category: Category): Product {

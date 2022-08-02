@@ -1,5 +1,6 @@
 package hntech.hntechserver.utils
 
+import hntech.hntechserver.utils.config.VALIDATION_ERROR
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -27,6 +28,10 @@ fun <T> badRequest(body: T) = ResponseEntity.status(HttpStatus.BAD_REQUEST).body
 
 fun badRequest(bindingResult: BindingResult) =
     ResponseEntity.status(HttpStatus.BAD_REQUEST).body(convertJson(bindingResult.fieldErrors))
+
+fun <T> notFound(body: T) = ResponseEntity.status(HttpStatus.NOT_FOUND).body(body)
+
+fun <T> internalServerError(body: T) = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body)
 
 fun success() = ResponseEntity.status(HttpStatus.OK).body(BoolResponse(true))
 

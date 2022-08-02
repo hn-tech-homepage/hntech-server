@@ -2,6 +2,9 @@ package hntech.hntechserver.product
 
 import hntech.hntechserver.category.CategoryService
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.error.DUPLICATE_PRODUCT_NAME
+import hntech.hntechserver.utils.error.PRODUCT_NOT_FOUND
+import hntech.hntechserver.utils.error.ProductException
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 
@@ -13,7 +16,14 @@ class ProductService(
 ) {
     val log = logger()
 
+    fun checkProductName(name: String) {
+        if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
+    }
+
     fun createProduct(form: ProductCreateForm): Product {
+        // 제품 이름 중복 체크
+        checkProductName(form.productName)
+
         // 카테고리 가져오기
         val category = categoryService.getCategory(form.categoryName)
 
@@ -26,10 +36,20 @@ class ProductService(
         return product
     }
 
-    fun getAllProducts(): List<Product> = productRepository.findAll()
+    /**
+     * 카테고리 이름?
+     * 있으면 해당 카테고리의 제품 리스트를 반환, 없을 경우 전체 제품 리스트
+     */
+    fun getAllProducts(categoryName: String?): List<Product> {
+        categoryName?.let {
+            return categoryService.getCategory(it).products
+        } ?: run {
+            return productRepository.findAll()
+        }
+    }
 
     fun getProduct(id: Long): Product
-    = productRepository.findById(id).orElseThrow { throw NoSuchElementException("해당 제품을 찾을 수 없습니다.") }
+    = productRepository.findById(id).orElseThrow { throw ProductException(PRODUCT_NOT_FOUND) }
 
     fun updateProduct(id: Long, form: ProductUpdateForm): Product {
         val product = getProduct(id)
