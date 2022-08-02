@@ -1,13 +1,12 @@
 package hntech.hntechserver.category
 
-import hntech.hntechserver.utils.error.CategoryException
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.error.CATEGORY_NOT_FOUND
+import hntech.hntechserver.utils.error.CategoryException
 import hntech.hntechserver.utils.error.DUPLICATE_CATEGORY_NAME
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.NoSuchElementException
 
 @Service
 @Transactional
@@ -79,7 +78,7 @@ class CategoryService(
     // 카테고리 삭제
     @Transactional
     fun deleteCategory(categoryId: Long) {
-        fileService.deleteCategoryFiles(getCategory(categoryId))
+        fileService.deleteAllFiles(getCategory(categoryId))
         categoryRepository.deleteById(categoryId)
     }
 }

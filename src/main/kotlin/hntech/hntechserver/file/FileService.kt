@@ -1,9 +1,9 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.utils.error.FileException
 import hntech.hntechserver.archive.Archive
 import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
+import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -113,7 +113,6 @@ class FileService(
         }
     }
 
-
     // 파일 전체 삭제
     fun <T> deleteAllFiles(files: MutableList<T>, type: String = DEFAULT_FILE) {
         when (type) {
@@ -121,19 +120,6 @@ class FileService(
             PRODUCT_FILE -> files.forEach { deleteFile(it as ProductFile) }
             else -> files.forEach { deleteFile(it as File) }
         }
-        
-    @Transactional
-    fun deleteCategoryFiles(category: Category) {
-        deleteFile(category.categoryImagePath)
-        category.archives.forEach { deleteArchiveFiles(it) }
-        category.products.forEach { deleteProductFiles(it) }
-    }
-
-
-    // 카테고리 파일 전체 삭제
-    fun deleteAllFiles(category: Category) {
-        category.archives.forEach { deleteAllFiles(it) }
-        category.products.forEach { deleteAllFiles(it) }
     }
 
     // 제품 관련 파일 전체 삭제
@@ -142,6 +128,11 @@ class FileService(
     // 자료실 관련 파일 전제 삭제
     fun deleteAllFiles(archive: Archive) = deleteAllFiles(archive.files, type = ARCHIVE_FILE)
 
+    // 카테고리 파일 전체 삭제
+    fun deleteAllFiles(category: Category) {
+        category.archives.forEach { deleteAllFiles(it) }
+        category.products.forEach { deleteAllFiles(it) }
+    }
 
     /**
      * 파일 수정 (업데이트 : 기존파일 삭제 후 새로운 파일 저장)
@@ -156,3 +147,6 @@ class FileService(
         }
     }
 }
+
+
+
