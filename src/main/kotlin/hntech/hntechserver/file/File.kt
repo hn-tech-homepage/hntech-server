@@ -1,6 +1,7 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.archive.Archive
+import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
 import javax.persistence.*
 
@@ -20,4 +21,7 @@ class File(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var fileProduct: Product? = null,
-)
+) {
+    fun setArchive(archive: Archive) { this.fileArchive = archive }
+    fun setProduct(product: Product) { this.fileProduct = product }
+}

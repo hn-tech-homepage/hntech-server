@@ -15,7 +15,7 @@ class Category (
 
     @OneToOne
     @JoinColumn(name = "category_file_id")
-    var categoryFile: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
+    var file: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
 
     @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
     var archives: MutableList<Archive> = mutableListOf(),
@@ -25,8 +25,9 @@ class Category (
 ) {
     // 카테고리 수정
     fun update(newName: String) { this.categoryName = newName }
+    fun update(newFile: File) { this.file = newFile }
     fun update(newName: String, newFile: File) {
         this.categoryName = newName
-        this.categoryFile = newFile
+        this.file = newFile
     }
 }

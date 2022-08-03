@@ -1,5 +1,8 @@
 package hntech.hntechserver.file
 
+import hntech.hntechserver.archive.Archive
+import hntech.hntechserver.category.Category
+import hntech.hntechserver.product.Product
 import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
@@ -17,7 +20,8 @@ class FileService(private val fileRepository: FileRepository) {
      * 파일 생성(저장)
      */
     // 단일 파일 저장
-    fun saveFile(file: MultipartFile): File {
+    fun saveFile(file: MultipartFile, entity: Any? = null): File {
+        if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
             val originFilename: String = file.originalFilename.toString()
             val extensionType: String = originFilename.split(".")[1] // 파일 확장자 추출하기
@@ -29,7 +33,12 @@ class FileService(private val fileRepository: FileRepository) {
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
-            return fileRepository.save(File(originalFilename = originFilename, serverFilename = serverFileName))
+            val fileEntity = File(originFileName = originFilename, serverFileName = serverFileName)
+            when(entity) {
+                is Archive -> fileEntity.setArchive(entity)
+                is Product -> fileEntity.setProduct(entity)
+            }
+            return fileRepository.save(fileEntity)
             
         } catch (e: Exception) {
             log.error(FILE_SAVING_ERROR)
@@ -38,9 +47,9 @@ class FileService(private val fileRepository: FileRepository) {
     }
     
     // 복수 파일 저장
-    fun saveAllFiles(files: List<MultipartFile>): MutableList<File> {
+    fun <T> saveAllFiles(files: List<MultipartFile>, entity: T): MutableList<File> {
         val result: MutableList<File> = mutableListOf()
-        files.forEach { result.add(saveFile(it)) }
+        files.forEach { result.add(saveFile(it, entity)) }
         return result
     }
 
@@ -75,12 +84,14 @@ class FileService(private val fileRepository: FileRepository) {
      * 파일 수정 (업데이트 : 기존파일 삭제 후 새로운 파일 저장)
      */
     // 단일 파일 수정
-    fun updateFile(fileEntity: File, newFile: MultipartFile): File {
-        deleteFile(fileEntity)
-        return saveFile(newFile)
+    fun updateFile(oldFile: File, newFile: MultipartFile, entity: Any? = null): File {
+        deleteFile(oldFile)
+        return saveFile(newFile, entity)
     }
 
+    // 복수 파일 수정
+    fun updateFiles(oldFiles: List<File>, newFiles: List<MultipartFile>, entity: Any? = null): List<File> {
+        deleteAllFiles(oldFiles as MutableList<File>)
+        return saveAllFiles(newFiles, entity)
+    }
 }
-
-
-

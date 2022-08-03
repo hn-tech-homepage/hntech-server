@@ -12,3 +12,4 @@ data class FileListResponse(
 )
 
 fun convertDto(files: MutableList<File>) = FileListResponse(files.map { convertDto(it) })
+
