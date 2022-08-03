@@ -30,7 +30,7 @@ class ArchiveService(
         archiveRepository.save(archive)
 
         // 파일 지정하기
-        val saveArchiveFiles = fileService.saveAllFiles(form.files)
+        val saveArchiveFiles = fileService.saveAllFiles(form.files, archive)
         archive.files = saveArchiveFiles
 
         return ArchiveSimpleResponse.createDto(archive, itemType = item.productName)
