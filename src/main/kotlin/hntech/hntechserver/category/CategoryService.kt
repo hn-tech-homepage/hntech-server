@@ -1,10 +1,6 @@
 package hntech.hntechserver.category
 
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.error.CATEGORY_IMAGE_REQUIRED
-import hntech.hntechserver.utils.error.CATEGORY_NOT_FOUND
-import hntech.hntechserver.utils.error.CategoryException
-import hntech.hntechserver.utils.error.DUPLICATE_CATEGORY_NAME
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -68,6 +64,7 @@ class CategoryService(
         val findCategory = getCategory(categoryId)
         
         // 카테고리에 물려있는 파일들 삭제
+        fileService.deleteFile(findCategory.file!!)
         findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
         findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
         categoryRepository.deleteById(categoryId)

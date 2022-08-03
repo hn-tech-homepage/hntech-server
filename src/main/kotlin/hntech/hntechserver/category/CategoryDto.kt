@@ -11,7 +11,6 @@ data class CategoryRequest(
     @field:NotBlank
     var categoryName: String,
 
-    @field:NotEmpty
     var image: MultipartFile
 )
 
@@ -22,7 +21,7 @@ data class CategoryResponse(
 )
 
 data class CategoryListResponse(
-    var categories: List<CategoryResponse>?
+    var categories: List<CategoryResponse>
 )
 
 fun convertDto(c: Category): CategoryResponse =

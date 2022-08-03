@@ -1,6 +1,8 @@
 package hntech.hntechserver.product
 
 import hntech.hntechserver.category.Category
+import hntech.hntechserver.file.FileResponse
+import hntech.hntechserver.file.convertDto
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.NotBlank
 
@@ -23,12 +25,16 @@ data class ProductUpdateForm(
     var files: List<MultipartFile>
 )
 
-data class ProductResponseForm(
+data class ProductResponse(
     var id: Long?,
     var category: String,
     var productName: String,
     var description: String,
-    var files: List<String>
+    var files: List<FileResponse>
+)
+
+data class ProductListResponse(
+    var products: List<ProductResponse>
 )
 
 fun convertEntity(form: ProductCreateForm, category: Category): Product {
@@ -39,12 +45,16 @@ fun convertEntity(form: ProductCreateForm, category: Category): Product {
     )
 }
 
-fun convertDto(product: Product): ProductResponseForm {
-    return ProductResponseForm(
+fun convertDto(product: Product): ProductResponse {
+    return ProductResponse(
         id = product.id,
         category = product.productCategory.categoryName,
         productName = product.productName,
         description = product.description,
-        files = product.files.map { it.serverFileName }
+        files = product.files.map { convertDto(it) }
     )
+}
+
+fun convertDto(products: List<Product>): ProductListResponse {
+    return ProductListResponse(products.map { convertDto(it) })
 }
