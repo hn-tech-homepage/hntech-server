@@ -21,6 +21,7 @@ class FileService(private val fileRepository: FileRepository) {
      */
     // 단일 파일 저장
     fun saveFile(file: MultipartFile, entity: Any? = null): File {
+        if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
             val originFilename: String = file.originalFilename.toString()
             val extensionType: String = originFilename.split(".")[1] // 파일 확장자 추출하기
@@ -80,5 +81,11 @@ class FileService(private val fileRepository: FileRepository) {
     fun updateFile(oldFile: File, newFile: MultipartFile, entity: Any? = null): File {
         deleteFile(oldFile)
         return saveFile(newFile, entity)
+    }
+
+    // 복수 파일 수정
+    fun updateFiles(oldFiles: List<File>, newFiles: List<MultipartFile>, entity: Any? = null): List<File> {
+        deleteAllFiles(oldFiles as MutableList<File>)
+        return saveAllFiles(newFiles, entity)
     }
 }

@@ -1,8 +1,8 @@
 package hntech.hntechserver.utils.error
 
-
+import hntech.hntechserver.category.CategoryException
 import hntech.hntechserver.file.FileException
-import hntech.hntechserver.utils.ErrorResponse
+import hntech.hntechserver.product.ProductException
 import hntech.hntechserver.utils.badRequest
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice

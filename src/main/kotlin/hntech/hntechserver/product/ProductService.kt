@@ -1,10 +1,8 @@
 package hntech.hntechserver.product
 
 import hntech.hntechserver.category.CategoryService
+import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.error.DUPLICATE_PRODUCT_NAME
-import hntech.hntechserver.utils.error.PRODUCT_NOT_FOUND
-import hntech.hntechserver.utils.error.ProductException
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 
@@ -56,7 +54,7 @@ class ProductService(
         product.update(
             productName = form.productName,
             description = form.description,
-            files = fileService.saveAllFiles(form.files, product)
+            files = fileService.updateFiles(product.files, form.files, product) as MutableList<File>
         )
         return product
     }
