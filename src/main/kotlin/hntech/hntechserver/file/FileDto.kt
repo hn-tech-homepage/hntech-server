@@ -1,12 +1,15 @@
 package hntech.hntechserver.file
 
 data class FileResponse(
-    var id: Long? = null,
-    var originFileName: String?
+    var originalFilename: String,
+    var serverFilename: String,
 )
 
-fun convertDto(f: File): FileResponse =
-    FileResponse(
-        id = f.id,
-        originFileName = f.originFileName
-    )
+fun convertDto(file: File) = FileResponse(file.originalFilename, file.serverFilename)
+
+data class FileListResponse(
+    var files: List<FileResponse>,
+)
+
+fun convertDto(files: MutableList<File>) = FileListResponse(files.map { convertDto(it) })
+

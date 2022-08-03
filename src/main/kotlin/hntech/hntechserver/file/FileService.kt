@@ -39,7 +39,7 @@ class FileService(private val fileRepository: FileRepository) {
                 is Product -> fileEntity.setProduct(entity)
             }
             return fileRepository.save(fileEntity)
-
+            
         } catch (e: Exception) {
             log.error(FILE_SAVING_ERROR)
             throw FileException(FILE_SAVING_ERROR)
@@ -54,12 +54,18 @@ class FileService(private val fileRepository: FileRepository) {
     }
 
     /**
+     * 파일 조회
+     */
+    fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
+    fun getOriginalFilename(serverFilename: String): String = fileRepository.findByServerFilename(serverFilename)!!.originalFilename
+
+    /**
      * 파일 삭제
      */
     // 단일 파일 삭제
     fun deleteFile(file: File): Boolean {
         return try {
-            val savedPath = baseFilePath + file.serverFileName
+            val savedPath = baseFilePath + file.serverFilename
             val targetFile = java.io.File(savedPath)
             if (targetFile.exists()) {
                 targetFile.delete()

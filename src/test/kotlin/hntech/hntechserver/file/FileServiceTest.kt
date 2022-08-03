@@ -2,7 +2,6 @@ package hntech.hntechserver.file
 
 import hntech.hntechserver.utils.logger
 import io.kotest.matchers.shouldBe
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,13 +36,10 @@ class FileServiceTest {
 
     @Test
     fun `단일 파일 저장 성공`() {
-        // when
         val expected: File = fileService.saveFile(file)
-        val actual: File = fileRepository.findByOriginFileName("test.jpg")!!
+        val actual: File = fileRepository.findByOriginalFilename("test.jpg")!!
 
-        // then
-//        assertThat(actual).isEqualTo(expected)
-        actual shouldBe  expected
+        expected shouldBe actual
         logResult(actual, expected)
     }
 
@@ -51,38 +47,37 @@ class FileServiceTest {
     fun `다중 파일 저장 성공`() {
         // given
         val files: MutableList<MultipartFile> = mutableListOf()
-        for (i: Int in 0..10) {
-            files.add(file)
-        }
+        for (i: Int in 0..10) { files.add(file) }
 
         // when
         val expected: MutableList<File> = fileService.saveAllFiles(files)
         val actual: MutableList<File> = fileRepository.findAll()
 
         // then
-        assertThat(actual).isEqualTo(expected)
+        expected shouldBe actual
         logResult(actual, expected)
     }
 
-//    @Test @DisplayName("파일 단일 수정 성공")
-//    fun updateFile() {
-//        // given
-//        val archive = Archive()
-//        val files: MutableList<MultipartFile> = mutableListOf()
-//        for (i: Int in 0..3) {
-//            files.add(file)
-//        }
-//
-//        // when
-//        val expected: MutableList<ArchiveFile> = fileService.saveAllFiles(files, archive)
-//        val actual = archiveFileRepository.findAll()
-//
-//
-//        // then
-////        assertThat(actual).isEqualTo(expected)
-//        assertThat(archive.files.size).isEqualTo(files.size)
-//        logResult(actual, expected)
-//    }
+    @Test
+    fun `단일 파일 수정 성공`() {
+        // given
+        val oldFileEntity: File = fileService.saveFile(file)
+        val newFile = MockMultipartFile(
+            "file",
+            "test2.jpg",
+            "image/jpeg",
+            "test".byteInputStream()
+        )
+
+        // when
+        val expected: File = fileService.updateFile(oldFileEntity, newFile)
+        val actual: File = fileRepository.findByOriginalFilename("test2.jpg")!!
+
+        // then
+        expected.originalFilename shouldBe "test2.jpg"
+        expected shouldBe actual
+        logResult(actual, expected)
+    }
 
 
 
