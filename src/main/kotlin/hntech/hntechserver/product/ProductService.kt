@@ -16,12 +16,12 @@ class ProductService(
 ) {
     val log = logger()
 
+    // 제품명 중복체크
     fun checkProductName(name: String) {
         if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
     }
 
     fun createProduct(form: ProductCreateForm): Product {
-        // 제품 이름 중복 체크
         checkProductName(form.productName)
 
         // 카테고리 가져오기
@@ -31,7 +31,7 @@ class ProductService(
         val product = productRepository.save(convertEntity(form, category))
 
         // 제품 파일 저장
-        product.updateFiles(fileService.saveAllFiles(form.files))
+        product.updateFiles(fileService.saveAllFiles(form.files, product))
 
         return product
     }
@@ -56,7 +56,7 @@ class ProductService(
         product.update(
             productName = form.productName,
             description = form.description,
-            files = fileService.saveAllFiles(form.files)
+            files = fileService.saveAllFiles(form.files, product)
         )
         return product
     }
