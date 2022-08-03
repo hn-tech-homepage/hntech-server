@@ -29,7 +29,7 @@ class FileService(private val fileRepository: FileRepository) {
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
-            return fileRepository.save(File(originFileName = originFilename, serverFileName = serverFileName))
+            return fileRepository.save(File(originalFilename = originFilename, serverFilename = serverFileName))
             
         } catch (e: Exception) {
             log.error(FILE_SAVING_ERROR)
@@ -45,12 +45,18 @@ class FileService(private val fileRepository: FileRepository) {
     }
 
     /**
+     * 파일 조회
+     */
+    fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
+    fun getOriginalFilename(serverFilename: String): String = fileRepository.findByServerFilename(serverFilename)!!.originalFilename
+
+    /**
      * 파일 삭제
      */
     // 단일 파일 삭제
     fun deleteFile(file: File): Boolean {
         return try {
-            val savedPath = baseFilePath + file.serverFileName
+            val savedPath = baseFilePath + file.serverFilename
             val targetFile = java.io.File(savedPath)
             if (targetFile.exists()) {
                 targetFile.delete()

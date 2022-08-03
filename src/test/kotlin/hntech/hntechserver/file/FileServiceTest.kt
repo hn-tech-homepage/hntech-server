@@ -37,7 +37,7 @@ class FileServiceTest {
     @Test
     fun `단일 파일 저장 성공`() {
         val expected: File = fileService.saveFile(file)
-        val actual: File = fileRepository.findByOriginFileName("test.jpg")!!
+        val actual: File = fileRepository.findByOriginalFilename("test.jpg")!!
 
         expected shouldBe actual
         logResult(actual, expected)
@@ -71,10 +71,10 @@ class FileServiceTest {
 
         // when
         val expected: File = fileService.updateFile(oldFileEntity, newFile)
-        val actual: File = fileRepository.findByOriginFileName("test2.jpg")!!
+        val actual: File = fileRepository.findByOriginalFilename("test2.jpg")!!
 
         // then
-        expected.originFileName shouldBe "test2.jpg"
+        expected.originalFilename shouldBe "test2.jpg"
         expected shouldBe actual
         logResult(actual, expected)
     }

@@ -10,8 +10,8 @@ class File(
     @Column(name = "file_id")
     val id: Long? = null,
 
-    var originFileName: String = "",
-    var serverFileName: String = "",
+    var originalFilename: String = "",
+    var serverFilename: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id")
