@@ -31,7 +31,7 @@ class ProductService(
         val product = productRepository.save(convertEntity(form, category))
 
         // 제품 파일 저장
-        product.updateFiles(fileService.saveAllFiles(form.files, product))
+        product.updateFiles(fileService.saveAllFiles(form.files))
 
         return product
     }
@@ -48,22 +48,22 @@ class ProductService(
         }
     }
 
-    fun getProduct(id: Long): Product
-    = productRepository.findById(id).orElseThrow { throw ProductException(PRODUCT_NOT_FOUND) }
+    fun getProduct(id: Long): Product =
+        productRepository.findById(id).orElseThrow { throw ProductException(PRODUCT_NOT_FOUND) }
 
     fun updateProduct(id: Long, form: ProductUpdateForm): Product {
         val product = getProduct(id)
         product.update(
             productName = form.productName,
             description = form.description,
-            files = fileService.saveAllFiles(form.files, product)
+            files = fileService.saveAllFiles(form.files)
         )
         return product
     }
 
     fun deleteProduct(id: Long) {
         val product = getProduct(id)
-        fileService.deleteAllFiles(product)
+        fileService.deleteAllFiles(product.files)
         productRepository.delete(product)
     }
 }

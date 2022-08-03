@@ -1,7 +1,7 @@
 package hntech.hntechserver.archive
 
 import hntech.hntechserver.category.Category
-import hntech.hntechserver.file.ArchiveFile
+import hntech.hntechserver.file.File
 import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
@@ -18,7 +18,7 @@ class Archive(
     var archiveCategory: Category? = null,
 
     @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL])
-    var files: MutableList<ArchiveFile> = mutableListOf(),
+    var files: MutableList<File> = mutableListOf(),
 
     // 중복되는 부분
     var title: String = "",

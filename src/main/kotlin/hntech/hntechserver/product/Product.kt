@@ -1,7 +1,7 @@
 package hntech.hntechserver.product
 
 import hntech.hntechserver.category.Category
-import hntech.hntechserver.file.ProductFile
+import hntech.hntechserver.file.File
 import javax.persistence.*
 
 @Entity
@@ -18,12 +18,12 @@ class Product(
     var description: String = "",
 
     @OneToMany(mappedBy = "fileProduct", cascade = [CascadeType.ALL])
-    var files: MutableList<ProductFile> = mutableListOf()
+    var files: MutableList<File> = mutableListOf()
 ) {
-    fun update(productName: String, description: String, files: MutableList<ProductFile>) {
+    fun update(productName: String, description: String, files: MutableList<File>) {
         this.productName = productName
         this.description = description
         this.files = files
     }
-    fun updateFiles(files: MutableList<ProductFile>) { this.files = files }
+    fun updateFiles(files: MutableList<File>) { this.files = files }
 }

@@ -22,17 +22,17 @@ class CategoryService(
     }
 
     // 카테고리 생성
-    @Transactional
     fun createCategory(form: CategoryRequest): Category {
         // 카테고리 중복 여부 검사
         checkCategoryName(form.categoryName)
 
         // 카테고리 대표 이미지 업로드
-        val savedImage = fileService.uploadAndMakeEntity(form.image)
+        val savedImage = fileService.saveFile(form.image)
 
         return categoryRepository.save(
             Category(
                 categoryName = form.categoryName,
+                categoryFile = savedImage,
         ))
     }
 
@@ -45,16 +45,15 @@ class CategoryService(
     
     // 카테고리 ID로 조회
     @Transactional(readOnly = true)
-    fun getCategory(id: Long): Category
-    = categoryRepository.findById(id).orElseThrow { throw CategoryException(CATEGORY_NOT_FOUND) }
+    fun getCategory(id: Long): Category =
+        categoryRepository.findById(id).orElseThrow { throw CategoryException(CATEGORY_NOT_FOUND) }
     
     // 카테고리 이름으로 조회
     @Transactional(readOnly = true)
-    fun getCategory(categoryName: String): Category
-    = categoryRepository.findByCategoryName(categoryName) ?: throw CategoryException(CATEGORY_NOT_FOUND)
+    fun getCategory(categoryName: String): Category =
+        categoryRepository.findByCategoryName(categoryName) ?: throw CategoryException(CATEGORY_NOT_FOUND)
 
     // 카테고리 수정
-    @Transactional
     fun updateCategory(categoryId: Long, form: CategoryRequest): List<Category> {
 
         checkCategoryName(form.categoryName)
@@ -63,11 +62,7 @@ class CategoryService(
 
         // 이름과 대표 사진 둘 다 변경
         if (!form.image.isEmpty) {
-            // 1. 기존 파일 삭제
-            fileService.deleteFile(category.categoryFile!!)
-
-            // 2. 새로운 파일 저장 후 디비 update
-            val newImage = fileService.uploadAndMakeEntity(form.image)
+            fileService.updateFile(fileEntity = category.categoryFile!!, newFile = form.image)
             category.update(form.categoryName, category.categoryFile!!)
         } else {
             category.update(form.categoryName)
@@ -76,9 +71,12 @@ class CategoryService(
     }
 
     // 카테고리 삭제
-    @Transactional
     fun deleteCategory(categoryId: Long) {
-        fileService.deleteAllFiles(getCategory(categoryId))
+        val findCategory = getCategory(categoryId)
+        
+        // 카테고리에 물려있는 파일들 삭제
+        findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
+        findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
         categoryRepository.deleteById(categoryId)
     }
 }

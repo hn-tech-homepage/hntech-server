@@ -32,7 +32,12 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("mysql:mysql-connector-java")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	// mockK
 	testImplementation("io.mockk:mockk:1.12.0")
+
+	// kotest
+	testImplementation("io.kotest:kotest-extensions-spring:4.4.3")
 }
 
 allOpen {
@@ -53,5 +58,9 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
+	useJUnitPlatform()
+}
+
+tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
 }
