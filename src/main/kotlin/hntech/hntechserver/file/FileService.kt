@@ -1,7 +1,6 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.archive.Archive
-import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
 import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
 import hntech.hntechserver.utils.logger
@@ -23,17 +22,17 @@ class FileService(private val fileRepository: FileRepository) {
     fun saveFile(file: MultipartFile, entity: Any? = null): File {
         if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
-            val originFilename: String = file.originalFilename.toString()
-            val extensionType: String = originFilename.split(".")[1] // 파일 확장자 추출하기
-            val serverFileName: String = UUID.randomUUID().toString() + ".$extensionType"
-            val savedPath = baseFilePath + serverFileName
+            val originalFilename: String = file.originalFilename.toString()
+            val extensionType: String = originalFilename.split(".")[1] // 파일 확장자 추출하기
+            val serverFilename: String = UUID.randomUUID().toString() + ".$extensionType"
+            val savedPath = baseFilePath + serverFilename
 
-            log.info("originFilename = {}, savedPath = {}", originFilename, savedPath)
+            log.info("originFilename = {}, savedPath = {}", originalFilename, savedPath)
 
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
-            val fileEntity = File(originFileName = originFilename, serverFileName = serverFileName)
+            val fileEntity = File(originalFilename = originalFilename, serverFilename = serverFilename)
             when(entity) {
                 is Archive -> fileEntity.setArchive(entity)
                 is Product -> fileEntity.setProduct(entity)
@@ -47,7 +46,7 @@ class FileService(private val fileRepository: FileRepository) {
     }
     
     // 복수 파일 저장
-    fun <T> saveAllFiles(files: List<MultipartFile>, entity: T): MutableList<File> {
+    fun saveAllFiles(files: List<MultipartFile>, entity: Any? = null): MutableList<File> {
         val result: MutableList<File> = mutableListOf()
         files.forEach { result.add(saveFile(it, entity)) }
         return result
