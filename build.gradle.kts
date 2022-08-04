@@ -37,7 +37,8 @@ dependencies {
 	testImplementation("io.mockk:mockk:1.12.0")
 
 	// kotest
-	testImplementation("io.kotest:kotest-extensions-spring:4.4.3")
+	testImplementation("io.kotest:kotest-runner-junit5:5.4.1")
+	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.2")
 }
 
 allOpen {
