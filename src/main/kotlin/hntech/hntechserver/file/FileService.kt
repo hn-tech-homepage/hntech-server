@@ -40,7 +40,7 @@ class FileService(private val fileRepository: FileRepository) {
             return fileRepository.save(fileEntity)
             
         } catch (e: Exception) {
-            log.error(FILE_SAVING_ERROR)
+            log.error(e.message)
             throw FileException(FILE_SAVING_ERROR)
         }
     }
