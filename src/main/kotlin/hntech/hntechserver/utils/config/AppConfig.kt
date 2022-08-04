@@ -28,9 +28,9 @@ class AppConfig : WebMvcConfigurer {
             .allowedOrigins("*")
     }
 
-    // 리소스 리다이렉션 (서버 내부에 있는 이미지 내려주기)
+    // 정적 이미지 단순 조회
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/img/**")
-            .addResourceLocations("리눅스에 파일 저장된 경로를 넣어줘야함")
+        registry.addResourceHandler("/file/image/**")
+            .addResourceLocations(IMAGE_PATH_FOR_WINDOW)
     }
 }

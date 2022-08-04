@@ -20,7 +20,7 @@ class FileController(private val fileService: FileService) {
         convertDto(fileService.saveFile(file))
 
     @PostMapping("/upload-all")
-    fun uploadAll(@ModelAttribute("file") files: List<MultipartFile>): FileListResponse =
+    fun uploadAll(@ModelAttribute files: List<MultipartFile>): FileListResponse =
         convertDto(fileService.saveAllFiles(files))
 
     @GetMapping("/download/{filename}")
@@ -38,6 +38,8 @@ class FileController(private val fileService: FileService) {
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${finalFilename}")
             .body(resource)
     }
+
+
 
 
 
