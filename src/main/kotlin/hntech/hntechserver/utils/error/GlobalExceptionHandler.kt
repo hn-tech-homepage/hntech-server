@@ -3,6 +3,8 @@ package hntech.hntechserver.utils.error
 import hntech.hntechserver.category.CategoryException
 import hntech.hntechserver.file.FileException
 import hntech.hntechserver.product.ProductException
+import hntech.hntechserver.question.CommentException
+import hntech.hntechserver.question.QuestionException
 import hntech.hntechserver.utils.badRequest
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -16,15 +18,16 @@ class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException::class)
     fun validationErrorHandle(ex: ValidationException) = badRequest(ex.bindingResult)
 
-    @ExceptionHandler(NoSuchElementException::class)
-    fun notFoundErrorHandle(ex: NoSuchElementException) = badRequest(ex)
+    @ExceptionHandler(QuestionException::class)
+    fun questionExceptionHandler(ex: QuestionException) = badRequest(ex)
+
+    @ExceptionHandler(CommentException::class)
+    fun commentExceptionHandler(ex: CommentException) = badRequest(ex)
 
     @ExceptionHandler(CategoryException::class)
-    fun categoryExceptionHandler(ex: CategoryException) =
-        badRequest(ex)
+    fun categoryExceptionHandler(ex: CategoryException) = badRequest(ex)
 
     @ExceptionHandler(ProductException::class)
-    fun productExceptionHandler(ex: ProductException) =
-        badRequest(ex)
+    fun productExceptionHandler(ex: ProductException) = badRequest(ex)
 
 }

@@ -2,6 +2,7 @@ package hntech.hntechserver.question
 
 import hntech.hntechserver.utils.error.ValidationException
 import hntech.hntechserver.question.dto.*
+import hntech.hntechserver.utils.config.QUESTION_PAGE_SIZE
 import hntech.hntechserver.utils.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*
 class QuestionController(private val questionService: QuestionService) {
     val log = logger()
 
+    // 문의사항 생성
     @PostMapping
     fun createQuestion(@Validated @RequestBody question: QuestionCreateForm,
                        bindingResult: BindingResult
@@ -23,9 +25,10 @@ class QuestionController(private val questionService: QuestionService) {
         return convertDto(questionService.createQuestion(question), true)
     }
 
+    // 문의사항 리스트 페이징해서 조회
     @GetMapping
     fun getAllQuestions(
-        @PageableDefault(size = 10, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+        @PageableDefault(size = QUESTION_PAGE_SIZE, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): QuestionPagedResponse {
         return convertDto(questionService.findAllQuestions(pageable))
     }

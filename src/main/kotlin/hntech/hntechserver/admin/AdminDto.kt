@@ -28,9 +28,9 @@ fun convertDto(newImageFile: File) {
 
 fun convertDto(a: Admin, type: String): Any {
     return when (type) {
-        CI -> ImageResponse(a.compInfoImage!!.serverFileName)
-        ORG_CHART -> ImageResponse(a.orgChartImage!!.serverFileName)
-        HISTORY -> ImageResponse(a.companyHistoryImage!!.serverFileName)
+        CI -> ImageResponse(a.compInfoImage!!.serverFilename)
+        ORG_CHART -> ImageResponse(a.orgChartImage!!.serverFilename)
+        HISTORY -> ImageResponse(a.companyHistoryImage!!.serverFilename)
         else -> FooterDto(a.address, a.afterService, a.phone, a.fax)
     }
 }
