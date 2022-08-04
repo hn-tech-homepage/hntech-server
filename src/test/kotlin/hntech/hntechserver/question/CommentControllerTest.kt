@@ -60,8 +60,7 @@ internal class CommentControllerTest {
         }
     }
     fun isSuccess(test: ResultActionsDsl) = test.andExpect { status { isOk() } }
-    fun isFailWithValidationError(test: ResultActionsDsl) = test.andExpect { status { isBadRequest() } }
-    fun isFailWithNotFoundError(test: ResultActionsDsl) = test.andExpect { status { isNotFound() } }
+    fun isFail(test: ResultActionsDsl) = test.andExpect { status { isBadRequest() } }
 
     // 테스트용 문의사항
     lateinit var targetQuestion: Question
@@ -101,9 +100,9 @@ internal class CommentControllerTest {
         val test3 = postTest(uri, form3)
 
         // then
-        isFailWithValidationError(test1)
-        isFailWithValidationError(test2)
-        isFailWithValidationError(test3)
+        isFail(test1)
+        isFail(test2)
+        isFail(test3)
     }
     
     @Test @DisplayName("댓글 작성 실패(없는 문의사항)")
@@ -116,7 +115,7 @@ internal class CommentControllerTest {
         val test = postTest(uri, form)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("댓글 수정")
@@ -148,7 +147,7 @@ internal class CommentControllerTest {
         val test = putTest(uri, updateForm)
 
         // then
-        isFailWithValidationError(test)
+        isFail(test)
     }
     
     @Test @DisplayName("댓글 수정 실패(없는 댓글)")
@@ -161,7 +160,7 @@ internal class CommentControllerTest {
         val test = putTest(uri, updateForm)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("댓글 삭제")
@@ -190,6 +189,6 @@ internal class CommentControllerTest {
         val test = deleteTest(uri)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 }

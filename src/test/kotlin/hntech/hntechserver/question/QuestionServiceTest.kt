@@ -127,6 +127,6 @@ internal class QuestionServiceTest {
         // then
         assertThatThrownBy {
             questionService.findQuestionByIdAndPassword(testQuestion.id!!, testQuestion.password)
-        }.isInstanceOf(NoSuchElementException::class.java)
+        }.isInstanceOf(QuestionException::class.java).hasMessage(QUESTION_NOT_FOUND)
     }
 }

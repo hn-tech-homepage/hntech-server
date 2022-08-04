@@ -11,20 +11,25 @@ class QuestionService(
     private val questionRepository: QuestionRepository,
     private val commentRepository: CommentRepository
 ) {
+    private fun getQuestion(questionId: Long): Question =
+        questionRepository.findById(questionId).orElseThrow { throw QuestionException(QUESTION_NOT_FOUND) }
+
+    private fun getQuestionByIdAndPassword(questionId: Long, password: String): Question =
+        questionRepository.findByIdAndPassword(questionId, password).orElseThrow {
+            QuestionException(QUESTION_NOT_FOUND)
+        }
 
     @Transactional
-    fun createQuestion(question: QuestionCreateForm): Question {
-        return questionRepository.save(convertEntity(question))
-    }
+    fun createQuestion(question: QuestionCreateForm): Question =
+        questionRepository.save(convertEntity(question))
 
     // 전체 문의사항 페이징해서 간략 포맷 반환
-    fun findAllQuestions(pageable: Pageable): Page<Question> {
-        return questionRepository.findAll(pageable)
-    }
+    fun findAllQuestions(pageable: Pageable): Page<Question> =
+        questionRepository.findAll(pageable)
 
     // 작성한 비밀번호로 해당 문의사항 조회
     fun findQuestionByIdAndPassword(id: Long, password: String): QuestionCompleteResponse {
-        val question = questionRepository.findByIdAndPassword(id, password).orElseThrow { throw NoSuchElementException("해당 문의사항을 찾을 수 없습니다.") }
+        val question = getQuestionByIdAndPassword(id, password)
         val comments = commentRepository.findAllByQuestionId(id).map { convertDto(it) }
         return convertDto(question, comments)
     }
@@ -32,7 +37,7 @@ class QuestionService(
     // 문의사항 제목, 내용 수정
     @Transactional
     fun updateQuestion(id: Long, form: QuestionUpdateForm): Question {
-        val question = questionRepository.findById(id).orElseThrow { throw NoSuchElementException("해당 문의사항을 찾을 수 없습니다.") }
+        val question = getQuestion(id)
         question.update(form.title, form.content)
         return question
     }
@@ -40,7 +45,7 @@ class QuestionService(
     // 문의사항 처리 상태 수정
     @Transactional
     fun updateQuestion(id: Long, form: QuestionStatusUpdateForm): Question {
-        val question = questionRepository.findById(id).orElseThrow { throw NoSuchElementException("해당 문의사항을 찾을 수 없습니다.") }
+        val question = getQuestion(id)
         question.update(form.status)
         return question
     }
@@ -48,35 +53,40 @@ class QuestionService(
     // 문의사항 삭제
     @Transactional
     fun deleteQuestion(id: Long) {
-        questionRepository.findById(id).orElseThrow { throw NoSuchElementException("해당 문의사항을 찾을 수 없습니다.") }
-        questionRepository.deleteById(id)
+        val question = getQuestion(id)
+        questionRepository.delete(question)
     }
 }
 
 @Service
+@Transactional
 class CommentService(
     private val questionRepository: QuestionRepository,
     private val commentRepository: CommentRepository
 ) {
+    private fun getQuestion(questionId: Long): Question =
+        questionRepository.findById(questionId).orElseThrow { throw QuestionException(QUESTION_NOT_FOUND) }
 
-    @Transactional
+
     fun createComment(questionId: Long, form: CommentCreateForm): Comment {
-        val question = questionRepository.findById(questionId).orElseThrow { throw NoSuchElementException("해당 문의사항이 없습니다.") }
+        val question = getQuestion(questionId)
         val comment = commentRepository.save(convertEntity(form, question))
         question.addComment(comment)
         return comment
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    fun getComment(commentId: Long): Comment =
+        commentRepository.findById(commentId).orElseThrow { throw CommentException(COMMENT_NOT_FOUND) }
+
     fun updateComment(commentId: Long, form: CommentUpdateForm): Comment {
-        val comment = commentRepository.findById(commentId).orElseThrow { throw NoSuchElementException("해당 댓글이 없습니다.") }
+        val comment = getComment(commentId)
         comment.update(form.content)
         return comment
     }
 
-    @Transactional
     fun deleteComment(commentId: Long) {
-        commentRepository.findById(commentId).orElseThrow { throw NoSuchElementException("해당 댓글이 없습니다.") }
-        commentRepository.deleteById(commentId)
+        val comment = getComment(commentId)
+        commentRepository.delete(comment)
     }
 }

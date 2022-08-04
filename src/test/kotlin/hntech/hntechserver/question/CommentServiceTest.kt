@@ -110,7 +110,7 @@ internal class CommentServiceTest {
 
         // then
         assertThatThrownBy {
-            commentRepository.findById(comment.id!!).get()
-        }.isInstanceOf(NoSuchElementException::class.java)
+            commentService.getComment(comment.id!!)
+        }.isInstanceOf(CommentException::class.java).hasMessage(COMMENT_NOT_FOUND)
     }
 }

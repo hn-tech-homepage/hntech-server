@@ -12,8 +12,11 @@ class Category (
     val id: Long? = null,
 
     var categoryName: String = "",
+    var showInMain: Boolean = false,
 
-    @OneToOne
+    var sequence: Int = 1,
+
+    @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_file_id")
     var file: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
 
@@ -24,10 +27,11 @@ class Category (
     var products: MutableList<Product> = mutableListOf(),
 ) {
     // 카테고리 수정
-    fun update(newName: String) { this.categoryName = newName }
     fun update(newFile: File) { this.file = newFile }
-    fun update(newName: String, newFile: File) {
+    fun update(newName: String, showInMain: Boolean, newFile: File) {
         this.categoryName = newName
+        this.showInMain = showInMain
         this.file = newFile
     }
+    fun update(sequence: Int) { this.sequence = sequence }
 }

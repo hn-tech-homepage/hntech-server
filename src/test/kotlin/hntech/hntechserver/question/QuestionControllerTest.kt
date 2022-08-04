@@ -72,8 +72,7 @@ internal class QuestionControllerTest {
         }
     }
     fun isSuccess(test: ResultActionsDsl) = test.andExpect { status { isOk() } }
-    fun isFailWithValidationError(test: ResultActionsDsl) = test.andExpect { status { isBadRequest() } }
-    fun isFailWithNotFoundError(test: ResultActionsDsl) = test.andExpect { status { isNotFound() } }
+    fun isFail(test: ResultActionsDsl) = test.andExpect { status { isBadRequest() } }
 
     @Test @DisplayName("문의사항 등록")
     fun createQuestion() {
@@ -112,11 +111,11 @@ internal class QuestionControllerTest {
         val test5 = postTest(uri, form5)
 
         // then
-        isFailWithValidationError(test1)
-        isFailWithValidationError(test2)
-        isFailWithValidationError(test3)
-        isFailWithValidationError(test4)
-        isFailWithValidationError(test5)
+        isFail(test1)
+        isFail(test2)
+        isFail(test3)
+        isFail(test4)
+        isFail(test5)
     }
 
     @Test @DisplayName("문의사항 조회 페이징")
@@ -172,7 +171,7 @@ internal class QuestionControllerTest {
         val test = postTest(uri, form)
 
         // then
-        isFailWithValidationError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("문의사항 상세 조회 실패(없는 문의사항)")
@@ -185,7 +184,7 @@ internal class QuestionControllerTest {
         val test = postTest(uri, form)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("문의사항 상세 조회 실패(비밀번호 불일치)")
@@ -200,7 +199,7 @@ internal class QuestionControllerTest {
         val test = postTest(uri, form)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("문의사항 내용 수정")
@@ -233,7 +232,7 @@ internal class QuestionControllerTest {
         val test = putTest(uri, updateForm)
 
         // then
-        isFailWithValidationError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("문의사항 내용 수정 실패(없는 문의사항)")
@@ -246,7 +245,7 @@ internal class QuestionControllerTest {
         val test = putTest(uri, updateForm)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
     
     @Test @DisplayName("문의사항 처리 상태 수정")
@@ -275,7 +274,7 @@ internal class QuestionControllerTest {
         val test = patchTest(uri, updateForm)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 
     @Test @DisplayName("문의사항 처리 상태 수정 실패(검증 오류)")
@@ -292,8 +291,8 @@ internal class QuestionControllerTest {
         val test2 = patchTest(uri, updateForm2)
 
         // then
-        isFailWithValidationError(test1)
-        isFailWithValidationError(test2)
+        isFail(test1)
+        isFail(test2)
     }
 
     @Test @DisplayName("문의사항 삭제")
@@ -322,6 +321,6 @@ internal class QuestionControllerTest {
         val test = deleteTest(uri)
 
         // then
-        isFailWithNotFoundError(test)
+        isFail(test)
     }
 }
