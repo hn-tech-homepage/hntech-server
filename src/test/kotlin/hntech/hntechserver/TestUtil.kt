@@ -9,7 +9,7 @@ import java.io.File
 class TestUtil {
     companion object {
 
-        private val log = logger()
+        val log = logger()
         fun <T> logResult(actual: T, expected: T) =
             log.info("result\nactual \t\t: {} \nexpected \t: {}", actual.toString(), expected.toString())
 
