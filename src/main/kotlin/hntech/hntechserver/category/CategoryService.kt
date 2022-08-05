@@ -26,7 +26,7 @@ class CategoryService(
     }
     
     // 마지막 카테고리 조회
-    fun getLastCategory(): Category? = categoryRepository.findFirstByOrderBySequenceDesc()
+    private fun getLastCategory(): Category? = categoryRepository.findFirstByOrderBySequenceDesc()
 
     // 카테고리 생성
     fun createCategory(form: CategoryCreateForm): Category {
@@ -68,11 +68,13 @@ class CategoryService(
      */
     // 카테고리 수정
     fun updateCategory(categoryId: Long, form: CategoryUpdateForm): List<Category> {
-        checkCategoryName(form.categoryName)
         log.info("메인 카테고리 개수 : {}", categoryRepository.countMainCategories())
         checkMainCategoryCount()
 
         val category: Category = getCategory(categoryId)
+
+        // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
+        if (category.categoryName != form.categoryName) checkCategoryName(form.categoryName)
 
         val updatedFile = fileService.updateFile(
             oldFile = category.file!!,
