@@ -57,6 +57,7 @@ class FileService(private val fileRepository: FileRepository) {
      */
     fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
     fun getOriginalFilename(serverFilename: String): String = fileRepository.findByServerFilename(serverFilename)!!.originalFilename
+    fun getFile(serverFilename: String): File = fileRepository.findByServerFilename(serverFilename)!!
 
     /**
      * 파일 삭제

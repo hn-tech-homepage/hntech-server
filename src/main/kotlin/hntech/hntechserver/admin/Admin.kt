@@ -1,7 +1,9 @@
 package hntech.hntechserver.admin
 
-import hntech.hntechserver.file.File
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
 @Entity
 class Admin(
@@ -17,59 +19,35 @@ class Admin(
     // 인사말
     var introduce: String = "",
 
-    // 조직도 이미지 저장 경로
-    @OneToOne
-    @JoinColumn(name = "org_chart_file_id")
-    var orgChartImage: File? = null,
+    // 조직도 이미지 서버 저장 이름
+    var orgChartImage: String = "",
 
-    // CI 소개 이미지 저장 경로
-    @OneToOne
-    @JoinColumn(name = "ci_file_id")
-    var compInfoImage: File? = null,
+    // CI 소개 이미지 서버 저장 이름
+    var compInfoImage: String = "",
 
-    // 회사 연혁 이미지 저장 경로
-    @OneToOne
-    @JoinColumn(name = "company_history_file_id")
-    var companyHistoryImage: File? = null,
+    // 회사 연혁 이미지 서버 저장 이름
+    var historyImage: String = "",
 
     /**
      * 하단 (footer) 정보
      */
-    // 본사
-    var address: String = "",
-
-    // A/S
-    var afterService: String = "",
-
-    // TEL
-    var phone: String = "",
-
-    // FAX
-    var fax: String = "",
+    var address: String = "", // 본사
+    var afterService: String = "", // A/S
+    var phone: String = "", // TEL
+    var fax: String = "", // FAX
 ) {
-    fun updatePassword(new: String): Admin  {
-        this.password = new
-        return this
-    }
-
-    fun updateIntroduce(new: String): Admin {
-        this.introduce = new
-        return this
-    }
-
-    fun updateOrgChart(newFile: File): Admin {
-        this.orgChartImage = newFile
-        return this
-    }
-
-    fun updateCI(newFile: File): Admin {
-        this.compInfoImage = newFile
-        return this
-    }
-
-    fun updateCompanyHistory(newFile: File): Admin {
-        this.companyHistoryImage = newFile
-        return this
+    fun update(
+        newPassword: String? = null,
+        newIntroduce: String? = null,
+        newOrgChartImage: String? = null,
+        newCompInfoImage: String? = null,
+        newHistoryImage: String? = null
+    ) {
+        newPassword?.let { this.password = it }
+        newIntroduce?.let { this.introduce = it }
+        newOrgChartImage?.let { this.orgChartImage = it }
+        newCompInfoImage?.let { this.compInfoImage = it }
+        newHistoryImage?.let { this.historyImage = it }
     }
 
     fun updateFooter(newAddress: String, newAS: String, newPhone: String, newFax: String): Admin {
