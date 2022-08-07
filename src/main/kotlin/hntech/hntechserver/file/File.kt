@@ -1,7 +1,6 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.archive.Archive
-import hntech.hntechserver.category.Category
 import hntech.hntechserver.product.Product
 import javax.persistence.*
 

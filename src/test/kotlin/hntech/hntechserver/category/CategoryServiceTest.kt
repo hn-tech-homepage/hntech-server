@@ -1,11 +1,9 @@
-
 package hntech.hntechserver.category
 
-import hntech.hntechserver.TestUtil.Companion.deleteFiles
-import hntech.hntechserver.TestUtil.Companion.initTestFile
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.initTestFile
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
@@ -64,9 +62,6 @@ internal class CategoryServiceTest(
             cLastIdx = savedCategories.size - 1
             fLastIdx = savedFiles.size - 1
         }
-
-        // 모든 테스트 종료 후 로컬 스토리지의 모든 파일 삭제
-        afterSpec { deleteFiles() }
 
         test("카테고리 생성 성공") {
             val form = CreateCategoryForm("생성된 카테고리", uploadFile().id)
