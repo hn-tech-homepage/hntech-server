@@ -1,5 +1,6 @@
 package hntech.hntechserver.file
 
+import hntech.hntechserver.TestUtil.Companion.logResult
 import hntech.hntechserver.utils.logger
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
@@ -22,11 +23,6 @@ class FileServiceTest {
         "image/jpeg",
         "test".byteInputStream()
     )
-
-    val log = logger()
-    fun <T> logResult(actual: T, expected: T) {
-        log.info("result\nactual \t\t: {} \nexpected \t: {}", actual.toString(), expected.toString())
-    }
 
     @AfterEach
     // 단일 파일 삭제랑 다중 파일 삭제는 해당 메소드 실행여부로 검사 됨

@@ -1,6 +1,5 @@
 package hntech.hntechserver
 
-import hntech.hntechserver.category.CategoryCreateForm
 import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
 import hntech.hntechserver.utils.logger
 import org.springframework.mock.web.MockMultipartFile
@@ -20,19 +19,8 @@ class TestUtil {
             "test".byteInputStream()
         )
 
-        private val testCategories = listOf(
-            CategoryCreateForm("카테고리1", testFile),
-            CategoryCreateForm("카테고리2", testFile),
-            CategoryCreateForm("카테고리3", testFile),
-            CategoryCreateForm("카테고리4", testFile),
-            CategoryCreateForm("카테고리5", testFile)
-        )
-
         // 테스트 파일
         fun initTestFile(): MockMultipartFile = testFile
-
-        // 테스트 카테고리
-        fun initTestCategories(): List<CategoryCreateForm> = testCategories
 
         // 스토리지안의 모든 파일 삭제
         fun deleteFiles() {

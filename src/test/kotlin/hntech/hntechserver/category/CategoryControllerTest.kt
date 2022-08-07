@@ -1,10 +1,17 @@
 package hntech.hntechserver.category
 
+import io.kotest.core.spec.style.FunSpec
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import org.springframework.boot.test.context.SpringBootTest
 
-internal class CategoryControllerTest {
+@SpringBootTest
+internal class CategoryControllerTest: FunSpec() {
+
+    init {
+
+    }
 
     @Test
     fun createCategory() {
