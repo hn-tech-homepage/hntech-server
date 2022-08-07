@@ -2,21 +2,24 @@ package hntech.hntechserver.category
 
 import hntech.hntechserver.file.FileResponse
 import hntech.hntechserver.file.convertDto
-import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Positive
 
-data class CategoryCreateForm(
+data class CreateCategoryForm(
     @field:NotBlank
     var categoryName: String,
 
-    var image: MultipartFile
+    @field:Positive
+    var image: Long?
 )
 
-data class CategoryUpdateForm(
+data class UpdateCategoryForm(
     @field:NotBlank
     var categoryName: String,
 
-    var image: MultipartFile,
+    @field:Positive
+    var image: Long?,
     var showInMain: Boolean,
 )
 
@@ -24,10 +27,15 @@ data class CategoryResponse(
     var id: Long,
     var categoryName: String,
     var sequence: Int,
-    var file: FileResponse
+    var image: FileResponse
 ) {
-    constructor(c: Category): this(c.id!!, c.categoryName, c.sequence, convertDto(c.file!!))
-} // CategoryResponse(category) 형식으로 호출 가능
+    constructor(category: Category): this(
+        id = category.id!!,
+        categoryName = category.categoryName,
+        sequence = category.sequence,
+        image = convertDto(category.file!!)
+    )
+}
 
 data class CategoryListResponse(
     var categories: List<CategoryResponse>
@@ -38,8 +46,8 @@ fun convertDto(c: Category): CategoryResponse =
         id = c.id!!,
         categoryName = c.categoryName,
         sequence = c.sequence,
-        file = convertDto(c.file!!)
-    ) // convertDto(category) 형식으로 호출
+        image = convertDto(c.file!!)
+    )
 
 fun convertDto(categories: List<Category>): CategoryListResponse {
     return CategoryListResponse(categories.map { convertDto(it) })

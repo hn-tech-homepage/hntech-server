@@ -19,11 +19,18 @@ interface CategoryRepository : JpaRepository<Category, Long> {
     fun findAllByShowInMain(): List<Category>
     fun findAllByOrderBySequence(): List<Category>
 
+    // 왼쪽에서 오른쪽으로 이동할 때
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("UPDATE Category c SET c.sequence = c.sequence - 1 WHERE c.sequence <= :sequence")
-    fun adjustSequenceToLeft(@Param("sequence") sequence: Int): Int
+    @Query("UPDATE Category c SET c.sequence = c.sequence - 1 WHERE c.sequence > :self AND c.sequence < :target")
+    fun adjustSequenceToLeft(@Param("self") self: Int, @Param("target") target: Int): Int
 
+    // 오른쪽에서 왼쪽으로 이동할 때
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("UPDATE Category c SET c.sequence = c.sequence + 1 WHERE c.sequence >= :sequence")
-    fun adjustSequenceToRight(@Param("sequence") sequence: Int): Int
+    @Query("UPDATE Category c SET c.sequence = c.sequence + 1 WHERE c.sequence >= :target AND c.sequence < :self")
+    fun adjustSequenceToRight(@Param("target") target: Int, @Param("self") self: Int): Int
+
+    // 삭제할 때
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("UPDATE Category c SET c.sequence = c.sequence - 1 WHERE c.sequence > :self")
+    fun adjustSequenceToLeftAll(@Param("self") self: Int): Int
 }

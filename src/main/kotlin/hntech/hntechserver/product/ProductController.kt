@@ -1,43 +1,52 @@
 package hntech.hntechserver.product
 
+import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.error.ValidationException
 import org.springframework.validation.BindingResult
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/product")
-class ProductController(private val productService: ProductService) {
-
+class ProductController(
+    private val productService: ProductService,
+    private val fileService: FileService
+) {
     /**
      * 클라이언트
      */
     @GetMapping
     fun getAllProducts(@RequestParam(name = "category", required = false) categoryName: String?): ProductListResponse =
-        convertDto(productService.getAllProducts(categoryName))
+        ProductListResponse(productService.getAllProducts(categoryName).map { ProductSimpleResponse(it) })
 
     @GetMapping("/{product_id}")
-    fun getProduct(@PathVariable("product_id") id: Long): ProductResponse =
-        convertDto(productService.getProduct(id))
+    fun getProduct(@PathVariable("product_id") id: Long): ProductDetailResponse =
+        ProductDetailResponse(productService.getProduct(id))
 
     /**
      * 관리자
      */
     @PostMapping
-    fun createItem(@Validated @ModelAttribute form: ProductCreateForm,
-                   bindingResult: BindingResult
-    ): ProductResponse {
-        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(productService.createProduct(form))
+    fun createProduct(@Valid @RequestBody form: ProductCreateForm,
+                      br: BindingResult
+    ): ProductDetailResponse {
+        if (br.hasErrors()) {
+            fileService.deleteFiles(form.files.getFileIds())
+            throw ValidationException(br)
+        }
+        return ProductDetailResponse(productService.createProduct(form))
     }
 
     @PutMapping("/{product_id}")
     fun updateProduct(@PathVariable("product_id") id: Long,
-                      @Validated @ModelAttribute form: ProductUpdateForm,
-                      bindingResult: BindingResult
-    ): ProductResponse {
-        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(productService.updateProduct(id, form))
+                      @Valid @RequestBody form: ProductUpdateForm,
+                      br: BindingResult
+    ): ProductDetailResponse {
+        if (br.hasErrors()) {
+            fileService.deleteFiles(form.files.getFileIds())
+            throw ValidationException(br)
+        }
+        return ProductDetailResponse(productService.updateProduct(id, form))
     }
 
     @DeleteMapping("/{product_id}")

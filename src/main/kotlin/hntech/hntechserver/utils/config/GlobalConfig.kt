@@ -13,3 +13,9 @@ const val MAX_MAIN_CATEGORY_COUNT = 8
 
 // 문의사항
 const val QUESTION_PAGE_SIZE = 15
+
+// 제품
+    // 이미지 구분
+    const val REPRESENTATIVE_IMAGE = "대표"
+    const val PRODUCT_IMAGE = "제품"
+    const val STANDARD_IMAGE = "규격"

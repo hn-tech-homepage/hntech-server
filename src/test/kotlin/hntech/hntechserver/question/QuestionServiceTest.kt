@@ -1,5 +1,6 @@
 package hntech.hntechserver.question
 
+import hntech.hntechserver.TestUtil.Companion.logResult
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.*
@@ -26,9 +27,6 @@ internal class QuestionServiceTest {
     @Autowired
     lateinit var questionRepository: QuestionRepository
 
-    fun <T> logResult(actual: T, expected: T) {
-        log.info("result\nactual \t\t: {} \nexpected \t: {}", actual.toString(), expected.toString())
-    }
 
     @Test
     @DisplayName("문의사항 등록")

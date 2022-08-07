@@ -17,7 +17,7 @@ class Category (
     var sequence: Int = 1,
 
     @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "category_file_id")
+    @JoinColumn(name = "file_id")
     var file: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
 
     @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
@@ -26,12 +26,15 @@ class Category (
     @OneToMany(mappedBy = "productCategory", cascade = [CascadeType.ALL])
     var products: MutableList<Product> = mutableListOf(),
 ) {
-    // 카테고리 수정
-    fun update(newFile: File) { this.file = newFile }
-    fun update(newName: String, showInMain: Boolean, newFile: File) {
-        this.categoryName = newName
-        this.showInMain = showInMain
-        this.file = newFile
+    fun update(
+        categoryName: String? = null,
+        showInMain: Boolean? = null,
+        sequence: Int? = null,
+        file: File? = null
+    ) {
+        categoryName?.let { this.categoryName = it }
+        showInMain?.let { this.showInMain = it }
+        sequence?.let { this.sequence = it }
+        file?.let { this.file = it }
     }
-    fun update(sequence: Int) { this.sequence = sequence }
 }
