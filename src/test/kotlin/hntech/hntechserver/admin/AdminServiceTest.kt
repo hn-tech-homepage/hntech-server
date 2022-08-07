@@ -1,8 +1,9 @@
 package hntech.hntechserver.admin
 
-import hntech.hntechserver.TestUtil.Companion.logResult
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.logResult
+import hntech.hntechserver.testFile
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.mock.web.MockMultipartFile
 import org.springframework.transaction.annotation.Transactional
 
 
@@ -88,42 +88,27 @@ class AdminServiceTest {
 
     @Test
     fun `조직도 수정 성공`() {
-        // given
-        val newImage = MockMultipartFile("file", "new.jpg", "image/jpeg", "test".byteInputStream())
-
-        // when
-        val expected: String = adminService.updateOrgChart(newImage)
+        val expected: String = adminService.updateOrgChart(testFile)
         val actual: String = adminService.getAdmin().orgChartImage
 
-        // then
         expected shouldBe actual
         logResult(actual, expected)
     }
 
     @Test
     fun `CI 수정 성공`() {
-        // given
-        val newImage = MockMultipartFile("file", "new.jpg", "image/jpeg", "test".byteInputStream())
-
-        // when
-        val expected: String = adminService.updateCI(newImage)
+        val expected: String = adminService.updateCI(testFile)
         val actual: String = adminService.getAdmin().compInfoImage
 
-        // then
         expected shouldBe actual
         logResult(actual, expected)
     }
 
     @Test
     fun `연혁 수정 성공`() {
-        // given
-        val newImage = MockMultipartFile("file", "new.jpg", "image/jpeg", "test".byteInputStream())
-
-        // when
-        val expected: String = adminService.updateCompanyHistory(newImage)
+        val expected: String = adminService.updateCompanyHistory(testFile)
         val actual: String = adminService.getAdmin().historyImage
 
-        // then
         expected shouldBe actual
         logResult(actual, expected)
     }

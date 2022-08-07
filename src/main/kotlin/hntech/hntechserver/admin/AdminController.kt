@@ -36,9 +36,9 @@ class AdminController(private val adminService: AdminService) {
         AdminImageResponse(
             where = form.where,
             updatedServerFilename = when(form.where) {
-            ORG_CHART -> adminService.updateOrgChart(form.newImage)
-            CI -> adminService.updateCI(form.newImage)
-            else -> adminService.updateCompanyHistory(form.newImage) // history
+            ORG_CHART -> adminService.updateOrgChart(form.file)
+            CI -> adminService.updateCI(form.file)
+            else -> adminService.updateCompanyHistory(form.file) // history
         })
 
     // 하단 (footer) 조회

@@ -29,7 +29,7 @@ data class PasswordResponse(
 
 data class AdminImageRequest(
     var where: String,
-    var newImage: MultipartFile,
+    var file: MultipartFile,
 )
 
 data class AdminImageResponse(
