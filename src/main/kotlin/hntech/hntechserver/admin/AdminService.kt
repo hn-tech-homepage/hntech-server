@@ -1,56 +1,80 @@
 package hntech.hntechserver.admin
 
+import hntech.hntechserver.file.File
+import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
 @Service
+@Transactional
 class AdminService(
     private val adminRepository: AdminRepository,
-    private val fileService: FileService
-    ) {
+    private val fileService: FileService,
+    private val fileRepository: FileRepository
+    )
+{
     val log = logger()
 
     fun getAdmin(): Admin {
         val adminResult = adminRepository.findAll()
-        if (adminResult.isEmpty()) throw java.util.NoSuchElementException("관리자 계정 조회 실패")
+        if (adminRepository.findAll().isEmpty()) throw AdminException("관리자 계정 조회 실패")
         else return adminResult[0]
     }
 
     /**
      * 관리자 생성
      */
-    fun createAdmin(password: String): Admin =
-        adminRepository.save(Admin(password = password))
+    fun createAdmin(password: String): Admin {
+        if (adminRepository.findAll().isNotEmpty()) throw AdminException("기존 관리자 존재. 중복 관리자 생성 불가능")
+        fileRepository.save(File(originalFilename = "관리자용 더미 파일", serverFilename = ""))
+        return adminRepository.save(Admin(password = password))
+    }
 
     /**
      * 관리자 정보 수정
      */
+    // 관리자 비밀번호 변경
+    fun updatePassword(form: PasswordRequest): String {
+        if (form.curPassword != form.curPasswordCheck) throw AdminException(ADMIN_PASSWORD_VALID_FAIL)
+        getAdmin().update(newPassword = form.newPassword)
+        return getAdmin().password
+    }
+
     // 인사말 수정
-    fun updateIntroduce(newIntroduce: String): Admin =
-        getAdmin().updateIntroduce(newIntroduce)
+    fun updateIntroduce(newIntroduce: String): String {
+        val admin = getAdmin()
+        admin.update(newIntroduce = newIntroduce)
+        return admin.introduce
+    }
+
+    private fun updateImage(newImage: MultipartFile, serverFilename: String): String {
+        val curImage = fileService.getFile(serverFilename)
+        val savedFile = fileService.updateFile(curImage, newImage)
+        return savedFile.serverFilename
+    }
 
     // 조직도 수정
-    fun updateOrgChart(newImage: MultipartFile): Admin {
+    fun updateOrgChart(newImage: MultipartFile): String {
         val admin = getAdmin()
-        // 기존 이미지 삭제 후 새로운 이미지 업로드
-        val savedFile = fileService.updateFile(admin.orgChartImage!!, newImage)
-        return admin.updateOrgChart(savedFile)
+        admin.update(newOrgChartImage = updateImage(newImage, admin.orgChartImage))
+        return admin.orgChartImage
     }
 
     // CI 수정
-    fun updateCI(newImage: MultipartFile): Admin {
+    fun updateCI(newImage: MultipartFile): String {
         val admin = getAdmin()
-        val savedFile = fileService.updateFile(admin.compInfoImage!!, newImage)
-        return admin.updateCI(savedFile)
+        admin.update(newCompInfoImage = updateImage(newImage, admin.compInfoImage))
+        return admin.compInfoImage
     }
 
     // 연혁 수정
-    fun updateCompanyHistory(newImage: MultipartFile): Admin {
+    fun updateCompanyHistory(newImage: MultipartFile): String {
         val admin = getAdmin()
-        val savedFile = fileService.updateFile(admin.companyHistoryImage!!, newImage)
-        return admin.updateCI(savedFile)
+        admin.update(newHistoryImage = updateImage(newImage, admin.historyImage))
+        return admin.historyImage
     }
 
     // 하단 (footer) 수정
