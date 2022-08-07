@@ -1,7 +1,6 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.TestUtil.Companion.logResult
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.logResult
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
