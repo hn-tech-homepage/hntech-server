@@ -13,8 +13,6 @@ const val MAX_MAIN_CATEGORY_COUNT = 8
 
 // 문의사항
 const val QUESTION_PAGE_SIZE = 15
-    // 메일
-    const val EMAIL_ADDR = "ahdwjdtprtm@naver.com"
 
 // 제품
     // 이미지 구분

@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class QuestionService(
     private val questionRepository: QuestionRepository,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val questionManager: QuestionManager
 ) {
     private fun getQuestion(questionId: Long): Question =
         questionRepository.findById(questionId).orElseThrow { throw QuestionException(QUESTION_NOT_FOUND) }
@@ -20,8 +21,11 @@ class QuestionService(
         }
 
     @Transactional
-    fun createQuestion(question: QuestionCreateForm): Question =
-        questionRepository.save(convertEntity(question))
+    fun createQuestion(form: QuestionCreateForm): Question {
+        val question = questionRepository.save(convertEntity(form))
+        questionManager.addNewQuestion(question)
+        return question
+    }
     
     // 전체 문의사항 (메일 테스트용, 이후 오늘 작성된 문의사항만 주도록 변경해야함)
     fun findAllQuestions(): List<Question> =
@@ -34,8 +38,8 @@ class QuestionService(
     // 작성한 비밀번호로 해당 문의사항 조회
     fun findQuestionByIdAndPassword(id: Long, password: String): QuestionCompleteResponse {
         val question = getQuestionByIdAndPassword(id, password)
-        val comments = commentRepository.findAllByQuestionId(id).map { convertDto(it) }
-        return convertDto(question, comments)
+        val comments = commentRepository.findAllByQuestionId(id).map { CommentResponse(it) }
+        return QuestionCompleteResponse(question, comments)
     }
 
     // 문의사항 제목, 내용 수정
@@ -50,7 +54,7 @@ class QuestionService(
     @Transactional
     fun updateQuestion(id: Long, form: QuestionStatusUpdateForm): Question {
         val question = getQuestion(id)
-        question.update(form.status)
+        question.update(form.isFAQ)
         return question
     }
     
@@ -64,16 +68,19 @@ class QuestionService(
 @Transactional
 class CommentService(
     private val questionRepository: QuestionRepository,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val questionManager: QuestionManager
 ) {
     private fun getQuestion(questionId: Long): Question =
         questionRepository.findById(questionId).orElseThrow { throw QuestionException(QUESTION_NOT_FOUND) }
-
 
     fun createComment(questionId: Long, form: CommentCreateForm): Comment {
         val question = getQuestion(questionId)
         val comment = commentRepository.save(convertEntity(form, question))
         question.addComment(comment)
+        // 클라이언트가 새 댓글 등록 시 메일로 보낼 문의사항 리스트에 추가
+        if (form.writer != "관리자")
+            questionManager.addNewCommentQuestion(question)
         return comment
     }
 

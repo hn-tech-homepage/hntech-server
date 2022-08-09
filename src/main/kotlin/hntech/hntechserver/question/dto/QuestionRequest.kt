@@ -32,8 +32,8 @@ data class QuestionUpdateForm(
 )
 
 data class QuestionStatusUpdateForm(
-    @field:Pattern(regexp = "^(대기|진행중|완료)$", message = "[대기, 진행중, 완료]만 입력 가능합니다.")
-    var status: String
+    @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
+    var isFAQ: String
 )
 
 data class QuestionFindForm(
@@ -60,7 +60,7 @@ fun convertEntity(question : QuestionCreateForm): Question {
     return Question(
         writer = question.writer,
         password = question.password,
-        status = "대기",
+        isFAQ = "false",
         title = question.title,
         content = question.content,
     )

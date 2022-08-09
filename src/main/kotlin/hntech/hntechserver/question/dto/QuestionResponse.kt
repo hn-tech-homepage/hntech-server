@@ -15,82 +15,58 @@ data class QuestionSimpleResponse(
     var id: Long,
     var writer: String,
     var title: String,
-    var status: String,
+    var isFAQ: String,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
-)
+) {
+    constructor(question: Question): this(
+        id = question.id!!,
+        writer = question.writer,
+        title = question.title,
+        isFAQ = question.isFAQ,
+        createTime = question.createTime,
+        updateTime = question.updateTime
+    )
+}
 
 data class QuestionDetailResponse(
     var id: Long,
     var writer: String,
     var password: String,
-    var status: String,
+    var isFAQ: String,
     var title: String,
     var content: String,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
-)
+) {
+    constructor(question: Question): this(
+        id = question.id!!,
+        writer = question.writer,
+        password = question.password,
+        isFAQ = question.isFAQ,
+        title = question.title,
+        content = question.content,
+        createTime = question.createTime,
+        updateTime = question.updateTime
+    )
+}
 
 data class QuestionCompleteResponse(
     var id: Long,
     var writer: String,
     var password: String,
-    var status: String,
+    var isFAQ: String,
     var title: String,
     var content: String,
     var comments: List<CommentResponse>,
     var createTime: LocalDateTime,
     var updateTime: LocalDateTime
-)
-
-data class CommentResponse(
-    var id: Long,
-    var writer: String,
-    var sequence: Int,
-    var content: String
-)
-
-fun convertDto(questions: Page<Question>): QuestionPagedResponse {
-    var questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
-    questions.forEach { question ->
-        questionList.add(convertDto(question, false))
-    }
-    return QuestionPagedResponse(
-        currentPage = questions.number,
-        totalPage = questions.totalPages,
-        questions = questionList
-    )
-}
-fun <T> convertDto(question: Question, isDetail: Boolean): T {
-    if (isDetail) {
-        return QuestionDetailResponse(
-            id = question.id!!,
-            writer = question.writer,
-            password = question.password,
-            status = question.status,
-            title = question.title,
-            content = question.content,
-            createTime = question.createTime,
-            updateTime = question.updateTime
-        ) as T
-    }
-    else {
-        return QuestionSimpleResponse(
-            id = question.id!!,
-            writer = question.writer,
-            title = question.title,
-            status = question.status,
-            createTime = question.createTime,
-            updateTime = question.updateTime
-        ) as T
-    }
-}
-fun convertDto(question: Question, comments: List<CommentResponse>): QuestionCompleteResponse {
-    return QuestionCompleteResponse(
+) {
+    constructor(question: Question, comments: List<CommentResponse>): this(
         id = question.id!!,
         writer = question.writer,
         password = question.password,
-        status = question.status,
+        isFAQ = question.isFAQ,
         title = question.title,
         content = question.content,
         comments = comments,
@@ -98,11 +74,27 @@ fun convertDto(question: Question, comments: List<CommentResponse>): QuestionCom
         updateTime = question.updateTime
     )
 }
-fun convertDto(comment: Comment): CommentResponse {
-    return CommentResponse(
+
+data class CommentResponse(
+    var id: Long,
+    var writer: String,
+    var sequence: Int,
+    var content: String
+) {
+    constructor(comment: Comment): this(
         id = comment.id!!,
         writer = comment.writer,
         sequence = comment.sequence,
         content = comment.content
+    )
+}
+
+fun convertDto(questions: Page<Question>): QuestionPagedResponse {
+    var questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
+    questions.forEach { questionList.add(QuestionSimpleResponse(it)) }
+    return QuestionPagedResponse(
+        currentPage = questions.number,
+        totalPage = questions.totalPages,
+        questions = questionList
     )
 }
