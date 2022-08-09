@@ -10,12 +10,14 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 
+
+
 /**
  * config yml 파일을 모니터링 하기 위한 컴포넌트
  * 해당 빈을 주입받으면 getConfiguration 메소드를 통해 지정한 설정 파일에 접근 가능
  */
 @Component
-class PropertiesService {
+class PropertiesManager {
     val log = logger()
 
     lateinit var builder: ReloadingFileBasedConfigurationBuilder<YAMLConfiguration>
@@ -31,8 +33,10 @@ class PropertiesService {
             ReloadingFileBasedConfigurationBuilder(YAMLConfiguration::class.java)
                 .configure(Parameters().fileBased().setFile(
                     // yaml config 파일 경로
-                    File("src/main/resources/application-mail.yml"))
+//                    File("src/main/resources/application-mail.yml"))
+                    File("C:\\application-mail.yml")
                 )
+            )
 
         /**
          * CONFIGURATION_REQUEST

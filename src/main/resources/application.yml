@@ -6,8 +6,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  config:
+    import: file:C:\application-mail.yml
   profiles:
-    active: db, mail
+    active: db
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
