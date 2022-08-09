@@ -85,4 +85,13 @@ class AdminService(
             newPhone = form.phone,
             newFax = form.fax
         )
+
+    // 메일 전송 시각 조회
+    fun getMailSendingTime(): String = getAdmin().mailSendingTime
+
+    // 메일 전송 시각 수정
+    fun updateMailSendingTime(newTime: String): String {
+        getAdmin().update(newMailSendingTime = newTime)
+        return getMailSendingTime()
+    }
 }
