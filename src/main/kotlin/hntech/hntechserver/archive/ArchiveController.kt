@@ -1,10 +1,11 @@
 package hntech.hntechserver.archive
 
+import hntech.hntechserver.utils.config.PAGE_SIZE
 import hntech.hntechserver.utils.logger
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/archive")
@@ -16,13 +17,25 @@ class ArchiveController(
     /**
      * 자료 생성
      */
-    @PostMapping("")
-    fun createArchive(@ModelAttribute form: ArchiveRequest): ArchiveSimpleResponse = archiveService.createArchive(form)
-
+    @PostMapping
+    fun createArchive(@RequestBody form: ArchiveForm) =
+        ArchiveSimpleResponse(archiveService.createArchive(form))
 
     /**
      * 자료 조회
      */
+    // 하나 조회
+    @GetMapping("/{archiveId}")
+    fun getArchive(@PathVariable("archiveId") id: Long) =
+        ArchiveSimpleResponse(archiveService.getArchive(id))
+
+    // 목록 조회
+    @GetMapping("/all")
+    fun getArchives(
+        @PageableDefault(size = PAGE_SIZE, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+    ) {
+        ArchiveListResponse(archiveService.getArchives(pageable))
+    }
 
     /**
      * 자료 수정

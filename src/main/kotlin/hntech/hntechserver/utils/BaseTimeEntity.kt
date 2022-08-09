@@ -1,17 +1,27 @@
 package hntech.hntechserver.utils
 
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.persistence.EntityListeners
 import javax.persistence.MappedSuperclass
+import javax.persistence.PrePersist
+import javax.persistence.PreUpdate
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseTimeEntity {
-    @CreatedDate
-    lateinit var createTime: LocalDateTime
-    @LastModifiedDate
-    lateinit var updateTime: LocalDateTime
+
+    var createTime: String = ""
+    var updateTime: String = ""
+
+    @PrePersist
+    fun prePersist() {
+        this.createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    }
+
+    @PreUpdate
+    fun preUpdate() {
+        this.updateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    }
 }

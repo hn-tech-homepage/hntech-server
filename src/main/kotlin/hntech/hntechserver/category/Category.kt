@@ -12,19 +12,22 @@ class Category (
     val id: Long? = null,
 
     var categoryName: String = "",
-    var showInMain: Boolean = false,
+    var type: String = "", // archive, product
 
+    // product 카테고리 전용
     var sequence: Int = 1,
+    var showInMain: Boolean = false,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "file_id")
     var file: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
 
-    @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
-    var archives: MutableList<Archive> = mutableListOf(),
-
     @OneToMany(mappedBy = "productCategory", cascade = [CascadeType.ALL])
     var products: MutableList<Product> = mutableListOf(),
+
+    // archive 카테고리 전용
+    @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
+    var archives: MutableList<Archive> = mutableListOf(),
 ) {
     fun update(
         categoryName: String? = null,

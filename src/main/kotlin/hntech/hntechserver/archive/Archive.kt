@@ -14,8 +14,12 @@ class Archive(
     var isNotice: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "archive_category_id")
     var archiveCategory: Category? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_category_id")
+    var productCategory: Category? = null,
 
     @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL])
     var files: MutableList<File> = mutableListOf(),
@@ -23,4 +27,20 @@ class Archive(
     // 중복되는 부분
     var title: String = "",
     var content: String = "",
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+    fun update(
+        isNotice: String? = null,
+        title: String? = null,
+        content: String? = null,
+        archiveCategory: Category? = null,
+        productCategory: Category? = null,
+        files: MutableList<File>? = null
+    ) {
+        isNotice?.let { this.isNotice = isNotice }
+        title?.let { this.title = title }
+        content?.let { this.content = content }
+        archiveCategory?.let { this.archiveCategory = archiveCategory }
+        productCategory?.let { this.productCategory = productCategory }
+        files?.let { this.files = files }
+    }
+}

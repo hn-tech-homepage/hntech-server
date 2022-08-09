@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val fileService: FileService
@@ -15,20 +15,17 @@ class CategoryService(
     val log = logger()
 
     // 카테고리명 중복 체크
-    @Transactional(readOnly = true)
     private fun checkCategoryName(name: String) {
         if (categoryRepository.existsByCategoryName(name)) throw CategoryException(DUPLICATE_CATEGORY_NAME)
     }
 
     // 메인에 등록된 카테고리 개수 체크
-    @Transactional(readOnly = true)
     private fun checkMainCategoryCount() {
         if (categoryRepository.countMainCategories() >= MAX_MAIN_CATEGORY_COUNT)
             throw CategoryException(MAXIMUM_NUMBER_OF_CATEGORIES)
     }
     
     // 마지막 순서의 카테고리 조회
-    @Transactional(readOnly = true)
     private fun getLastCategory(): Category? = categoryRepository.findFirstByOrderBySequenceDesc()
 
     // 카테고리 생성
@@ -39,29 +36,24 @@ class CategoryService(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                file = fileService.getFile(form.image!!)
+                file = form.image?.let { fileService.getFile(it) })
             )
-        )
     }
 
     /**
      * 카테고리 조회
      */
     // 카테고리 전체 조회
-    @Transactional(readOnly = true)
     fun getAllCategories(): List<Category> = categoryRepository.findAllByOrderBySequence()
 
     // 메인에 표시될 카테고리만 조회
-    @Transactional(readOnly = true)
     fun getMainCategories(): List<Category> = categoryRepository.findAllByShowInMain()
     
     // 카테고리 ID로 조회
-    @Transactional(readOnly = true)
     fun getCategory(id: Long): Category =
         categoryRepository.findById(id).orElseThrow { throw CategoryException(CATEGORY_NOT_FOUND) }
     
     // 카테고리 이름으로 조회
-    @Transactional(readOnly = true)
     fun getCategory(categoryName: String): Category =
         categoryRepository.findByCategoryName(categoryName) ?: throw CategoryException(CATEGORY_NOT_FOUND)
 
@@ -69,6 +61,7 @@ class CategoryService(
      * 카테고리 수정
      */
     // 카테고리 수정
+    @Transactional
     fun updateCategory(categoryId: Long, form: UpdateCategoryForm): List<Category> {
         checkMainCategoryCount()
 
@@ -92,6 +85,7 @@ class CategoryService(
      * 카테고리 순서 변경
      * 바꿀 카테고리를 목표 카테고리의 앞에 위치시킨다.
      */
+    @Transactional
     fun updateCategorySequence(categoryId: Long, targetCategoryId: Long): List<Category> {
         val currentSequence: Int = getCategory(categoryId).sequence
         var targetSequence: Int = when(targetCategoryId) {
@@ -118,6 +112,7 @@ class CategoryService(
     }
 
     // 카테고리 삭제
+    @Transactional
     fun deleteCategory(categoryId: Long) {
         val findCategory = getCategory(categoryId)
         
