@@ -1,6 +1,6 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.TestUtil.Companion.logResult
+import hntech.hntechserver.logResult
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.*

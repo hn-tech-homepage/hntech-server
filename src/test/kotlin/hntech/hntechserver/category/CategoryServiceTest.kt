@@ -57,7 +57,7 @@ internal class CategoryServiceTest(
         }
 
         beforeTest {
-            savedCategories = categoryRepository.findAll()
+            savedCategories = categoryRepository.findAllByOrderBySequence() as MutableList<Category>
             savedFiles = fileRepository.findAll()
             cLastIdx = savedCategories.size - 1
             fLastIdx = savedFiles.size - 1
@@ -164,7 +164,7 @@ internal class CategoryServiceTest(
             )
 
             val expected = savedCategories[0].categoryName
-            val actual = categoryRepository.findAllByOrderBySequence()[3].categoryName
+            val actual = categoryRepository.findAllByOrderBySequence()[2].categoryName
 
             actual shouldBe expected
         }
