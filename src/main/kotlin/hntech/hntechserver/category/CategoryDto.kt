@@ -3,7 +3,6 @@ package hntech.hntechserver.category
 import hntech.hntechserver.file.FileResponse
 import hntech.hntechserver.file.convertDto
 import javax.validation.constraints.NotBlank
-import javax.validation.constraints.NotNull
 import javax.validation.constraints.Positive
 
 data class CreateCategoryForm(
@@ -11,7 +10,7 @@ data class CreateCategoryForm(
     var categoryName: String,
 
     @field:Positive
-    var image: Long?
+    var image: Long? = null,
 )
 
 data class UpdateCategoryForm(

@@ -1,40 +1,34 @@
 package hntech.hntechserver.archive
 
-import org.springframework.web.multipart.MultipartFile
+import org.springframework.data.domain.Page
 
-
-//data class FileRequest(
-//    var fileName: String,
-//    var
-//)
-
-data class ArchiveRequest(
+data class ArchiveForm(
     var title: String,
-    var archiveCategory: String,
-    var itemType: String,
+    var productCategoryName: String,
+    var archiveCategoryName: String,
     var isNotice: String,
     var content: String,
-    var files: List<MultipartFile>,
+    var files: List<String>, // serverFilename
 )
 
 data class ArchiveSimpleResponse(
     var id: String,
-    var archiveCategory: String,
-    var itemType: String,
+    var productCategoryName: String,
+    var archiveCategoryName: String,
+    var isNotice: String,
+    var title: String,
     var content: String,
-    var creatTime: String,
+    var createTime: String,
 ) {
-    companion object {
-        @JvmStatic fun createDto(a: Archive, itemType: String): ArchiveSimpleResponse {
-            return ArchiveSimpleResponse(
-                id = a.id.toString(),
-                archiveCategory = a.archiveCategory!!.categoryName,
-                content = a.content,
-                creatTime = a.createTime.toString(),
-                itemType = itemType
-            )
-        }
-    }
+    constructor(a: Archive) : this(
+        id = a.id.toString(),
+        productCategoryName = a.productCategory!!.categoryName,
+        archiveCategoryName = a.archiveCategory!!.categoryName,
+        isNotice = a.isNotice,
+        title = a.title,
+        content = a.content,
+        createTime = a.createTime.toString()
+        )
 }
 
 data class ArchiveDetailResponse(
@@ -46,4 +40,6 @@ data class ArchiveDetailResponse(
 
 data class ArchiveListResponse(
     var archives: List<ArchiveSimpleResponse>
-)
+) {
+    constructor(archives: Page<Archive>) : this(archives.map { ArchiveSimpleResponse(it) }.toList())
+}
