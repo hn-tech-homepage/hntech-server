@@ -1,7 +1,7 @@
 package hntech.hntechserver.utils.scheduler
 
 import hntech.hntechserver.question.*
-import hntech.hntechserver.utils.PropertiesService
+import hntech.hntechserver.utils.PropertiesManager
 import hntech.hntechserver.utils.logger
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -13,15 +13,20 @@ import java.time.format.DateTimeFormatter
 class MailService(
     private val mailSender: JavaMailSender,
     private val questionManager: QuestionManager,
-    private val propertiesService: PropertiesService
+    private val propertiesManager: PropertiesManager
 ) {
     private val log = logger()
 
+    fun testLog() {
+        log.info("{}", propertiesManager.getConfiguration()!!.getString("spring.mail.username"))
+    }
+
     fun sendMail() {
         // 설정 파일로부터 이메일 주소 찾기
-        val email = propertiesService.getConfiguration()?.let {
+        val email = propertiesManager.getConfiguration()?.let {
             it.getString("spring.mail.username")
         } ?: run { throw EmailException(EMAIL_NOT_FOUND) }
+        log.info("송신 이메일 주소 : {}", email)
 
         try {
             val mail = mailSender.createMimeMessage()

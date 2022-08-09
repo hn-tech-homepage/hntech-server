@@ -8,8 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableScheduling
-@EnableAsync
 class HntechServerApplication
 
 fun main(args: Array<String>) {

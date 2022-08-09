@@ -1,11 +1,10 @@
 package hntech.hntechserver.utils.scheduler
 
-import hntech.hntechserver.admin.AdminService
-import hntech.hntechserver.question.EMAIL_NOT_FOUND
-import hntech.hntechserver.question.EmailException
-import hntech.hntechserver.utils.PropertiesService
+import hntech.hntechserver.utils.PropertiesManager
 import hntech.hntechserver.utils.logger
 import org.springframework.context.annotation.Lazy
+import org.springframework.scheduling.annotation.EnableAsync
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
 import org.springframework.scheduling.support.CronTrigger
@@ -24,23 +23,27 @@ class SchedulerController(private val scheduleTask: ScheduleTask) {
 
 @Lazy(false)
 @Component
+@EnableScheduling
+@EnableAsync
 class ScheduleTask(
-    private val mailService: MailService,
-    private val adminService: AdminService
+    private val mailService: MailService
 ): SchedulingConfigurer {
     private val log = logger()
 
     // cron 정규 표현식, 초기값 : 매일 낮 12시
-    private var cron: String = "0 0 12 * * ?"
+    private var cron: String = "0/3 * * * * ?"
     
-    fun setCron(time: String) { this.cron = "0 0 $time * * ?" }
+    fun setCron(time: String) {
+        this.cron = "0 0 $time * * ?"
+        log.info("Updated cron: {}", this.cron)
+    }
 
     // 스케쥴러 작업 등록 메소드
     override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
         taskRegistrar.addTriggerTask(
             {
                 // cron 시간마다 실행할 작업
-//                mailService.sendMail()
+                mailService.sendMail()
             },
             {
                 // 위에 정의한 작업의 실행 트리거 설정
