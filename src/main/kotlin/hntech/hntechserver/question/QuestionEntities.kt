@@ -11,7 +11,7 @@ class Question(
 
     var writer: String = "",
     var password: String = "",
-    var status: String = "", // 대기, 진행중, 완료
+    var isFAQ: String = "false",
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL])
     var comments: MutableList<Comment> = mutableListOf(),
@@ -24,12 +24,10 @@ class Question(
         this.title = title
         this.content = content
     }
-    fun update(status: String) {
-        this.status = status
+    fun update(isFAQ: String) {
+        this.isFAQ = isFAQ
     }
-    fun addComment(comment: Comment) {
-        this.comments.add(comment)
-    }
+    fun addComment(comment: Comment) { this.comments.add(comment) }
 }
 
 @Entity

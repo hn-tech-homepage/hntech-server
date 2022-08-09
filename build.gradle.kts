@@ -36,6 +36,12 @@ dependencies {
 	// mail
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 
+	// commons-configuration2
+	implementation("org.apache.commons:commons-configuration2:2.8.0")
+
+	// commons-beanutils
+	implementation("commons-beanutils:commons-beanutils:1.9.4")
+
 	// mockK
 	testImplementation("io.mockk:mockk:1.12.0")
 

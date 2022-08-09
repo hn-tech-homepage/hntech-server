@@ -4,6 +4,7 @@ import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.scheduler.ScheduleTask
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -13,7 +14,8 @@ import org.springframework.web.multipart.MultipartFile
 class AdminService(
     private val adminRepository: AdminRepository,
     private val fileService: FileService,
-    private val fileRepository: FileRepository
+    private val fileRepository: FileRepository,
+    private val scheduleTask: ScheduleTask
     )
 {
     val log = logger()
@@ -92,6 +94,7 @@ class AdminService(
     // 메일 전송 시각 수정
     fun updateMailSendingTime(newTime: String): String {
         getAdmin().update(newMailSendingTime = newTime)
+        scheduleTask.setCron(newTime)
         return getMailSendingTime()
     }
 }

@@ -16,11 +16,11 @@ class QuestionController(private val questionService: QuestionService) {
 
     // 문의사항 생성
     @PostMapping
-    fun createQuestion(@Valid @RequestBody question: QuestionCreateForm,
+    fun createQuestion(@Valid @RequestBody form: QuestionCreateForm,
                        bindingResult: BindingResult
     ): QuestionDetailResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(questionService.createQuestion(question), true)
+        return QuestionDetailResponse(questionService.createQuestion(form))
     }
 
     // 문의사항 리스트 페이징해서 조회
@@ -48,20 +48,20 @@ class QuestionController(private val questionService: QuestionService) {
                            bindingResult: BindingResult
     ): QuestionDetailResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(questionService.updateQuestion(id, form), true)
+        return QuestionDetailResponse(questionService.updateQuestion(id, form))
     }
 
     /**
      * 관리자
      */
-    // 문의사항 처리 상태 수정
+    // 자주 묻는 질문 설정
     @PatchMapping("/{question_id}")
     fun updateQuestionStatus(@PathVariable("question_id") id: Long,
                              @Valid @RequestBody form: QuestionStatusUpdateForm,
                              bindingResult: BindingResult
     ): QuestionSimpleResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(questionService.updateQuestion(id, form), false)
+        return QuestionSimpleResponse(questionService.updateQuestion(id, form))
     }
 
     @DeleteMapping("/{question_id}")
@@ -78,7 +78,7 @@ class CommentController(private val commentService: CommentService) {
                       bindingResult: BindingResult
     ): CommentResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(commentService.createComment(questionId, form))
+        return CommentResponse(commentService.createComment(questionId, form))
     }
 
     @PutMapping("/{comment_id}")
@@ -87,7 +87,7 @@ class CommentController(private val commentService: CommentService) {
                       bindingResult: BindingResult
     ): CommentResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return convertDto(commentService.updateComment(commentId, form))
+        return CommentResponse(commentService.updateComment(commentId, form))
     }
 
     @DeleteMapping("/{comment_id}")
