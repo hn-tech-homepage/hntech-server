@@ -28,16 +28,17 @@ class File(
      */
     var type: String = ""
 ) {
-    fun setFileType(type: String) { this.type = type }
     fun update(
         originalFilename: String? = null,
         serverFilename: String? = null,
         fileArchive: Archive? = null,
-        fileProduct: Product? = null
+        fileProduct: Product? = null,
+        type: String? = null
     ) {
         originalFilename?.let { this.originalFilename = it }
         serverFilename?.let { this.serverFilename = it }
         fileArchive?.let { this.fileArchive = it }
         fileProduct?.let { this.fileProduct = it }
+        type?.let { this.type = it }
     }
 }

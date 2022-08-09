@@ -1,12 +1,9 @@
 package hntech.hntechserver.question
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.*
 import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
 @Entity
-@JsonIdentityInfo(generator = IntSequenceGenerator::class, property = "key")
 class Question(
     @Id @GeneratedValue
     @Column(name = "question_id")
@@ -36,7 +33,6 @@ class Question(
 }
 
 @Entity
-@JsonIdentityInfo(generator = IntSequenceGenerator::class, property = "key")
 class Comment (
     @Id @GeneratedValue
     @Column(name = "comment_id")

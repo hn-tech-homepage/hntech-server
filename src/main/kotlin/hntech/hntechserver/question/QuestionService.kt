@@ -22,6 +22,10 @@ class QuestionService(
     @Transactional
     fun createQuestion(question: QuestionCreateForm): Question =
         questionRepository.save(convertEntity(question))
+    
+    // 전체 문의사항 (메일 테스트용, 이후 오늘 작성된 문의사항만 주도록 변경해야함)
+    fun findAllQuestions(): List<Question> =
+        questionRepository.findAll()
 
     // 전체 문의사항 페이징해서 간략 포맷 반환
     fun findAllQuestions(pageable: Pageable): Page<Question> =
@@ -52,10 +56,8 @@ class QuestionService(
     
     // 문의사항 삭제
     @Transactional
-    fun deleteQuestion(id: Long) {
-        val question = getQuestion(id)
-        questionRepository.delete(question)
-    }
+    fun deleteQuestion(id: Long) =
+        questionRepository.delete(getQuestion(id))
 }
 
 @Service

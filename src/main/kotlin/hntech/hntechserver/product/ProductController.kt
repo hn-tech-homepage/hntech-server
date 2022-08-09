@@ -1,5 +1,7 @@
 package hntech.hntechserver.product
 
+import hntech.hntechserver.category.CategoryListResponse
+import hntech.hntechserver.category.CategoryResponse
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.error.ValidationException
 import org.springframework.validation.BindingResult
@@ -47,6 +49,17 @@ class ProductController(
             throw ValidationException(br)
         }
         return ProductDetailResponse(productService.updateProduct(id, form))
+    }
+    
+    // 제품 순서 변경
+    // 맨 뒤로 옮길 때에는 targetProductId를 0으로 요청
+    @PatchMapping
+    fun updateCategorySequence(@RequestParam("productId") productId: Long,
+                               @RequestParam("targetProductId") targetProductId: Long,
+    ): ProductListResponse {
+        return ProductListResponse(
+            productService.updateProductSequence(productId, targetProductId).map { ProductSimpleResponse(it) }
+        )
     }
 
     @DeleteMapping("/{product_id}")

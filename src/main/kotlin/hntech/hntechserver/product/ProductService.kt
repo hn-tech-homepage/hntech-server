@@ -26,35 +26,57 @@ class ProductService(
         if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
     }
 
-    private fun setFileTypes(files: UploadedFiles) {
-        fileService.getFile(files.representativeImage).setFileType(REPRESENTATIVE_IMAGE)
-        files.productImages.forEach { fileService.getFile(it).setFileType(PRODUCT_IMAGE) }
-        files.standardImages.forEach { fileService.getFile(it).setFileType(STANDARD_IMAGE) }
-        files.docFiles.forEach { fileService.getFile(it.fileId).setFileType(it.filename) }
+    private fun setFileTypes(files: UploadedFiles, product: Product) {
+        fileService.getFile(files.representativeImage).update(
+            fileProduct = product,
+            type = REPRESENTATIVE_IMAGE
+        )
+        files.productImages.forEach {
+            fileService.getFile(it).update(
+                fileProduct = product,
+                type = PRODUCT_IMAGE
+            )
+        }
+        files.standardImages.forEach {
+            fileService.getFile(it).update(
+                fileProduct = product,
+                type = STANDARD_IMAGE
+            )
+        }
+        files.docFiles.forEach {
+            fileService.getFile(it.fileId).update(
+                fileProduct = product,
+                type = it.filename
+            )
+        }
     }
 
     // 마지막 순서의 제품 조회
     @Transactional(readOnly = true)
     private fun getLastProduct(): Product? = productRepository.findFirstByOrderBySequenceDesc()
 
+    // 제품 생성
     fun createProduct(form: ProductCreateForm): Product {
         checkProductName(form.productName)
 
         // 카테고리 가져오기
         val category = categoryService.getCategory(form.categoryName)
 
-        // 저장된 파일들의 type 지정
-        setFileTypes(form.files)
-
-        return productRepository.save(
+        // 제품 글 저장
+        val product = productRepository.save(
             Product(
                 productCategory = category,
                 productName = form.productName,
                 description = form.description,
-                sequence = getLastProduct()?.let { it.sequence + 1 } ?: run { 1 },
-                files = fileService.getFiles(form.files.getFileIds())
+                sequence = getLastProduct()?.let { it.sequence + 1 } ?: run { 1 }
             )
         )
+        
+        // 제품 파일 저장
+        setFileTypes(form.files, product)
+        product.update(files = fileService.getFiles(form.files.getFileIds()))
+
+        return product
     }
 
     /**
@@ -62,11 +84,11 @@ class ProductService(
      * 있으면 해당 카테고리의 제품 리스트를 반환, 없을 경우 전체 제품 리스트
      */
     @Transactional(readOnly = true)
-    fun getAllProducts(categoryName: String?): List<Product> {
+    fun getAllProducts(categoryName: String? = null): List<Product> {
         categoryName?.let {
             return categoryService.getCategory(it).products
         } ?: run {
-            return productRepository.findAll(Sort.by(Sort.Direction.DESC, ""))
+            return productRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
         }
     }
 
@@ -74,6 +96,7 @@ class ProductService(
     fun getProduct(id: Long): Product =
         productRepository.findById(id).orElseThrow { throw ProductException(PRODUCT_NOT_FOUND) }
 
+    // 제품 수정
     fun updateProduct(id: Long, form: ProductUpdateForm): Product {
         val product = getProduct(id)
         
@@ -81,7 +104,7 @@ class ProductService(
         if (product.productName != form.productName) checkProductName(product.productName)
 
         fileService.deleteAllFiles(product.files)
-        setFileTypes(form.files)
+        setFileTypes(form.files, product)
 
         product.update(
             productName = form.productName,
@@ -90,6 +113,27 @@ class ProductService(
         )
 
         return product
+    }
+
+    // 제품 순서 변경
+    fun updateProductSequence(productId: Long, targetProductId: Long): List<Product> {
+        val currentSequence: Int = getProduct(productId).sequence
+        var targetSequence: Int = when(targetProductId) {
+            0L -> getLastProduct()!!.sequence + 1
+            else -> getProduct(targetProductId).sequence
+        }
+
+        if (currentSequence > targetSequence)
+            productRepository.adjustSequenceToRight(targetSequence, currentSequence)
+        else
+            productRepository.adjustSequenceToLeft(currentSequence, targetSequence)
+
+        if (targetProductId == 0L || currentSequence < targetSequence)
+            targetSequence -= 1
+
+        getProduct(productId).update(sequence = targetSequence)
+
+        return getAllProducts()
     }
 
     fun deleteProduct(id: Long) {
