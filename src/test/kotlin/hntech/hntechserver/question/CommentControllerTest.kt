@@ -1,10 +1,7 @@
 package hntech.hntechserver.question
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import hntech.hntechserver.question.dto.CommentCreateForm
-import hntech.hntechserver.question.dto.CommentUpdateForm
-import hntech.hntechserver.question.dto.QuestionCreateForm
-import hntech.hntechserver.question.dto.convertDto
+import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
@@ -80,7 +77,7 @@ internal class CommentControllerTest {
 
         // when
         val test = postTest(uri, form)
-        val actual = convertDto(commentRepository.findAllByQuestionId(targetQuestion.id!!)[0])
+        val actual = CommentResponse(commentRepository.findAllByQuestionId(targetQuestion.id!!)[0])
 
         // then
         isSuccess(test, actual)
@@ -128,7 +125,7 @@ internal class CommentControllerTest {
 
         // when
         val test = putTest(uri, updateForm)
-        val actual = convertDto(commentRepository.findById(comment.id!!).get())
+        val actual = CommentResponse(commentRepository.findById(comment.id!!).get())
 
         // then
         isSuccess(test, actual)

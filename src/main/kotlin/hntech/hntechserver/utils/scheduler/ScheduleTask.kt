@@ -8,17 +8,6 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
 import org.springframework.scheduling.support.CronTrigger
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.*
-
-@RestController
-@RequestMapping("/cron")
-class SchedulerController(private val scheduleTask: ScheduleTask) {
-
-    @GetMapping("/mail")
-    fun setMailCron(@RequestParam("time") time: String) {
-
-    }
-}
 
 @Lazy(false)
 @Component

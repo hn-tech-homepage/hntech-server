@@ -3,7 +3,6 @@ package hntech.hntechserver.question.dto
 import hntech.hntechserver.question.Comment
 import hntech.hntechserver.question.Question
 import org.springframework.data.domain.Page
-import java.time.LocalDateTime
 
 data class QuestionPagedResponse(
     var currentPage: Int,
@@ -15,7 +14,6 @@ data class QuestionSimpleResponse(
     var id: Long,
     var writer: String,
     var title: String,
-    var isFAQ: String,
     var createTime: String,
     var updateTime: String
 ) {
@@ -23,7 +21,6 @@ data class QuestionSimpleResponse(
         id = question.id!!,
         writer = question.writer,
         title = question.title,
-        isFAQ = question.isFAQ,
         createTime = question.createTime,
         updateTime = question.updateTime
     )
@@ -33,7 +30,6 @@ data class QuestionDetailResponse(
     var id: Long,
     var writer: String,
     var password: String,
-    var isFAQ: String,
     var title: String,
     var content: String,
     var createTime: String,
@@ -43,7 +39,6 @@ data class QuestionDetailResponse(
         id = question.id!!,
         writer = question.writer,
         password = question.password,
-        isFAQ = question.isFAQ,
         title = question.title,
         content = question.content,
         createTime = question.createTime,
@@ -55,7 +50,6 @@ data class QuestionCompleteResponse(
     var id: Long,
     var writer: String,
     var password: String,
-    var isFAQ: String,
     var title: String,
     var content: String,
     var comments: List<CommentResponse>,
@@ -66,7 +60,6 @@ data class QuestionCompleteResponse(
         id = question.id!!,
         writer = question.writer,
         password = question.password,
-        isFAQ = question.isFAQ,
         title = question.title,
         content = question.content,
         comments = comments,
