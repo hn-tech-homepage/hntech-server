@@ -11,7 +11,7 @@ class Question(
 
     var writer: String = "",
     var password: String = "",
-    var isFAQ: String = "false",
+    var FAQ: Boolean = false,
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL])
     var comments: MutableList<Comment> = mutableListOf(),
@@ -24,8 +24,8 @@ class Question(
         this.title = title
         this.content = content
     }
-    fun update(isFAQ: String) {
-        this.isFAQ = isFAQ
+    fun update(FAQ: Boolean) {
+        this.FAQ = FAQ
     }
     fun addComment(comment: Comment) { this.comments.add(comment) }
 }

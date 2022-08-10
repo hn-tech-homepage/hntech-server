@@ -46,7 +46,7 @@ internal class CommentServiceTest {
         val form2 = CommentCreateForm("userB", "댓글 내용..")
 
         // when
-        val expected = convertDto(commentService.createComment(targetQuestion.id!!, form1))
+        val expected = CommentResponse(commentService.createComment(targetQuestion.id!!, form1))
         commentService.createComment(targetQuestion.id!!, form2)
         val actual =
             questionService.findQuestionByIdAndPassword(targetQuestion.id!!, targetQuestion.password).comments
@@ -62,7 +62,7 @@ internal class CommentServiceTest {
     @DisplayName("댓글 수정")
     fun updateComment() {
         // given
-        val origin = convertDto(
+        val origin = CommentResponse(
             commentService.createComment(
                 targetQuestion.id!!,
                 CommentCreateForm("userA", "댓글 내용...")
@@ -71,8 +71,8 @@ internal class CommentServiceTest {
         val updateForm = CommentUpdateForm("수정된 댓글 내용...")
 
         // when
-        val expected = convertDto(commentService.updateComment(origin.id, updateForm))
-        val actual = convertDto(commentRepository.findById(origin.id).get())
+        val expected = CommentResponse(commentService.updateComment(origin.id, updateForm))
+        val actual = CommentResponse(commentRepository.findById(origin.id).get())
 
         // then
         assertThat(actual).isEqualTo(expected)

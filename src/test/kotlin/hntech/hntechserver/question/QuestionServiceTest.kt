@@ -3,6 +3,7 @@ package hntech.hntechserver.question
 import hntech.hntechserver.logResult
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
+import io.kotest.inspectors.forAll
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -35,8 +36,8 @@ internal class QuestionServiceTest {
         val form = QuestionCreateForm("userA", "1111", "test title1", "test contents1")
 
         // when
-        val expected = convertDto<QuestionDetailResponse>(questionService.createQuestion(form), true)
-        val actual = convertDto<QuestionDetailResponse>(questionRepository.findByWriter(form.writer)!!, true)
+        val expected = QuestionDetailResponse(questionService.createQuestion(form))
+        val actual = QuestionDetailResponse(questionRepository.findByWriter(form.writer)!!)
 
         // then
         assertThat(actual).isEqualTo(expected)
@@ -60,6 +61,24 @@ internal class QuestionServiceTest {
         // then
         assertThat(actual).isEqualTo(expected)
         logResult(actual, expected)
+    }
+
+    @Test
+    @DisplayName("자주 묻는 질문 조회")
+    fun findFAQ() {
+        // given
+        repeat(20) {
+            questionService.createQuestion(QuestionCreateForm("user$it", "1234", "user$it 의 문의사항", "문의사항 내용.."))
+        }
+        repeat(10) {
+            questionService.updateQuestion((it + 1).toLong(), QuestionFAQUpdateForm("true"))
+        }
+
+        // when
+        val faqList = questionService.findFAQ()
+
+        // then
+        faqList.forAll { it.FAQ = true }
     }
 
     @Test
@@ -96,12 +115,12 @@ internal class QuestionServiceTest {
     }
     
     @Test
-    @DisplayName("문의사항 처리 상태 수정")
+    @DisplayName("자주 묻는 질문으로 수정")
     fun updateQuestionStatus() {
         // given
         val origin =
             questionService.createQuestion(QuestionCreateForm("user", "1234", "제목", "내용"))
-        val updateForm = QuestionStatusUpdateForm("처리중")
+        val updateForm = QuestionFAQUpdateForm("처리중")
 
         // when
         val expected = questionService.updateQuestion(origin.id!!, updateForm)
@@ -109,7 +128,7 @@ internal class QuestionServiceTest {
 
         // then
         assertThat(actual).isEqualTo(expected)
-        logResult(actual.status, expected.status)
+        logResult(actual.FAQ, expected.FAQ)
     }
 
     @Test

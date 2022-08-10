@@ -3,7 +3,6 @@ package hntech.hntechserver.question
 import com.fasterxml.jackson.databind.ObjectMapper
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -212,7 +211,7 @@ internal class QuestionControllerTest {
         
         // when
         val test = putTest(uri, updateForm)
-        val actual = convertDto<QuestionDetailResponse>(questionRepository.findById(origin.id!!).get(), true)
+        val actual = QuestionDetailResponse(questionRepository.findById(origin.id!!).get())
 
         // then
         isSuccess(test, actual)
@@ -253,7 +252,7 @@ internal class QuestionControllerTest {
         // given
         val origin = questionService.createQuestion(
             QuestionCreateForm("user", "1234", "title", "content"))
-        val updateForm = QuestionStatusUpdateForm("진행중")
+        val updateForm = QuestionFAQUpdateForm("진행중")
         val uri = "/question/" + origin.id
 
         // when
@@ -261,14 +260,14 @@ internal class QuestionControllerTest {
 
         // then
         isSuccess(test)
-        assertThat(questionRepository.findById(origin.id!!).get().status).isEqualTo(updateForm.status)
+        assertThat(questionRepository.findById(origin.id!!).get().FAQ).isEqualTo(updateForm.FAQ)
     }
     
     @Test @DisplayName("문의사항 처리 상태 수정 실패(없는 문의사항)")
     fun updateQuestionStatusFail() {
         // given
         val uri = "/question/0"
-        val updateForm = QuestionStatusUpdateForm("진행중")
+        val updateForm = QuestionFAQUpdateForm("진행중")
 
         // when
         val test = patchTest(uri, updateForm)
@@ -282,8 +281,8 @@ internal class QuestionControllerTest {
         // given
         val origin = questionService.createQuestion(
             QuestionCreateForm("user", "1234", "title", "content"))
-        val updateForm1 = QuestionStatusUpdateForm("완료되었음")
-        val updateForm2 = QuestionStatusUpdateForm("")
+        val updateForm1 = QuestionFAQUpdateForm("완료되었음")
+        val updateForm2 = QuestionFAQUpdateForm("")
         val uri = "/question/" + origin.id
 
         // when

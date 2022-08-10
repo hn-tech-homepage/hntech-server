@@ -26,14 +26,13 @@ class QuestionService(
         questionManager.addNewQuestion(question)
         return question
     }
-    
-    // 전체 문의사항 (메일 테스트용, 이후 오늘 작성된 문의사항만 주도록 변경해야함)
-    fun findAllQuestions(): List<Question> =
-        questionRepository.findAll()
 
-    // 전체 문의사항 페이징해서 간략 포맷 반환
+    // 전체 문의사항 페이징 조회
     fun findAllQuestions(pageable: Pageable): Page<Question> =
         questionRepository.findAll(pageable)
+    
+    // 자주 묻는 질문 리스트 조회
+    fun findFAQ(): List<Question> = questionRepository.findAllFAQ()
 
     // 작성한 비밀번호로 해당 문의사항 조회
     fun findQuestionByIdAndPassword(id: Long, password: String): QuestionCompleteResponse {
@@ -52,9 +51,9 @@ class QuestionService(
     
     // 문의사항 처리 상태 수정
     @Transactional
-    fun updateQuestion(id: Long, form: QuestionStatusUpdateForm): Question {
+    fun updateQuestion(id: Long, form: QuestionFAQUpdateForm): Question {
         val question = getQuestion(id)
-        question.update(form.isFAQ)
+        question.update(form.FAQ.toBoolean())
         return question
     }
     

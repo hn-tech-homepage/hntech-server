@@ -30,6 +30,11 @@ class QuestionController(private val questionService: QuestionService) {
     ): QuestionPagedResponse {
         return convertDto(questionService.findAllQuestions(pageable))
     }
+    
+    // 자주 묻는 질문 조회
+    @GetMapping("/faq")
+    fun getFAQ(): List<QuestionSimpleResponse> =
+        questionService.findFAQ().map { QuestionSimpleResponse(it) }
 
     // 비밀번호로 문의사항 상세 조회
     @PostMapping("/{question_id}")
@@ -57,7 +62,7 @@ class QuestionController(private val questionService: QuestionService) {
     // 자주 묻는 질문 설정
     @PatchMapping("/{question_id}")
     fun updateQuestionStatus(@PathVariable("question_id") id: Long,
-                             @Valid @RequestBody form: QuestionStatusUpdateForm,
+                             @Valid @RequestBody form: QuestionFAQUpdateForm,
                              bindingResult: BindingResult
     ): QuestionSimpleResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
