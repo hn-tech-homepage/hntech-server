@@ -1,5 +1,6 @@
 package hntech.hntechserver.utils
 
+import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import org.apache.commons.configuration2.Configuration
 import org.apache.commons.configuration2.YAMLConfiguration
 import org.apache.commons.configuration2.builder.ReloadingFileBasedConfigurationBuilder
@@ -9,8 +10,6 @@ import org.springframework.stereotype.Component
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
-
-
 
 /**
  * config yml 파일을 모니터링 하기 위한 컴포넌트
@@ -34,7 +33,7 @@ class PropertiesManager {
                 .configure(Parameters().fileBased().setFile(
                     // yaml config 파일 경로
 //                    File("src/main/resources/application-mail.yml"))
-                    File("C:\\application-mail.yml")
+                    File(YAML_FILE_PATH_WINDOW)
                 )
             )
 
@@ -50,8 +49,11 @@ class PropertiesManager {
 //            }
 //        }
 
-        // Reload 기간을 설정하는 트리거
-        // TimeUnit 을 통해 reload 감지 시간을 설정 가능
+        /**
+         * Reload 기간을 설정하는 트리거
+         * TimeUnit 을 통해 reload 감지 시간을 설정 가능
+         * 현재는 초단위로 속성 파일 reload
+         */
         val configReloadTrigger = PeriodicReloadingTrigger(
             builder.reloadingController, null, 1, TimeUnit.SECONDS
         )
