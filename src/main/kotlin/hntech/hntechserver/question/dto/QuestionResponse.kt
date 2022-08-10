@@ -16,8 +16,8 @@ data class QuestionSimpleResponse(
     var writer: String,
     var title: String,
     var isFAQ: String,
-    var createTime: LocalDateTime,
-    var updateTime: LocalDateTime
+    var createTime: String,
+    var updateTime: String
 ) {
     constructor(question: Question): this(
         id = question.id!!,
@@ -36,8 +36,8 @@ data class QuestionDetailResponse(
     var isFAQ: String,
     var title: String,
     var content: String,
-    var createTime: LocalDateTime,
-    var updateTime: LocalDateTime
+    var createTime: String,
+    var updateTime: String
 ) {
     constructor(question: Question): this(
         id = question.id!!,
@@ -59,8 +59,8 @@ data class QuestionCompleteResponse(
     var title: String,
     var content: String,
     var comments: List<CommentResponse>,
-    var createTime: LocalDateTime,
-    var updateTime: LocalDateTime
+    var createTime: String,
+    var updateTime: String
 ) {
     constructor(question: Question, comments: List<CommentResponse>): this(
         id = question.id!!,

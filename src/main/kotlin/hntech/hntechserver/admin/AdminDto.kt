@@ -1,6 +1,7 @@
 package hntech.hntechserver.admin
 
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 
 const val CI = "ci"
@@ -35,6 +36,12 @@ data class AdminImageRequest(
 data class AdminImageResponse(
     var where: String,
     var updatedServerFilename: String,
+)
+
+data class EmailRequest(
+    @field:Email
+    var email: String,
+    var password: String,
 )
 
 data class FooterDto(

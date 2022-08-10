@@ -41,6 +41,15 @@ class AdminController(private val adminService: AdminService) {
             else -> adminService.updateCompanyHistory(form.file) // history
         })
 
+    // 메일 설정
+    @PostMapping("/mail")
+    fun updateMail(@Valid @RequestBody form: EmailRequest,
+                   bindingResult: BindingResult
+    ) {
+        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        adminService.updateMail(form)
+    }
+
     // 하단 (footer) 조회
     @GetMapping("/footer")
     fun getFooter() = FooterDto(adminService.getAdmin())
@@ -48,6 +57,4 @@ class AdminController(private val adminService: AdminService) {
     // 하단 (footer) 수정
     @PostMapping("/footer")
     fun updateFooter(@RequestBody form: FooterDto) = FooterDto(adminService.updateFooter(form))
-
-
 }

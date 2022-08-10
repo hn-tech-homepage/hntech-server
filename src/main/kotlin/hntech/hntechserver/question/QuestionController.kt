@@ -2,7 +2,7 @@ package hntech.hntechserver.question
 
 import hntech.hntechserver.utils.error.ValidationException
 import hntech.hntechserver.question.dto.*
-import hntech.hntechserver.utils.config.QUESTION_PAGE_SIZE
+import hntech.hntechserver.utils.config.PAGE_SIZE
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -26,7 +26,7 @@ class QuestionController(private val questionService: QuestionService) {
     // 문의사항 리스트 페이징해서 조회
     @GetMapping
     fun getAllQuestions(
-        @PageableDefault(size = QUESTION_PAGE_SIZE, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+        @PageableDefault(size = PAGE_SIZE, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): QuestionPagedResponse {
         return convertDto(questionService.findAllQuestions(pageable))
     }

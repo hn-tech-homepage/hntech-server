@@ -3,11 +3,13 @@ package hntech.hntechserver.admin
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logger
 import hntech.hntechserver.utils.scheduler.ScheduleTask
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.io.PrintWriter
 
 @Service
 @Transactional
@@ -87,6 +89,28 @@ class AdminService(
             newPhone = form.phone,
             newFax = form.fax
         )
+
+    // 메일 변경
+    fun updateMail(form: EmailRequest) {
+        val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
+        yml.print("")
+        yml.write(
+            "spring:\n" +
+            "  mail:\n" +
+            "    host: smtp.naver.com\n" +
+            "    port: 465\n" +
+            "    username: " + form.email + "\n" +
+            "    password: " + form.password + "\n" +
+            "    properties:\n" +
+            "      mail.smtp:\n" +
+            "        auth: true\n" +
+            "        ssl:\n" +
+            "          enable: true\n" +
+            "          trust: smtp.naver.com\n" +
+            "        starttls.enable: true"
+        )
+        yml.close()
+    }
 
     // 메일 전송 시각 조회
     fun getMailSendingTime(): String = getAdmin().mailSendingTime

@@ -1,6 +1,5 @@
 package hntech.hntechserver.utils.scheduler
 
-import hntech.hntechserver.utils.PropertiesManager
 import hntech.hntechserver.utils.logger
 import org.springframework.context.annotation.Lazy
 import org.springframework.scheduling.annotation.EnableAsync
@@ -31,7 +30,7 @@ class ScheduleTask(
     private val log = logger()
 
     // cron 정규 표현식, 초기값 : 매일 낮 12시
-    private var cron: String = "0/3 * * * * ?"
+    private var cron: String = "0 0 12 * * ?"
     
     fun setCron(time: String) {
         this.cron = "0 0 $time * * ?"

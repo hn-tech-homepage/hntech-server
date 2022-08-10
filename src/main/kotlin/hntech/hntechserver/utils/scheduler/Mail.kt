@@ -17,10 +17,6 @@ class MailService(
 ) {
     private val log = logger()
 
-    fun testLog() {
-        log.info("{}", propertiesManager.getConfiguration()!!.getString("spring.mail.username"))
-    }
-
     fun sendMail() {
         // 설정 파일로부터 이메일 주소 찾기
         val email = propertiesManager.getConfiguration()?.let {

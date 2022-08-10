@@ -4,6 +4,9 @@ const val IMAGE_PATH_FOR_WINDOW = "file:\\C:\\dev\\"
 const val FILE_SAVE_PATH_WINDOW_TEST = "C:\\dev\\"
 const val FILE_SAVE_PATH_LINUX = ""
 
+// application-mail.yml 파일 위치
+const val YAML_FILE_PATH_WINDOW = "C:\\application-mail.yml"
+const val YAML_FILE_PATH_LINUX = ""
 
 const val VALIDATION_ERROR = "validation_error"
 const val ADMIN = "admin"
