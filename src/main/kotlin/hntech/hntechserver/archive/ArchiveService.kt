@@ -30,7 +30,7 @@ class ArchiveService(
         // 자료실 글 생성
         val archive = archiveRepository.save(Archive(
             title = form.title,
-            isNotice = form.isNotice,
+            notice = form.notice,
             content = form.content,
             archiveCategory = archiveCategory,
             productCategory = productCategory
@@ -73,7 +73,7 @@ class ArchiveService(
         val files = form.files.map { fileService.getFile(it) }.toMutableList()
 
         archive.update(
-            isNotice = form.isNotice,
+            notice = form.notice,
             title = form.title,
             content = form.content,
             archiveCategory = archiveCategory,

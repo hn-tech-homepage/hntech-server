@@ -11,7 +11,7 @@ class Archive(
     @Column(name = "archive_id")
     var id: Long? = null,
 
-    var isNotice: String = "",
+    var notice: String = "false",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_category_id")
@@ -29,14 +29,14 @@ class Archive(
     var content: String = "",
 ) : BaseTimeEntity() {
     fun update(
-        isNotice: String? = null,
+        notice: String? = null,
         title: String? = null,
         content: String? = null,
         archiveCategory: Category? = null,
         productCategory: Category? = null,
         files: MutableList<File>? = null
     ) {
-        isNotice?.let { this.isNotice = isNotice }
+        notice?.let { this.notice = notice }
         title?.let { this.title = title }
         content?.let { this.content = content }
         archiveCategory?.let { this.archiveCategory = archiveCategory }

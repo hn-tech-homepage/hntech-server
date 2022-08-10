@@ -52,7 +52,7 @@ class ArchiveServiceTest {
 
 
     // 자료 하나 저장
-    private fun initDummyArchive(): Archive {
+    fun initDummyArchive(): Archive {
         val productCategory = categoryService.getCategory("스프링클러")
         val archiveCategory = categoryService.getCategory("일반자료")
         val savedFileEntities: MutableList<File> =
@@ -63,7 +63,7 @@ class ArchiveServiceTest {
             title = "스프링클러 자료 입니다",
             productCategoryName = productCategory.categoryName,
             archiveCategoryName = archiveCategory.categoryName,
-            isNotice = "false",
+            notice = "false",
             content = "테스트",
             files = savedFileEntities.map { it.serverFilename }.toList()
         )
@@ -124,7 +124,7 @@ class ArchiveServiceTest {
             title = "스프링클러 자료 입니다2",
             productCategoryName = productCategory.categoryName,
             archiveCategoryName = archiveCategory.categoryName,
-            isNotice = "true",
+            notice = "true",
             content = "테스트2",
             files = newSavedFileEntities.map { it.serverFilename }.toList()
         )
@@ -138,7 +138,7 @@ class ArchiveServiceTest {
         expected.files shouldBe newSavedFileEntities
         expected.productCategory!!.categoryName shouldBe "신축배관"
         expected.archiveCategory!!.categoryName shouldBe "제품승인서"
-        expected.isNotice shouldBe "true"
+        expected.notice shouldBe "true"
         expected.title shouldBe "스프링클러 자료 입니다2"
         expected.content shouldBe "테스트2"
     }
