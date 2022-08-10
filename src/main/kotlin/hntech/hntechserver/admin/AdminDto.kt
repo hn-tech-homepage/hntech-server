@@ -9,6 +9,10 @@ const val ORG_CHART = "orgChart"
 const val HISTORY = "companyHistory"
 const val INTRODUCE = "introduce"
 
+data class LoginForm(
+    var password: String,
+)
+
 data class IntroduceDto(
     var newIntroduce: String,
 )

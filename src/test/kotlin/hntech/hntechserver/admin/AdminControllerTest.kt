@@ -38,6 +38,36 @@ class AdminControllerTest {
     fun `mock 파일 삭제`() = fileService.deleteAllFiles(fileRepository.findAll())
 
     @Test
+    fun `관리자 로그인 성공`() {
+        mvc.post("/admin/login") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(mapOf("password" to "1234"))
+        }
+            .andExpect { status { isOk() } }
+            .andExpect { jsonPath("result") { value(true) } }
+            .andDo { print() }
+    }
+
+    @Test
+    fun `관리자 로그인 실패 - 비밀번호 틀림`() {
+        mvc.post("/admin/login") {
+            contentType = MediaType.APPLICATION_JSON
+            content = mapper.writeValueAsString(mapOf("password" to "1111"))
+        }
+            .andExpect { status { isBadRequest() } }
+            .andDo { print() }
+    }
+
+    @Test
+    fun `관리자 로그아웃 성공`() {
+        mvc.post("/admin/logout") {
+            contentType = MediaType.APPLICATION_JSON
+        }
+            .andExpect { status { isOk() } }
+            .andDo { print() }
+    }
+
+    @Test
     fun `관리자 비밀번호 변경 성공`() {
         val form = PasswordRequest("1234", "1234", "1111")
         mvc.post("/admin/password") {

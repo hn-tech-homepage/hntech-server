@@ -1,6 +1,6 @@
 package hntech.hntechserver.archive
 
-import hntech.hntechserver.utils.isNewCheck
+import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page
 
 data class ArchiveForm(

@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
-class MailService(
+class MailManager(
     private val mailSender: JavaMailSender,
     private val questionManager: QuestionManager,
     private val propertiesManager: PropertiesManager

@@ -1,7 +1,7 @@
 package hntech.hntechserver.utils.config
 
 import hntech.hntechserver.utils.LoggingInterceptor
-import hntech.hntechserver.utils.LoginCheckInterceptor
+import hntech.hntechserver.utils.auth.LoginCheckInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -17,10 +17,9 @@ class AppConfig : WebMvcConfigurer {
 
         registry.addInterceptor(LoginCheckInterceptor())
             .order(2)
-            .addPathPatterns("/")
+            .addPathPatterns("/**")
 
     }
-
 
     // CORS 설정
     override fun addCorsMappings(registry: CorsRegistry) {

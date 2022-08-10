@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils.error
+package hntech.hntechserver.utils.exception
 
 import org.springframework.validation.BindingResult
 

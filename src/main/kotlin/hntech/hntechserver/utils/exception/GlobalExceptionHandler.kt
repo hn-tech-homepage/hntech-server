@@ -1,13 +1,16 @@
-package hntech.hntechserver.utils.error
+package hntech.hntechserver.utils.exception
 
+import hntech.hntechserver.admin.AdminException
 import hntech.hntechserver.category.CategoryException
 import hntech.hntechserver.file.FileException
 import hntech.hntechserver.product.ProductException
 import hntech.hntechserver.question.CommentException
 import hntech.hntechserver.question.QuestionException
 import hntech.hntechserver.utils.badRequest
+import hntech.hntechserver.utils.forbidden
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import javax.security.auth.login.LoginException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -29,5 +32,11 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductException::class)
     fun productExceptionHandler(ex: ProductException) = badRequest(ex)
+
+    @ExceptionHandler(AdminException::class)
+    fun adminExceptionHandle(ex: AdminException) = badRequest(ex)
+
+    @ExceptionHandler(LoginException::class)
+    fun loginExceptionHandle(ex: LoginException) = forbidden(ex)
 
 }
