@@ -31,3 +31,7 @@ fun badRequest(ex: Exception) =
 fun badRequest(bindingResult: BindingResult) =
     ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(convertJson(bindingResult.fieldErrors))
+
+fun forbidden(ex: Exception) =
+    ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ErrorResponse(ex.javaClass.simpleName, ex.message!!))

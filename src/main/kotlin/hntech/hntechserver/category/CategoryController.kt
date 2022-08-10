@@ -1,7 +1,7 @@
 package hntech.hntechserver.category
 
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.error.ValidationException
+import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid

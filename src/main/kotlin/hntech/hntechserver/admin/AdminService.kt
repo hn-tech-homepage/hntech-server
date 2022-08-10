@@ -3,6 +3,8 @@ package hntech.hntechserver.admin
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.config.ADMIN
+import hntech.hntechserver.utils.config.LOGIN_FAIL
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logger
 import hntech.hntechserver.utils.scheduler.SchedulerConfig
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.PrintWriter
+import javax.security.auth.login.LoginException
+import javax.servlet.http.HttpServletRequest
 
 @Service
 @Transactional
@@ -26,6 +30,24 @@ class AdminService(
         val adminResult = adminRepository.findAll()
         if (adminRepository.findAll().isEmpty()) throw AdminException("관리자 계정 조회 실패")
         else return adminResult[0]
+    }
+
+    /**
+     * 관리자 로그인, 로그아웃
+     */
+    fun login(password: String, request: HttpServletRequest): Boolean {
+        val admin = getAdmin()
+        println(password + " "+ admin.password)
+        if (password == admin.password) {
+            request.session.setAttribute(ADMIN, admin)
+            return true
+        }
+        throw LoginException(LOGIN_FAIL)
+    }
+
+    fun logout(request: HttpServletRequest): Boolean {
+        request.session.invalidate()
+        return true
     }
 
     /**

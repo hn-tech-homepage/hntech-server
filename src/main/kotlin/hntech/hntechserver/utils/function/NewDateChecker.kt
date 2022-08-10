@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils
+package hntech.hntechserver.utils.function
 
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
