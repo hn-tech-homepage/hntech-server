@@ -6,7 +6,6 @@ import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
@@ -77,7 +76,7 @@ internal class QuestionControllerTest {
     fun createQuestion() {
         // given
         val uri = "/question"
-        val form = QuestionCreateForm(
+        val form = CreateQuestionForm(
             writer = "user",
             password = "1234",
             title = "문의사항 제목",
@@ -96,11 +95,11 @@ internal class QuestionControllerTest {
     fun createQuestionFail() {
         // given
         val uri = "/question"
-        val form1 = QuestionCreateForm("", "1234", "title", "content")
-        val form2 = QuestionCreateForm("writer", "", "title", "content")
-        val form3 = QuestionCreateForm("writer", "1234", "", "content")
-        val form4 = QuestionCreateForm("writer", "1234", "title", "")
-        val form5 = QuestionCreateForm("", "", "", "")
+        val form1 = CreateQuestionForm("", "1234", "title", "content")
+        val form2 = CreateQuestionForm("writer", "", "title", "content")
+        val form3 = CreateQuestionForm("writer", "1234", "", "content")
+        val form4 = CreateQuestionForm("writer", "1234", "title", "")
+        val form5 = CreateQuestionForm("", "", "", "")
 
         // when
         val test1 = postTest(uri, form1)
@@ -125,7 +124,7 @@ internal class QuestionControllerTest {
         var pageable: Pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id")
         for (i in 1..30) {
             questionRepository.save(convertEntity(
-                QuestionCreateForm(
+                CreateQuestionForm(
                     writer = "user$i",
                     password = "1234",
                     title = "title$i",
@@ -146,8 +145,8 @@ internal class QuestionControllerTest {
     fun getQuestion() {
         // given
         val question = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val form = QuestionFindForm("1234")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val form = GetQuestionForm("1234")
         val uri = "/question/" + question.id
 
         // when
@@ -162,8 +161,8 @@ internal class QuestionControllerTest {
     fun getQuestionFail() {
         // given
         val question = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val form = QuestionFindForm("")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val form = GetQuestionForm("")
         val uri = "/question/" + question.id
 
         // when
@@ -176,7 +175,7 @@ internal class QuestionControllerTest {
     @Test @DisplayName("문의사항 상세 조회 실패(없는 문의사항)")
     fun getQuestionFail1() {
         // given
-        val form = QuestionFindForm("1234")
+        val form = GetQuestionForm("1234")
         val uri = "/question/0"
 
         // when
@@ -190,8 +189,8 @@ internal class QuestionControllerTest {
     fun getQuestionFail2() {
         // given
         val question = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val form = QuestionFindForm("0000")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val form = GetQuestionForm("0000")
         val uri = "/question/" + question.id
 
         // when
@@ -205,8 +204,8 @@ internal class QuestionControllerTest {
     fun updateQuestionForm() {
         // given
         val origin = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val updateForm = QuestionUpdateForm("modified title", "modified content")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val updateForm = UpdateQuestionForm("modified title", "modified content")
         val uri = "/question/" + origin.id
         
         // when
@@ -223,8 +222,8 @@ internal class QuestionControllerTest {
     fun updateQuestionFormFail() {
         // given
         val origin = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val updateForm = QuestionUpdateForm("", "")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val updateForm = UpdateQuestionForm("", "")
         val uri = "/question/" + origin.id
 
         // when
@@ -237,7 +236,7 @@ internal class QuestionControllerTest {
     @Test @DisplayName("문의사항 내용 수정 실패(없는 문의사항)")
     fun updateQuestionFormFail1() {
         // given
-        val updateForm = QuestionUpdateForm("modified title", "modified content")
+        val updateForm = UpdateQuestionForm("modified title", "modified content")
         val uri = "/question/0"
 
         // when
@@ -251,8 +250,8 @@ internal class QuestionControllerTest {
     fun updateQuestionStatus() {
         // given
         val origin = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val updateForm = QuestionFAQUpdateForm("진행중")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val updateForm = UpdateQuestionFAQForm("진행중")
         val uri = "/question/" + origin.id
 
         // when
@@ -267,7 +266,7 @@ internal class QuestionControllerTest {
     fun updateQuestionStatusFail() {
         // given
         val uri = "/question/0"
-        val updateForm = QuestionFAQUpdateForm("진행중")
+        val updateForm = UpdateQuestionFAQForm("진행중")
 
         // when
         val test = patchTest(uri, updateForm)
@@ -280,9 +279,9 @@ internal class QuestionControllerTest {
     fun updateQuestionStatusFail1() {
         // given
         val origin = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
-        val updateForm1 = QuestionFAQUpdateForm("완료되었음")
-        val updateForm2 = QuestionFAQUpdateForm("")
+            CreateQuestionForm("user", "1234", "title", "content"))
+        val updateForm1 = UpdateQuestionFAQForm("완료되었음")
+        val updateForm2 = UpdateQuestionFAQForm("")
         val uri = "/question/" + origin.id
 
         // when
@@ -298,7 +297,7 @@ internal class QuestionControllerTest {
     fun deleteQuestion() {
         // given
         val origin = questionService.createQuestion(
-            QuestionCreateForm("user", "1234", "title", "content"))
+            CreateQuestionForm("user", "1234", "title", "content"))
         val uri = "/question/" + origin.id
 
         // when

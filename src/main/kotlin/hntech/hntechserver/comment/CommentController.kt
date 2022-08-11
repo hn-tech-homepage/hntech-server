@@ -1,9 +1,6 @@
 package hntech.hntechserver.comment
 
-import hntech.hntechserver.comment.CommentService
-import hntech.hntechserver.question.dto.CommentCreateForm
 import hntech.hntechserver.question.dto.CommentResponse
-import hntech.hntechserver.question.dto.CommentUpdateForm
 import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -15,7 +12,7 @@ class CommentController(private val commentService: CommentService) {
 
     @PostMapping("/{questionId}")
     fun createComment(@PathVariable("questionId") questionId: Long,
-                      @Valid @RequestBody form: CommentCreateForm,
+                      @Valid @RequestBody form: CreateCommentForm,
                       bindingResult: BindingResult
     ): CommentResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
@@ -24,7 +21,7 @@ class CommentController(private val commentService: CommentService) {
 
     @PutMapping("/{commentId}")
     fun updateComment(@PathVariable("commentId") commentId: Long,
-                      @Valid @RequestBody form: CommentUpdateForm,
+                      @Valid @RequestBody form: UpdateCommentForm,
                       bindingResult: BindingResult
     ): CommentResponse {
         if (bindingResult.hasErrors()) throw ValidationException(bindingResult)

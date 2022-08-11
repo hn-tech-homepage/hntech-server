@@ -24,6 +24,10 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+  data:
+    web:
+      pageable:
+        default-page-size: 15 # 페이징 기본 값
 
 server:
   error:

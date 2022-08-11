@@ -3,13 +3,13 @@ package hntech.hntechserver.question
 import hntech.hntechserver.question.dto.QuestionSimpleResponse
 import org.springframework.stereotype.Component
 
-data class QuestionsToSend(
-    var newQuestions: MutableList<QuestionSimpleResponse> = mutableListOf(),
-    var newCommentQuestions: MutableList<QuestionSimpleResponse> = mutableListOf()
-)
-
 @Component
-class QuestionManager {
+class QuestionAlarmManager {
+
+    data class QuestionsToSend(
+        var newQuestions: MutableList<QuestionSimpleResponse> = mutableListOf(),
+        var newCommentQuestions: MutableList<QuestionSimpleResponse> = mutableListOf()
+    )
 
     private var newQuestionList = mutableListOf<QuestionSimpleResponse>()
     private var newCommentQuestionList = mutableListOf<QuestionSimpleResponse>()

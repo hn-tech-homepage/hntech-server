@@ -67,14 +67,14 @@ internal class CommentControllerTest {
     fun initQuestion() {
         questionRepository.deleteAll()
         this.targetQuestion = questionService.createQuestion(
-            QuestionCreateForm("user","1234","title","내용.."))
+            CreateQuestionForm("user","1234","title","내용.."))
     }
 
     @Test @DisplayName("댓글 작성")
     fun createComment() {
         // given
         val uri = "/comment/" + targetQuestion.id
-        val form = CommentCreateForm("userA", "userA의 댓글 내용..")
+        val form = CreateCommentForm("userA", "userA의 댓글 내용..")
 
         // when
         val test = postTest(uri, form)
@@ -88,9 +88,9 @@ internal class CommentControllerTest {
     fun createCommentFail() {
         // given
         val uri = "/comment/" + targetQuestion.id
-        val form1 = CommentCreateForm("", "userA의 댓글 내용..")
-        val form2 = CommentCreateForm("userA", "")
-        val form3 = CommentCreateForm("", "")
+        val form1 = CreateCommentForm("", "userA의 댓글 내용..")
+        val form2 = CreateCommentForm("userA", "")
+        val form3 = CreateCommentForm("", "")
 
         // when
         val test1 = postTest(uri, form1)
@@ -107,7 +107,7 @@ internal class CommentControllerTest {
     fun createCommentFail1() {
         // given
         val uri = "/comment/0"
-        val form = CommentCreateForm("writer", "content...")
+        val form = CreateCommentForm("writer", "content...")
 
         // when
         val test = postTest(uri, form)
@@ -120,8 +120,8 @@ internal class CommentControllerTest {
     fun updateComment() {
         // given
         val comment = commentService.createComment(
-            targetQuestion.id!!, CommentCreateForm("user", "댓글 내용.."))
-        val updateForm = CommentUpdateForm("modified content")
+            targetQuestion.id!!, CreateCommentForm("user", "댓글 내용.."))
+        val updateForm = UpdateCommentForm("modified content")
         val uri = "/comment/" + comment.id
 
         // when
@@ -137,8 +137,8 @@ internal class CommentControllerTest {
     fun updateCommentFail() {
         // given
         val comment = commentService.createComment(
-            targetQuestion.id!!, CommentCreateForm("user", "댓글 내용.."))
-        val updateForm = CommentUpdateForm("")
+            targetQuestion.id!!, CreateCommentForm("user", "댓글 내용.."))
+        val updateForm = UpdateCommentForm("")
         val uri = "/comment/" + comment.id
 
         // when
@@ -151,7 +151,7 @@ internal class CommentControllerTest {
     @Test @DisplayName("댓글 수정 실패(없는 댓글)")
     fun updateCommentFail1() {
         // given
-        val updateForm = CommentUpdateForm("content")
+        val updateForm = UpdateCommentForm("content")
         val uri = "/comment/0"
 
         // when
@@ -165,7 +165,7 @@ internal class CommentControllerTest {
     fun deleteComment() {
         // given
         val comment = commentService.createComment(
-            targetQuestion.id!!, CommentCreateForm("user", "댓글 내용.."))
+            targetQuestion.id!!, CreateCommentForm("user", "댓글 내용.."))
         val uri = "/comment/" + comment.id
 
         // when

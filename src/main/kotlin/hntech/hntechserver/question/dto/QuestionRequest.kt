@@ -1,13 +1,12 @@
 package hntech.hntechserver.question.dto
 
-import hntech.hntechserver.comment.Comment
 import hntech.hntechserver.question.Question
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.PositiveOrZero
 import javax.validation.constraints.Size
 
-data class QuestionCreateForm(
+data class CreateQuestionForm(
     @field:NotBlank
     var writer: String,
     
@@ -23,7 +22,7 @@ data class QuestionCreateForm(
     var content: String
 )
 
-data class QuestionUpdateForm(
+data class UpdateQuestionForm(
     @field:NotBlank
     var title: String,
 
@@ -31,44 +30,30 @@ data class QuestionUpdateForm(
     var content: String
 )
 
-data class QuestionFAQUpdateForm(
+data class UpdateQuestionFAQForm(
     @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
     var FAQ: String
 )
 
-data class QuestionFindForm(
+data class UpdateQuestionStatusForm(
+    var status: String
+)
+
+data class GetQuestionForm(
     @field:NotBlank
     @field:Size(min = 4, max = 4, message = "비밀번호는 4자리를 입력해주세요.")
     @field:PositiveOrZero(message = "비밀번호는 0~9의 숫자로만 입력 가능합니다.")
     var password: String
 )
 
-data class CommentCreateForm(
-    @field:NotBlank
-    var writer: String,
 
-    @field:NotBlank
-    var content: String
-)
 
-data class CommentUpdateForm(
-    @field:NotBlank
-    var content: String
-)
-
-fun convertEntity(question : QuestionCreateForm): Question {
+fun convertEntity(question : CreateQuestionForm): Question {
     return Question(
         writer = question.writer,
         password = question.password,
-        FAQ = false,
+        FAQ = "false",
         title = question.title,
         content = question.content,
-    )
-}
-fun convertEntity(comment: CommentCreateForm, question: Question): Comment {
-    return Comment(
-        question = question,
-        writer = comment.writer,
-        content = comment.content
     )
 }

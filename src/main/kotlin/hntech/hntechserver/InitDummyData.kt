@@ -1,8 +1,6 @@
 package hntech.hntechserver
 
 import hntech.hntechserver.question.QuestionService
-import hntech.hntechserver.question.dto.QuestionCreateForm
-import hntech.hntechserver.question.dto.QuestionFAQUpdateForm
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
