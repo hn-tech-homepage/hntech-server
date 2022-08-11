@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.testFile
+import hntech.hntechserver.utils.config.ADMIN
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.multipart
@@ -29,8 +31,14 @@ class AdminControllerTest {
     @Autowired lateinit var fileService: FileService
     @Autowired lateinit var adminService: AdminService
 
+    fun setMockSession(): MockHttpSession {
+        val session = MockHttpSession()
+        session.setAttribute(ADMIN, adminService.getAdmin())
+        return session
+    }
+
     @BeforeEach
-    fun `관리자 생성`() {
+    fun `관리자 생성 및 세션 생성`() {
         adminService.createAdmin("1234")
     }
 
@@ -54,7 +62,7 @@ class AdminControllerTest {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(mapOf("password" to "1111"))
         }
-            .andExpect { status { isBadRequest() } }
+            .andExpect { status { isForbidden() } }
             .andDo { print() }
     }
 
@@ -73,6 +81,7 @@ class AdminControllerTest {
         mvc.post("/admin/password") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(form)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("newPassword") { value("1111") } }
@@ -92,6 +101,7 @@ class AdminControllerTest {
         mvc.post("/admin/introduce") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(IntroduceDto("안녕"))
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("newIntroduce") { value("안녕") } }
@@ -103,6 +113,7 @@ class AdminControllerTest {
         mvc.multipart("/admin/image") {
             file(testFile)
             param("where", ORG_CHART)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("where") { value(ORG_CHART) } }
@@ -114,6 +125,7 @@ class AdminControllerTest {
         mvc.multipart("/admin/image") {
             file(testFile)
             param("where", CI)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("where") { value(CI) } }
@@ -125,6 +137,7 @@ class AdminControllerTest {
         mvc.multipart("/admin/image") {
             file(testFile)
             param("where", HISTORY)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("where") { value(HISTORY) } }
@@ -144,6 +157,7 @@ class AdminControllerTest {
         mvc.post("/admin/footer") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(form)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andDo { print() }
