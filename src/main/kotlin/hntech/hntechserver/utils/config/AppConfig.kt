@@ -1,7 +1,6 @@
 package hntech.hntechserver.utils.config
 
 import hntech.hntechserver.utils.LoggingInterceptor
-import hntech.hntechserver.utils.auth.LoginCheckInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -14,10 +13,10 @@ class AppConfig : WebMvcConfigurer {
         registry.addInterceptor(LoggingInterceptor())
             .order(1)
             .addPathPatterns("/**")
-
-        registry.addInterceptor(LoginCheckInterceptor())
-            .order(2)
-            .addPathPatterns("/**")
+//
+//        registry.addInterceptor(LoginCheckInterceptor())
+//            .order(2)
+//            .addPathPatterns("/**")
 
     }
 

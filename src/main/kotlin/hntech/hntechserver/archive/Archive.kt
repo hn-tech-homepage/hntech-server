@@ -6,8 +6,14 @@ import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
 @Entity
+@SequenceGenerator(
+    name = "ARCHIVE_PK_GENERATOR",
+    sequenceName = "ARCHIVE_SEQ",
+    initialValue = 1,
+    allocationSize = 50
+)
 class Archive(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ARCHIVE_PK_GENERATOR")
     @Column(name = "archive_id")
     var id: Long? = null,
 

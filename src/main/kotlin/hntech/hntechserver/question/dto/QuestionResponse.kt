@@ -1,28 +1,37 @@
 package hntech.hntechserver.question.dto
 
-import hntech.hntechserver.comment.Comment
+import hntech.hntechserver.comment.CommentResponse
 import hntech.hntechserver.question.Question
+import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page
 
 data class QuestionPagedResponse(
     var currentPage: Int,
     var totalPage: Int,
     var questions: List<QuestionSimpleResponse>
-)
+) {
+    constructor(questions: Page<Question>) : this(
+        currentPage = questions.number,
+        totalPage = questions.totalPages,
+        questions = questions.map { QuestionSimpleResponse(it) }.toList()
+    )
+}
 
 data class QuestionSimpleResponse(
     var id: Long,
     var writer: String,
     var title: String,
+    var new: String = "false",
+    var status: String = "",
     var createTime: String,
-    var updateTime: String
 ) {
     constructor(question: Question): this(
         id = question.id!!,
         writer = question.writer,
         title = question.title,
-        createTime = question.createTime,
-        updateTime = question.updateTime
+        new = isNewCheck(question.createTime),
+        status = question.status,
+        createTime = question.createTime.split(" ")[0],
     )
 }
 
@@ -41,7 +50,7 @@ data class QuestionDetailResponse(
         password = question.password,
         title = question.title,
         content = question.content,
-        createTime = question.createTime,
+        createTime = question.createTime.split(" ")[0],
         updateTime = question.updateTime
     )
 }
@@ -68,22 +77,9 @@ data class QuestionCompleteResponse(
     )
 }
 
-data class CommentResponse(
-    var id: Long,
-    var writer: String,
-    var sequence: Int,
-    var content: String
-) {
-    constructor(comment: Comment): this(
-        id = comment.id!!,
-        writer = comment.writer,
-        sequence = comment.sequence,
-        content = comment.content
-    )
-}
 
 fun convertDto(questions: Page<Question>): QuestionPagedResponse {
-    var questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
+    val questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
     questions.forEach { questionList.add(QuestionSimpleResponse(it)) }
     return QuestionPagedResponse(
         currentPage = questions.number,

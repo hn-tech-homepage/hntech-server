@@ -1,16 +1,17 @@
 package hntech.hntechserver.question
 
 import hntech.hntechserver.logResult
-import hntech.hntechserver.question.dto.*
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.question.dto.CreateQuestionForm
+import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
+import hntech.hntechserver.question.dto.UpdateQuestionForm
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.inspectors.forAll
-import org.assertj.core.api.Assertions.*
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -18,60 +19,56 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @Transactional
-internal class QuestionServiceTest {
+class QuestionServiceTest {
 
-    val log = logger()
+    @Autowired lateinit var questionService: QuestionService
+    @Autowired lateinit var questionRepository: QuestionRepository
 
-    @Autowired
-    lateinit var questionService: QuestionService
+    val dummyForm = CreateQuestionForm(
+        "userA",
+        "1111",
+        "test title1",
+        "test contents1"
+    )
 
-    @Autowired
-    lateinit var questionRepository: QuestionRepository
-
+    private fun setDummyQuestion() =
+        questionService.createQuestion(dummyForm)
 
     @Test
-    @DisplayName("문의사항 등록")
-    fun createQuestion() {
-        // given
-        val form = QuestionCreateForm("userA", "1111", "test title1", "test contents1")
+    fun `문의사항 등록 성공`() {
+        val expected: Question = questionService.createQuestion(dummyForm)
+        val actual: Question = questionRepository.findByWriter(dummyForm.writer)!!
 
-        // when
-        val expected = QuestionDetailResponse(questionService.createQuestion(form))
-        val actual = QuestionDetailResponse(questionRepository.findByWriter(form.writer)!!)
-
-        // then
-        assertThat(actual).isEqualTo(expected)
-        logResult(actual, expected)
+        expected shouldBe actual
     }
 
     @Test
-    @DisplayName("문의사항 조회 페이징")
-    fun findAllQuestions() {
+    fun `문의사항 목록 조회 (페이징)`() {
         // given
-        var page = 0; var size = 10
-        var pageable: Pageable = PageRequest.of(page, size, Sort.Direction.DESC, "id")
-        for (i in 1..30) {
-            questionService.createQuestion(QuestionCreateForm("user" + i, i.toString(), "title" + i, "content" + i))
+        val pageable: Pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id")
+        repeat(30) { setDummyQuestion() }
+
+        // when
+        val expected: Page<Question> = questionService.findAllQuestions(pageable)
+        val actual: Page<Question> = questionRepository.findAll(pageable)
+
+        // then
+        assertSoftly(expected) {
+            totalPages shouldBe 3
+            totalElements shouldBe 30
+            it shouldBe actual
         }
-
-        // when
-        val expected = convertDto(questionService.findAllQuestions(pageable))
-        val actual = convertDto(questionRepository.findAll(pageable))
-
-        // then
-        assertThat(actual).isEqualTo(expected)
-        logResult(actual, expected)
     }
 
     @Test
-    @DisplayName("자주 묻는 질문 조회")
-    fun findFAQ() {
+    fun `자주 묻는 질문 조회 성공`() {
         // given
+        val idList = mutableListOf<Long>()
         repeat(20) {
-            questionService.createQuestion(QuestionCreateForm("user$it", "1234", "user$it 의 문의사항", "문의사항 내용.."))
+            idList.add(setDummyQuestion().id!!)
         }
         repeat(10) {
-            questionService.updateQuestion((it + 1).toLong(), QuestionFAQUpdateForm("true"))
+            questionService.updateQuestion(idList[it], UpdateQuestionFAQForm("true"))
         }
 
         // when
@@ -82,68 +79,61 @@ internal class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("문의사항 비밀번호로 상세 조회")
-    fun findQuestionByIdAndPassword() {
+    fun `문의사항 비밀번호로 상세 조회 성공`() {
         // given
-        val actual =
-            questionService.createQuestion(QuestionCreateForm("userA", "1111", "test title1", "test contents1"))
+        val actual = setDummyQuestion()
 
         // when
         val expected =
             questionService.findQuestionByIdAndPassword(actual.id!!, actual.password)
 
         // then
-        assertThat(actual.id).isEqualTo(expected.id)
-        logResult(actual, expected)
+        expected.id shouldBe actual.id
     }
 
     @Test
-    @DisplayName("문의사항 내용 수정")
-    fun updateQuestion() {
+    fun `문의사항 내용 수정 성공`() {
         // given
-        val origin =
-            questionService.createQuestion(QuestionCreateForm("userA", "1111", "test title1", "test contents1"))
-        val updateForm = QuestionUpdateForm("test title2", "test contents2")
+        val origin = setDummyQuestion()
+        val updateForm = UpdateQuestionForm("test title2", "test contents2")
 
         // when
         val expected = questionService.updateQuestion(origin.id!!, updateForm)
         val actual = questionRepository.findById(origin.id!!).get()
 
         // then
-        assertThat(actual).isEqualTo(expected)
+        expected shouldBe actual
         logResult(actual, expected)
     }
     
     @Test
-    @DisplayName("자주 묻는 질문으로 수정")
-    fun updateQuestionStatus() {
+    fun `자주 묻는 질문으로 수정 성공`() {
         // given
-        val origin =
-            questionService.createQuestion(QuestionCreateForm("user", "1234", "제목", "내용"))
-        val updateForm = QuestionFAQUpdateForm("처리중")
+        val origin = setDummyQuestion()
+        val updateForm = UpdateQuestionFAQForm("처리중")
 
         // when
         val expected = questionService.updateQuestion(origin.id!!, updateForm)
         val actual = questionRepository.findById(origin.id!!).get()
 
         // then
-        assertThat(actual).isEqualTo(expected)
-        logResult(actual.FAQ, expected.FAQ)
+        assertSoftly(expected) {
+            FAQ shouldBe actual.FAQ
+            it shouldBe actual
+        }
     }
 
     @Test
-    @DisplayName("문의사항 삭제")
-    fun deleteQuestion() {
+    fun `문의사항 삭제 성공`() {
         // given
-        val testQuestion =
-            questionService.createQuestion(QuestionCreateForm("userA", "1111", "test title1", "test contents1"))
+        val testQuestion = setDummyQuestion()
 
         // when
         questionService.deleteQuestion(testQuestion.id!!)
 
         // then
-        assertThatThrownBy {
+        shouldThrow<QuestionException> {
             questionService.findQuestionByIdAndPassword(testQuestion.id!!, testQuestion.password)
-        }.isInstanceOf(QuestionException::class.java).hasMessage(QUESTION_NOT_FOUND)
+        }.message shouldBe QUESTION_NOT_FOUND
     }
 }

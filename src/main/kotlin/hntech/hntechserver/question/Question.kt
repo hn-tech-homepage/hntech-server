@@ -5,14 +5,21 @@ import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
 @Entity
+@SequenceGenerator(
+    name = "QUESTION_PK_GENERATOR",
+    sequenceName = "QUESTION_SEQ",
+    initialValue = 1,
+    allocationSize = 50
+)
 class Question(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "QUESTION_PK_GENERATOR")
     @Column(name = "question_id")
     var id: Long? = null,
 
     var writer: String = "",
     var password: String = "",
-    var FAQ: Boolean = false,
+    var FAQ: String = "",
+    var status: String = "대기중", // 대기중, 처리중, 답변완료
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL])
     var comments: MutableList<Comment> = mutableListOf(),
@@ -21,14 +28,19 @@ class Question(
     var content: String = "",
 ) : BaseTimeEntity() {
 
-    fun update(title: String, content: String) {
-        this.title = title
-        this.content = content
+    fun update(
+        title: String? = null,
+        content: String? = null,
+        status: String? = null,
+        FAQ: String? = null,
+    ) {
+        title?.let { this.title = title }
+        content?.let { this.content = content }
+        status?.let { this.status = status }
+        FAQ?.let { this.FAQ = FAQ }
     }
-    fun update(FAQ: Boolean) {
-        this.FAQ = FAQ
-    }
-    fun addComment(comment: hntech.hntechserver.comment.Comment) { this.comments.add(comment) }
+
+    fun addComment(comment: Comment) { this.comments.add(comment) }
 }
 
 

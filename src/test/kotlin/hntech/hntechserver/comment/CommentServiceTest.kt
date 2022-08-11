@@ -1,10 +1,10 @@
 package hntech.hntechserver.comment
 
 import hntech.hntechserver.question.*
-import hntech.hntechserver.question.dto.CommentCreateForm
+import hntech.hntechserver.question.dto.CreateCommentForm
 import hntech.hntechserver.question.dto.CommentResponse
-import hntech.hntechserver.question.dto.CommentUpdateForm
-import hntech.hntechserver.question.dto.QuestionCreateForm
+import hntech.hntechserver.question.dto.UpdateCommentForm
+import hntech.hntechserver.question.dto.CreateQuestionForm
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -34,7 +34,7 @@ internal class CommentServiceTest {
     @BeforeEach
     fun initQuestion() {
         questionRepository.deleteAll()
-        this.targetQuestion = questionService.createQuestion(QuestionCreateForm(
+        this.targetQuestion = questionService.createQuestion(CreateQuestionForm(
             writer = "user",
             password = "1234",
             title = "title",
@@ -45,8 +45,8 @@ internal class CommentServiceTest {
     @DisplayName("댓글 등록")
     fun createComment() {
         // given
-        val form1 = CommentCreateForm("userA", "댓글 내용..")
-        val form2 = CommentCreateForm("userB", "댓글 내용..")
+        val form1 = CreateCommentForm("userA", "댓글 내용..")
+        val form2 = CreateCommentForm("userB", "댓글 내용..")
 
         // when
         val expected = CommentResponse(commentService.createComment(targetQuestion.id!!, form1))
@@ -68,10 +68,10 @@ internal class CommentServiceTest {
         val origin = CommentResponse(
             commentService.createComment(
                 targetQuestion.id!!,
-                CommentCreateForm("userA", "댓글 내용...")
+                CreateCommentForm("userA", "댓글 내용...")
             )
         )
-        val updateForm = CommentUpdateForm("수정된 댓글 내용...")
+        val updateForm = UpdateCommentForm("수정된 댓글 내용...")
 
         // when
         val expected = CommentResponse(commentService.updateComment(origin.id, updateForm))
@@ -88,7 +88,7 @@ internal class CommentServiceTest {
     fun deleteComment() {
         // given
         val comment = commentService.createComment(
-            targetQuestion.id!!, CommentCreateForm("user", "댓글 내용...")
+            targetQuestion.id!!, CreateCommentForm("user", "댓글 내용...")
         )
 
         // when
@@ -105,7 +105,7 @@ internal class CommentServiceTest {
     fun deleteCommentWhenDeleteQuestion() {
         // given
         val comment = commentService.createComment(
-            targetQuestion.id!!, CommentCreateForm("user", "댓글 내용...")
+            targetQuestion.id!!, CreateCommentForm("user", "댓글 내용...")
         )
 
         // when

@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 @Service
 class MailManager(
     private val mailSender: JavaMailSender,
-    private val questionManager: QuestionManager,
+    private val questionAlarmManager: QuestionAlarmManager,
     private val propertiesManager: PropertiesManager
 ) {
     private val log = logger()
@@ -28,7 +28,7 @@ class MailManager(
             val mail = mailSender.createMimeMessage()
             val mailHelper = MimeMessageHelper(mail, false, "UTF-8")
             val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-            val questions = questionManager.getQuestionListToSend()
+            val questions = questionAlarmManager.getQuestionListToSend()
             var text = ""
 
             mailHelper.setFrom(email, "HNTECH 웹페이지")
@@ -45,7 +45,7 @@ class MailManager(
 
             mailSender.send(mail)
 
-            questionManager.clearQuestionList()
+            questionAlarmManager.clearQuestionList()
         } catch (e: Exception) {
             log.debug(e.message)
             throw EmailException(EMAIL_SEND_ERROR)
