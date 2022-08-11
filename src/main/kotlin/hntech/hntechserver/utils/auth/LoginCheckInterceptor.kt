@@ -1,6 +1,5 @@
 package hntech.hntechserver.utils.auth
 
-import Auth
 import hntech.hntechserver.utils.config.ADMIN
 import hntech.hntechserver.utils.config.AUTH_DENIED
 import org.springframework.web.method.HandlerMethod

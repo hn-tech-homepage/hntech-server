@@ -6,6 +6,7 @@ import hntech.hntechserver.category.CreateCategoryForm
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.setMockSession
 import hntech.hntechserver.testFile
 import hntech.hntechserver.testFile2
 import org.junit.jupiter.api.AfterEach
@@ -86,6 +87,7 @@ class ArchiveControllerTest {
         mvc.post("/archive") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(body)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("productCategoryName") { value("스프링클러") } }
@@ -132,6 +134,7 @@ class ArchiveControllerTest {
         mvc.put("/archive/${archive.id!!}") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(body)
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("id") { value(archive.id!!) } }
@@ -146,7 +149,9 @@ class ArchiveControllerTest {
     fun `자료 삭제`() {
         val archive = initDummyArchive()
 
-        mvc.delete("/archive/${archive.id!!}") {}
+        mvc.delete("/archive/${archive.id!!}") {
+            session = setMockSession()
+        }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("result") { value(true) } }
             .andDo { print() }

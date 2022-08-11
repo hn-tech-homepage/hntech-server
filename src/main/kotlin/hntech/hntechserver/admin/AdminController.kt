@@ -1,6 +1,6 @@
 package hntech.hntechserver.admin
 
-import Auth
+import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.exception.ValidationException
 import hntech.hntechserver.utils.logger
@@ -15,7 +15,7 @@ class AdminController(private val adminService: AdminService) {
     val log = logger()
 
     /**
-     * 일반 사용자
+     * 사용자 모드
      */
     // 인사말 조회
     @GetMapping("/introduce")
@@ -41,7 +41,8 @@ class AdminController(private val adminService: AdminService) {
         BoolResponse(adminService.logout(request))
 
     // 비밀번호 변경
-    @Auth @PostMapping("/password")
+    @Auth
+    @PostMapping("/password")
     fun updatePassword(
         @Valid @RequestBody form: PasswordRequest,
         bindingResult: BindingResult
@@ -51,12 +52,14 @@ class AdminController(private val adminService: AdminService) {
     }
 
     // 인사말 수정
-    @Auth @PostMapping("/introduce")
+    @Auth
+    @PostMapping("/introduce")
     fun updateIntroduce(@RequestBody form: IntroduceDto) =
         IntroduceDto(adminService.updateIntroduce(form.newIntroduce))
 
     // 조직도, CI, 연혁 수정
-    @Auth @PostMapping("/image")
+    @Auth
+    @PostMapping("/image")
     fun updateOrgChart(@ModelAttribute form: AdminImageRequest) =
         AdminImageResponse(
             where = form.where,
@@ -67,7 +70,8 @@ class AdminController(private val adminService: AdminService) {
         })
 
     // 메일 설정
-    @Auth @PostMapping("/mail")
+    @Auth
+    @PostMapping("/mail")
     fun updateMail(@Valid @RequestBody form: EmailRequest,
                    bindingResult: BindingResult
     ) {
@@ -76,6 +80,7 @@ class AdminController(private val adminService: AdminService) {
     }
 
     // 하단 (footer) 수정
-    @Auth @PostMapping("/footer")
+    @Auth
+    @PostMapping("/footer")
     fun updateFooter(@RequestBody form: FooterDto) = FooterDto(adminService.updateFooter(form))
 }

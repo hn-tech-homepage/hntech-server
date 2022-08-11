@@ -1,5 +1,6 @@
 package hntech.hntechserver.product
 
+import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
@@ -13,7 +14,7 @@ class ProductController(
     private val fileService: FileService
 ) {
     /**
-     * 클라이언트
+     * 사용자 모드
      */
     @GetMapping
     fun getAllProducts(@RequestParam(name = "category", required = false) categoryName: String?): ProductListResponse =
@@ -24,8 +25,9 @@ class ProductController(
         ProductDetailResponse(productService.getProduct(id))
 
     /**
-     * 관리자
+     * 관리자 모드
      */
+    @Auth
     @PostMapping
     fun createProduct(@Valid @RequestBody form: ProductCreateForm,
                       br: BindingResult
@@ -37,8 +39,9 @@ class ProductController(
         return ProductDetailResponse(productService.createProduct(form))
     }
 
-    @PutMapping("/{product_id}")
-    fun updateProduct(@PathVariable("product_id") id: Long,
+    @Auth
+    @PutMapping("/{productId}")
+    fun updateProduct(@PathVariable("productId") id: Long,
                       @Valid @RequestBody form: ProductUpdateForm,
                       br: BindingResult
     ): ProductDetailResponse {
@@ -51,6 +54,7 @@ class ProductController(
     
     // 제품 순서 변경
     // 맨 뒤로 옮길 때에는 targetProductId를 0으로 요청
+    @Auth
     @PatchMapping
     fun updateCategorySequence(@RequestParam("productId") productId: Long,
                                @RequestParam("targetProductId") targetProductId: Long,
@@ -60,7 +64,8 @@ class ProductController(
         )
     }
 
-    @DeleteMapping("/{product_id}")
-    fun deleteProduct(@PathVariable("product_id") id: Long) =
+    @Auth
+    @DeleteMapping("/{productId}")
+    fun deleteProduct(@PathVariable("productId") id: Long) =
         productService.deleteProduct(id)
 }

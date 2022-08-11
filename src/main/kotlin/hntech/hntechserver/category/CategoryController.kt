@@ -1,5 +1,6 @@
 package hntech.hntechserver.category
 
+import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
@@ -13,7 +14,7 @@ class CategoryController(
     private val fileService: FileService
 ) {
     /**
-     * 클라이언트
+     * 사용자 모드
      */
     // 카테고리 전체 조회
     @GetMapping
@@ -30,8 +31,9 @@ class CategoryController(
         )
 
     /**
-     * 관리자
+     * 관리자 모드
      */
+    @Auth
     @PostMapping
     fun createCategory(@Valid @RequestBody form: CreateCategoryForm,
                        br: BindingResult
@@ -45,6 +47,7 @@ class CategoryController(
     }
 
     // 카테고리 수정
+    @Auth
     @PutMapping("/{categoryId}")
     fun updateCategory(@PathVariable("categoryId") categoryId: Long,
                        @Valid @RequestBody form: UpdateCategoryForm,
@@ -61,6 +64,7 @@ class CategoryController(
 
     // 카테고리 순서 변경
     // 맨 뒤로 옮길 때에는 targetCategoryId를 0으로 요청
+    @Auth
     @PatchMapping
     fun updateCategorySequence(@RequestParam("categoryId") categoryId: Long,
                                @RequestParam("targetCategoryId") targetCategoryId: Long,
@@ -71,6 +75,7 @@ class CategoryController(
     }
 
     // 카테고리 삭제
+    @Auth
     @DeleteMapping("/{categoryId}")
     fun deleteCategory(@PathVariable("categoryId") categoryId: Long) =
         categoryService.deleteCategory(categoryId)

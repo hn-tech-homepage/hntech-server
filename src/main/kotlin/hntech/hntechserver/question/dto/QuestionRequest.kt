@@ -1,6 +1,6 @@
 package hntech.hntechserver.question.dto
 
-import hntech.hntechserver.question.Comment
+import hntech.hntechserver.comment.Comment
 import hntech.hntechserver.question.Question
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern

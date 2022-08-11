@@ -18,6 +18,3 @@ interface QuestionRepository: JpaRepository<Question, Long> {
     fun findByWriter(writer: String): Question?
 }
 
-interface CommentRepository: JpaRepository<Comment, Long> {
-    fun findAllByQuestionId(questionId: Long): List<Comment>
-}
