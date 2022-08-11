@@ -1,5 +1,8 @@
 package hntech.hntechserver
 
+import hntech.hntechserver.admin.Admin
+import hntech.hntechserver.utils.config.ADMIN
+import org.springframework.mock.web.MockHttpSession
 import org.springframework.mock.web.MockMultipartFile
 
 
@@ -23,3 +26,9 @@ val testFile2 = MockMultipartFile(
 // 테스트 파일
 fun initTestFile(): MockMultipartFile = testFile
 
+// 인증용 MockSession 생성
+fun setMockSession(): MockHttpSession {
+    val session = MockHttpSession()
+    session.setAttribute(ADMIN, Admin(password = "1234"))
+    return session
+}

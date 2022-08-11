@@ -1,5 +1,6 @@
 package hntech.hntechserver.archive
 
+import Auth
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.config.PAGE_SIZE
 import hntech.hntechserver.utils.logger
@@ -16,14 +17,7 @@ class ArchiveController(
     var log = logger()
 
     /**
-     * 자료글 생성
-     */
-    @PostMapping
-    fun createArchive(@RequestBody form: ArchiveForm) =
-        ArchiveSimpleResponse(archiveService.createArchive(form))
-
-    /**
-     * 자료글 조회
+     * 사용자 모드
      */
     // 하나 조회
     @GetMapping("/{archiveId}")
@@ -36,17 +30,20 @@ class ArchiveController(
         ArchiveListResponse(archiveService.getArchives(pageable))
 
     /**
-     * 자료 수정
+     * 관리자 모드
      */
-    @PutMapping("/{archiveId}")
+    // 자료글 생성
+    @Auth @PostMapping
+    fun createArchive(@RequestBody form: ArchiveForm) =
+        ArchiveSimpleResponse(archiveService.createArchive(form))
+
+    // 자료글 수정
+    @Auth @PutMapping("/{archiveId}")
     fun updateArchive(@PathVariable("archiveId") id: Long, @RequestBody form: ArchiveForm) =
         ArchiveSimpleResponse(archiveService.updateArchive(id, form))
 
-
-    /**
-     * 자료 삭제
-     */
-    @DeleteMapping("/{archiveId}")
+    // 자료글 삭제
+    @Auth @DeleteMapping("/{archiveId}")
     fun deleteArchive(@PathVariable("archiveId") id: Long) =
         BoolResponse(archiveService.deleteArchive(id))
 

@@ -15,7 +15,7 @@ class AdminController(private val adminService: AdminService) {
     val log = logger()
 
     /**
-     * 일반 사용자
+     * 사용자 모드
      */
     // 인사말 조회
     @GetMapping("/introduce")

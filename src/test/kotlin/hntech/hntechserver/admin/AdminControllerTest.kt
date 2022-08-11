@@ -3,6 +3,7 @@ package hntech.hntechserver.admin
 import com.fasterxml.jackson.databind.ObjectMapper
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.setMockSession
 import hntech.hntechserver.testFile
 import hntech.hntechserver.utils.config.ADMIN
 import org.junit.jupiter.api.AfterEach
@@ -30,12 +31,6 @@ class AdminControllerTest {
     @Autowired lateinit var fileRepository: FileRepository
     @Autowired lateinit var fileService: FileService
     @Autowired lateinit var adminService: AdminService
-
-    fun setMockSession(): MockHttpSession {
-        val session = MockHttpSession()
-        session.setAttribute(ADMIN, adminService.getAdmin())
-        return session
-    }
 
     @BeforeEach
     fun `관리자 생성 및 세션 생성`() {
