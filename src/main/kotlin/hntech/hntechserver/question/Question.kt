@@ -1,5 +1,6 @@
 package hntech.hntechserver.question
 
+import hntech.hntechserver.comment.Comment
 import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
@@ -27,29 +28,9 @@ class Question(
     fun update(FAQ: Boolean) {
         this.FAQ = FAQ
     }
-    fun addComment(comment: Comment) { this.comments.add(comment) }
+    fun addComment(comment: hntech.hntechserver.comment.Comment) { this.comments.add(comment) }
 }
 
-@Entity
-class Comment (
-    @Id @GeneratedValue
-    @Column(name = "comment_id")
-    var id: Long? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    var question: Question,
-
-    var writer: String = "",
-    var sequence: Int = 0,
-
-    // 중복되는 부분
-    var content: String = "",
-) : BaseTimeEntity() {
-
-    fun update(content: String) {
-        this.content = content
-    }
-}
 
 

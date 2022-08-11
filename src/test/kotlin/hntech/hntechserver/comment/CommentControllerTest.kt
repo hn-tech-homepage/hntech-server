@@ -1,13 +1,14 @@
-package hntech.hntechserver.question
+package hntech.hntechserver.comment
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import hntech.hntechserver.question.Question
+import hntech.hntechserver.question.QuestionRepository
+import hntech.hntechserver.question.QuestionService
 import hntech.hntechserver.question.dto.*
 import hntech.hntechserver.utils.logger
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.springframework.beans.factory.annotation.Autowired

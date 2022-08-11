@@ -1,8 +1,9 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.utils.exception.ValidationException
 import hntech.hntechserver.question.dto.*
+import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.config.PAGE_SIZE
+import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -14,6 +15,9 @@ import javax.validation.Valid
 @RequestMapping("/question")
 class QuestionController(private val questionService: QuestionService) {
 
+    /**
+     * 사용자 모드
+     */
     // 문의사항 생성
     @PostMapping
     fun createQuestion(@Valid @RequestBody form: QuestionCreateForm,
@@ -37,8 +41,8 @@ class QuestionController(private val questionService: QuestionService) {
         questionService.findFAQ().map { QuestionSimpleResponse(it) }
 
     // 비밀번호로 문의사항 상세 조회
-    @PostMapping("/{question_id}")
-    fun getQuestion(@PathVariable("question_id") id: Long,
+    @PostMapping("/{questionId}")
+    fun getQuestion(@PathVariable("questionId") id: Long,
                     @Valid @RequestBody form: QuestionFindForm,
                     bindingResult: BindingResult
     ): QuestionCompleteResponse {
@@ -47,8 +51,8 @@ class QuestionController(private val questionService: QuestionService) {
     }
 
     // 문의사항 제목, 내용 수정
-    @PutMapping("/{question_id}")
-    fun updateQuestionForm(@PathVariable("question_id") id: Long,
+    @PutMapping("/{questionId}")
+    fun updateQuestionForm(@PathVariable("questionId") id: Long,
                            @Valid @RequestBody form: QuestionUpdateForm,
                            bindingResult: BindingResult
     ): QuestionDetailResponse {
@@ -57,11 +61,12 @@ class QuestionController(private val questionService: QuestionService) {
     }
 
     /**
-     * 관리자
+     * 관리자 모드
      */
     // 자주 묻는 질문 설정
-    @PatchMapping("/{question_id}")
-    fun updateQuestionStatus(@PathVariable("question_id") id: Long,
+    @Auth
+    @PatchMapping("/{questionId}")
+    fun updateQuestionStatus(@PathVariable("questionId") id: Long,
                              @Valid @RequestBody form: QuestionFAQUpdateForm,
                              bindingResult: BindingResult
     ): QuestionSimpleResponse {
@@ -69,33 +74,8 @@ class QuestionController(private val questionService: QuestionService) {
         return QuestionSimpleResponse(questionService.updateQuestion(id, form))
     }
 
-    @DeleteMapping("/{question_id}")
-    fun deleteQuestion(@PathVariable("question_id") id: Long) = questionService.deleteQuestion(id)
+    @Auth
+    @DeleteMapping("/{questionId}")
+    fun deleteQuestion(@PathVariable("questionId") id: Long) = questionService.deleteQuestion(id)
 }
 
-@RestController
-@RequestMapping("/comment")
-class CommentController(private val commentService: CommentService) {
-
-    @PostMapping("/{question_id}")
-    fun createComment(@PathVariable("question_id") questionId: Long,
-                      @Valid @RequestBody form: CommentCreateForm,
-                      bindingResult: BindingResult
-    ): CommentResponse {
-        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return CommentResponse(commentService.createComment(questionId, form))
-    }
-
-    @PutMapping("/{comment_id}")
-    fun updateComment(@PathVariable("comment_id") commentId: Long,
-                      @Valid @RequestBody form: CommentUpdateForm,
-                      bindingResult: BindingResult
-    ): CommentResponse {
-        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
-        return CommentResponse(commentService.updateComment(commentId, form))
-    }
-
-    @DeleteMapping("/{comment_id}")
-    fun deleteComment(@PathVariable("comment_id") commentId: Long) =
-        commentService.deleteComment(commentId)
-}
