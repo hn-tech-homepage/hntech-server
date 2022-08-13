@@ -4,6 +4,7 @@ import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.initTestFile
+import hntech.hntechserver.utils.logger
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
@@ -22,6 +23,7 @@ internal class CategoryServiceTest(
     private val fileService: FileService,
     private val fileRepository: FileRepository
 ): FunSpec() {
+    val log = logger()
     // 테스트용 데이터 가져오기
     private val testFile = initTestFile()
 
@@ -46,13 +48,7 @@ internal class CategoryServiceTest(
         // 테스트 시작 전 테스트 데이터 저장
         beforeSpec {
             repeat(10) {
-                uploadFile()
-                categoryService.createCategory(
-                    CreateCategoryForm(
-                        categoryName = "카테고리$it",
-                        image = savedFiles[fLastIdx].id
-                    )
-                )
+                categoryService.createCategory(CreateCategoryForm("카테고리$it", uploadFile().id))
             }
         }
 
@@ -61,13 +57,14 @@ internal class CategoryServiceTest(
             savedFiles = fileRepository.findAll()
             cLastIdx = savedCategories.size - 1
             fLastIdx = savedFiles.size - 1
+            log.info("savedCategories: {}", savedCategories.size)
         }
 
         test("카테고리 생성 성공") {
             val form = CreateCategoryForm("생성된 카테고리", uploadFile().id)
 
             val expected = convertDto(categoryService.createCategory(form))
-            val actual = categoryRepository.findAll().map { convertDto(it) }
+            val actual = categoryRepository.findAllByOrderBySequence().map { convertDto(it) }
 
             actual shouldContain expected
         }

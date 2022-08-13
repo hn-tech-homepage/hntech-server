@@ -87,7 +87,7 @@ class ArchiveControllerTest {
         mvc.post("/archive") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(body)
-            session = setMockSession()
+//            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andExpect { jsonPath("productCategoryName") { value("스프링클러") } }

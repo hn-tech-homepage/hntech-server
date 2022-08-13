@@ -1,6 +1,5 @@
 package hntech.hntechserver.comment
 
-import hntech.hntechserver.question.dto.CommentResponse
 import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*

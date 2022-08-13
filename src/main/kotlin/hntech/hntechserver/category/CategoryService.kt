@@ -29,6 +29,7 @@ class CategoryService(
     private fun getLastCategory(): Category? = categoryRepository.findFirstByOrderBySequenceDesc()
 
     // 카테고리 생성
+    @Transactional
     fun createCategory(form: CreateCategoryForm): Category {
         checkCategoryName(form.categoryName)
 
@@ -36,8 +37,9 @@ class CategoryService(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                file = form.image?.let { fileService.getFile(it) })
+                file = form.image?.let { fileService.getFile(it) }
             )
+        )
     }
 
     /**

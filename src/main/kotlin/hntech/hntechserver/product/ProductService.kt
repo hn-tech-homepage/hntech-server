@@ -43,7 +43,7 @@ class ProductService(
                 type = STANDARD_IMAGE
             )
         }
-        files.docFiles.forEach {
+        files.docFiles?.forEach {
             fileService.getFile(it.fileId).update(
                 fileProduct = product,
                 type = it.filename
@@ -88,7 +88,7 @@ class ProductService(
         categoryName?.let {
             return categoryService.getCategory(it).products
         } ?: run {
-            return productRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+            return productRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"))
         }
     }
 
@@ -139,6 +139,7 @@ class ProductService(
     fun deleteProduct(id: Long) {
         val product = getProduct(id)
         fileService.deleteAllFiles(product.files)
+        productRepository.adjustSequenceToLeftAll(product.sequence)
         productRepository.delete(product)
     }
 }

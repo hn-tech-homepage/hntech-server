@@ -4,6 +4,7 @@ import hntech.hntechserver.logResult
 import hntech.hntechserver.question.dto.CreateQuestionForm
 import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
 import hntech.hntechserver.question.dto.UpdateQuestionForm
+import hntech.hntechserver.utils.config.PAGE_SIZE
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.inspectors.forAll
@@ -45,7 +46,7 @@ class QuestionServiceTest {
     @Test
     fun `문의사항 목록 조회 (페이징)`() {
         // given
-        val pageable: Pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id")
+        val pageable: Pageable = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "id")
         repeat(30) { setDummyQuestion() }
 
         // when
@@ -54,7 +55,7 @@ class QuestionServiceTest {
 
         // then
         assertSoftly(expected) {
-            totalPages shouldBe 3
+            totalPages shouldBe 2
             totalElements shouldBe 30
             it shouldBe actual
         }
@@ -64,18 +65,19 @@ class QuestionServiceTest {
     fun `자주 묻는 질문 조회 성공`() {
         // given
         val idList = mutableListOf<Long>()
+        val pageable: Pageable = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "id")
         repeat(20) {
             idList.add(setDummyQuestion().id!!)
         }
         repeat(10) {
-            questionService.updateQuestion(idList[it], UpdateQuestionFAQForm("true"))
+            questionService.updateFAQ(idList[it], UpdateQuestionFAQForm("true"))
         }
 
         // when
-        val faqList = questionService.findFAQ()
+        val faqList = questionService.findFAQ(pageable)
 
         // then
-        faqList.forAll { it.FAQ = true }
+        faqList.forEach { it.FAQ shouldBe "true" }
     }
 
     @Test
@@ -113,7 +115,7 @@ class QuestionServiceTest {
         val updateForm = UpdateQuestionFAQForm("처리중")
 
         // when
-        val expected = questionService.updateQuestion(origin.id!!, updateForm)
+        val expected = questionService.updateStatus(origin.id!!, updateForm.FAQ)
         val actual = questionRepository.findById(origin.id!!).get()
 
         // then
