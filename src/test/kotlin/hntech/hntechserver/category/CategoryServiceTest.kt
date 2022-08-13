@@ -125,7 +125,7 @@ internal class CategoryServiceTest(
                         it.id!!,
                         UpdateCategoryForm(
                             categoryName = it.categoryName,
-                            image = uploadFile().id,
+                            imageFileId = uploadFile().id,
                             showInMain = true
                         )
                     )
@@ -133,10 +133,11 @@ internal class CategoryServiceTest(
             }
         }
         test("카테고리 순서 변경(맨 뒤 -> 맨 앞)") {
-            categoryService.updateCategorySequence(
-                categoryId = savedCategories[cLastIdx].id!!,
-                targetCategoryId = savedCategories[0].id!!
+            val form = UpdateCategorySequenceForm(
+                savedCategories[cLastIdx].id!!,
+                savedCategories[0].id!!
             )
+            categoryService.updateCategorySequence(form)
 
             val expected = savedCategories[cLastIdx].categoryName
             val actual = categoryRepository.findAllByOrderBySequence()[0].categoryName
@@ -144,10 +145,11 @@ internal class CategoryServiceTest(
             actual shouldBe expected
         }
         test("카테고리 순서 변경(맨 앞 -> 맨 뒤)") {
-            categoryService.updateCategorySequence(
-                categoryId = savedCategories[0].id!!,
-                targetCategoryId = 0L
+            val form = UpdateCategorySequenceForm(
+                savedCategories[0].id!!,
+                0L
             )
+            categoryService.updateCategorySequence(form)
 
             val expected = savedCategories[0].categoryName
             val actual = categoryRepository.findAllByOrderBySequence()[cLastIdx].categoryName
@@ -155,10 +157,11 @@ internal class CategoryServiceTest(
             actual shouldBe expected
         }
         test("카테고리 순서 변경(맨 앞 -> 4번째)") {
-            categoryService.updateCategorySequence(
-                categoryId = savedCategories[0].id!!,
-                targetCategoryId = savedCategories[3].id!!
+            val form = UpdateCategorySequenceForm(
+                savedCategories[0].id!!,
+                savedCategories[3].id!!
             )
+            categoryService.updateCategorySequence(form)
 
             val expected = savedCategories[0].categoryName
             val actual = categoryRepository.findAllByOrderBySequence()[2].categoryName
@@ -166,10 +169,11 @@ internal class CategoryServiceTest(
             actual shouldBe expected
         }
         test("카테고리 순서 변경(맨 뒤 -> 3번째)") {
-            categoryService.updateCategorySequence(
-                categoryId = savedCategories[cLastIdx].id!!,
-                targetCategoryId = savedCategories[2].id!!
+            val form = UpdateCategorySequenceForm(
+                savedCategories[cLastIdx].id!!,
+                savedCategories[2].id!!
             )
+            categoryService.updateCategorySequence(form)
 
             val expected = savedCategories[cLastIdx].categoryName
             val actual = categoryRepository.findAllByOrderBySequence()[2].categoryName

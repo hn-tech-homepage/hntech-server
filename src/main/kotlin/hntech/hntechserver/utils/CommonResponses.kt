@@ -32,6 +32,6 @@ fun badRequest(bindingResult: BindingResult) =
     ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(convertJson(bindingResult.fieldErrors))
 
-fun forbidden(ex: Exception) =
-    ResponseEntity.status(HttpStatus.FORBIDDEN)
+fun unauthorized(ex: Exception) =
+    ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         .body(ErrorResponse(ex.javaClass.simpleName, ex.message!!))

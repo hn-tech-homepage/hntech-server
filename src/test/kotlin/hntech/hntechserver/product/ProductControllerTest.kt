@@ -8,6 +8,7 @@ import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.initTestFile
+import hntech.hntechserver.setMockSession
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -126,6 +127,7 @@ internal class ProductControllerTest {
             content = mapper.writeValueAsString(
                 generateCreateForm(0, "제품", listOf("승인서"))
             )
+            session = setMockSession()
         }
             .andExpect { status { isOk() } }
             .andDo { print() }
@@ -139,7 +141,7 @@ internal class ProductControllerTest {
                 generateCreateForm(0, "", listOf())
             )
         }
-            .andExpect { status { isBadRequest() } }
+            .andExpect { status { isUnauthorized() } }
             .andDo { print() }
     }
 

@@ -7,7 +7,7 @@ import hntech.hntechserver.product.ProductException
 import hntech.hntechserver.question.CommentException
 import hntech.hntechserver.question.QuestionException
 import hntech.hntechserver.utils.badRequest
-import hntech.hntechserver.utils.forbidden
+import hntech.hntechserver.utils.unauthorized
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import javax.security.auth.login.LoginException
@@ -37,6 +37,6 @@ class GlobalExceptionHandler {
     fun adminExceptionHandle(ex: AdminException) = badRequest(ex)
 
     @ExceptionHandler(LoginException::class)
-    fun loginExceptionHandle(ex: LoginException) = forbidden(ex)
+    fun loginExceptionHandle(ex: LoginException) = unauthorized(ex)
 
 }

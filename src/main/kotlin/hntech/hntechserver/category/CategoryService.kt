@@ -37,7 +37,7 @@ class CategoryService(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                file = form.image?.let { fileService.getFile(it) }
+                file = form.imageFileId?.let { fileService.getFile(it) }
             )
         )
     }
@@ -73,12 +73,12 @@ class CategoryService(
         if (category.categoryName != form.categoryName) checkCategoryName(form.categoryName)
         
         // 수정하려는 파일이 현재 파일과 같지 않으면 기존 파일 삭제
-        if (category.file!!.id!! != form.image!!) fileService.deleteFile(category.file!!)
+        if (category.file!!.id!! != form.imageFileId!!) fileService.deleteFile(category.file!!)
 
         category.update(
             categoryName = form.categoryName,
             showInMain = form.showInMain,
-            file = fileService.getFile(form.image!!)
+            file = fileService.getFile(form.imageFileId!!)
         )
         return getAllCategories()
     }
@@ -88,12 +88,12 @@ class CategoryService(
      * 바꿀 카테고리를 목표 카테고리의 앞에 위치시킨다.
      */
     @Transactional
-    fun updateCategorySequence(categoryId: Long, targetCategoryId: Long): List<Category> {
-        val currentSequence: Int = getCategory(categoryId).sequence
-        var targetSequence: Int = when(targetCategoryId) {
+    fun updateCategorySequence(form: UpdateCategorySequenceForm): List<Category> {
+        val currentSequence: Int = getCategory(form.currentCategoryId).sequence
+        var targetSequence: Int = when(form.targetCategoryId) {
             // 타겟 id가 0이면 맨 뒤로 보냄
             0L -> getLastCategory()!!.sequence + 1
-            else -> getCategory(targetCategoryId).sequence
+            else -> getCategory(form.targetCategoryId).sequence
         }
         /**
          * 순서 변경 전 sequence 조정
@@ -105,21 +105,21 @@ class CategoryService(
         else
             categoryRepository.adjustSequenceToLeft(currentSequence, targetSequence)
 
-        if (targetCategoryId == 0L || currentSequence < targetSequence)
+        if (form.targetCategoryId == 0L || currentSequence < targetSequence)
             targetSequence -= 1
         // 바꿀 카테고리의 sequence를 기존 targetCategory의 sequence로 변경
-        getCategory(categoryId).update(sequence = targetSequence)
+        getCategory(form.currentCategoryId).update(sequence = targetSequence)
 
         return getAllCategories()
     }
 
     // 카테고리 삭제
     @Transactional
-    fun deleteCategory(categoryId: Long) {
+    fun deleteCategory(categoryId: Long): Boolean {
         val findCategory = getCategory(categoryId)
         
         // 카테고리에 물려있는 파일들 삭제
-        fileService.deleteFile(findCategory.file!!)
+        findCategory.file?.let { fileService.deleteFile(it) }
         findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
         findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
 
@@ -127,5 +127,6 @@ class CategoryService(
         categoryRepository.adjustSequenceToLeftAll(findCategory.sequence)
 
         categoryRepository.deleteById(categoryId)
+        return true
     }
 }

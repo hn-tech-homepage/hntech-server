@@ -57,7 +57,7 @@ class AdminControllerTest {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(mapOf("password" to "1111"))
         }
-            .andExpect { status { isForbidden() } }
+            .andExpect { status { isUnauthorized() } }
             .andDo { print() }
     }
 
