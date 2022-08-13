@@ -1,6 +1,7 @@
 package hntech.hntechserver.question
 
 import hntech.hntechserver.comment.CommentRepository
+import hntech.hntechserver.comment.CommentResponse
 import hntech.hntechserver.question.dto.*
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable

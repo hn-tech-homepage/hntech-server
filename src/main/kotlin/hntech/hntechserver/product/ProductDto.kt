@@ -5,7 +5,7 @@ import hntech.hntechserver.file.convertDto
 import javax.validation.constraints.NotBlank
 
 // 문서 파일(버튼 이름 포함)
-data class DocFiles(
+data class DocFile(
     var filename: String,
     var fileId: Long
 )
@@ -17,14 +17,14 @@ data class UploadedFiles(
     var productImages: List<Long>,
     var standardImages: List<Long>,
     
-    var docFiles: List<DocFiles>
+    var docFiles: List<DocFile>?
 ) {
     fun getFileIds(): List<Long> {
         val result: MutableList<Long> = mutableListOf()
         result.add(this.representativeImage)
         this.productImages.forEach { result.add(it) }
         this.standardImages.forEach { result.add(it) }
-        this.docFiles.forEach { result.add(it.fileId) }
+        this.docFiles?.forEach { result.add(it.fileId) }
         return result
     }
 }

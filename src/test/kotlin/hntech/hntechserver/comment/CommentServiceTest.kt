@@ -1,9 +1,6 @@
 package hntech.hntechserver.comment
 
 import hntech.hntechserver.question.*
-import hntech.hntechserver.question.dto.CreateCommentForm
-import hntech.hntechserver.question.dto.CommentResponse
-import hntech.hntechserver.question.dto.UpdateCommentForm
 import hntech.hntechserver.question.dto.CreateQuestionForm
 import hntech.hntechserver.utils.logger
 import org.assertj.core.api.Assertions.assertThat
