@@ -1,6 +1,5 @@
 package hntech.hntechserver.utils
 
-import hntech.hntechserver.utils.config.YAML_FILE_PATH_LINUX
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import org.apache.commons.configuration2.Configuration
 import org.apache.commons.configuration2.YAMLConfiguration
@@ -34,7 +33,8 @@ class PropertiesManager {
                 .configure(Parameters().fileBased().setFile(
                     // yaml config 파일 경로
 //                    File("src/main/resources/application-mail.yml"))
-                    File(YAML_FILE_PATH_LINUX)
+//                    File(YAML_FILE_PATH_LINUX)
+                    File(YAML_FILE_PATH_WINDOW)
                 )
             )
 

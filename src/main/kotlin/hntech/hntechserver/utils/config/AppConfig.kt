@@ -1,12 +1,10 @@
 package hntech.hntechserver.utils.config
 
 import hntech.hntechserver.utils.LoggingInterceptor
-import hntech.hntechserver.utils.auth.LoginCheckInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
@@ -40,8 +38,8 @@ class AppConfig : WebMvcConfigurer {
     }
 
     // 정적 이미지 단순 조회
-    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/file/image/**")
-            .addResourceLocations("file://" + FILE_SAVE_PATH_LINUX)
-    }
+//    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+//        registry.addResourceHandler("/file/image/**")
+//            .addResourceLocations("file://" + FILE_SAVE_PATH_LINUX)
+//    }
 }

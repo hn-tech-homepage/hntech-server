@@ -1,7 +1,9 @@
 package hntech.hntechserver.category
 
 import hntech.hntechserver.file.FileService
+import hntech.hntechserver.utils.config.ARCHIVE
 import hntech.hntechserver.utils.config.MAX_MAIN_CATEGORY_COUNT
+import hntech.hntechserver.utils.config.PRODUCT
 import hntech.hntechserver.utils.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -51,6 +53,14 @@ class CategoryService(
 
     // 타입으로 카테고리 전체 조회
     fun getAllByType(type: String): List<Category> = categoryRepository.findAllByType(type)
+
+    // 카테고리 이름 전체 조회 (셀렉트 박스용)
+    fun getAllNames(): List<String> =
+        categoryRepository.findAllByType(PRODUCT)
+            .union(categoryRepository.findAllByType(ARCHIVE))
+            .map { it.categoryName }
+            .toList()
+
 
     // 메인에 표시될 카테고리만 조회
     fun getMainCategories(): List<Category> = categoryRepository.findAllByShowInMain()
