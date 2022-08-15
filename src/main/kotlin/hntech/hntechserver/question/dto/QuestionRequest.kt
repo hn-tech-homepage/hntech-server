@@ -15,6 +15,9 @@ data class CreateQuestionForm(
     @field:PositiveOrZero(message = "비밀번호는 0~9의 숫자로만 입력 가능합니다.")
     var password: String,
 
+    @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
+    var FAQ: String = "false",
+
     @field:NotBlank
     var title: String,
 
@@ -52,7 +55,7 @@ fun convertEntity(question : CreateQuestionForm): Question {
     return Question(
         writer = question.writer,
         password = question.password,
-        FAQ = "false",
+        FAQ = question.FAQ,
         title = question.title,
         content = question.content,
     )

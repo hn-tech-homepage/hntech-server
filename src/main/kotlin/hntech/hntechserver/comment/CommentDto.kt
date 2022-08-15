@@ -30,6 +30,10 @@ data class CommentResponse(
     )
 }
 
+data class CommentListResponse(
+    var comments: List<CommentResponse>
+)
+
 fun convertEntity(comment: CreateCommentForm, question: Question): Comment {
     return Comment(
         question = question,
