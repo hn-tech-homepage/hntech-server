@@ -3,7 +3,7 @@ package hntech.hntechserver.utils.exception
 import hntech.hntechserver.utils.ErrorListResponse
 import hntech.hntechserver.utils.ErrorResponse
 import hntech.hntechserver.utils.badRequest
-import hntech.hntechserver.utils.function.logger
+import hntech.hntechserver.utils.logging.logger
 import hntech.hntechserver.utils.unauthorized
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -17,7 +17,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception::class)
     fun globalErrorHandle(ex: Exception): ResponseEntity<ErrorResponse> {
-        log.warn("[{}] : {}", ex.javaClass.simpleName, ex.message)
+        log.warn("[{}] handled: {}", ex.javaClass.simpleName, ex.message)
         return badRequest(ex)
     }
 

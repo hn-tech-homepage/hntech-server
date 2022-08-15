@@ -1,7 +1,7 @@
 package hntech.hntechserver.utils
 
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
-import hntech.hntechserver.utils.function.logger
+import hntech.hntechserver.utils.logging.logger
 import org.apache.commons.configuration2.Configuration
 import org.apache.commons.configuration2.YAMLConfiguration
 import org.apache.commons.configuration2.builder.ReloadingFileBasedConfigurationBuilder
