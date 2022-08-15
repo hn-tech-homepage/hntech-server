@@ -1,5 +1,6 @@
 package hntech.hntechserver.utils
 
+import hntech.hntechserver.utils.function.logger
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
 import javax.servlet.http.HttpServletRequest
