@@ -5,6 +5,7 @@ import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.ADMIN
 import hntech.hntechserver.utils.config.LOGIN_FAIL
+import hntech.hntechserver.utils.config.YAML_FILE_PATH_LINUX
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logger
 import hntech.hntechserver.utils.scheduler.SchedulerConfig
@@ -114,7 +115,8 @@ class AdminService(
 
     // 메일 변경
     fun updateMail(form: EmailRequest) {
-        val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
+//        val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
+        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
         yml.print("")
         yml.write(
             "spring:\n" +
