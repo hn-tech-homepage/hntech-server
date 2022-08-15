@@ -6,7 +6,7 @@ import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.ADMIN
 import hntech.hntechserver.utils.config.LOGIN_FAIL
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import hntech.hntechserver.utils.scheduler.SchedulerConfig
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

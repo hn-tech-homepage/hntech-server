@@ -2,7 +2,7 @@ package hntech.hntechserver.utils.scheduler
 
 import hntech.hntechserver.question.*
 import hntech.hntechserver.utils.PropertiesManager
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service

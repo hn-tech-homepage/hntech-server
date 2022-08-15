@@ -35,10 +35,8 @@ dependencies {
 	// mail
 	implementation("org.springframework.boot:spring-boot-starter-mail")
 
-	// commons-configuration2
+	// Apache Commons
 	implementation("org.apache.commons:commons-configuration2:2.8.0")
-
-	// commons-beanutils
 	implementation("commons-beanutils:commons-beanutils:1.9.4")
 
 	// mockK
@@ -54,6 +52,9 @@ dependencies {
 
 	// gson
 	implementation("com.google.code.gson:gson:2.9.0")
+
+	// AOP
+	implementation("org.springframework.boot:spring-boot-starter-aop")
 }
 
 allOpen {

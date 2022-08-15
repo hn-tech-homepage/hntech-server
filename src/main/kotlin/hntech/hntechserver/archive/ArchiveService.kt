@@ -2,7 +2,7 @@ package hntech.hntechserver.archive
 
 import hntech.hntechserver.category.CategoryService
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service

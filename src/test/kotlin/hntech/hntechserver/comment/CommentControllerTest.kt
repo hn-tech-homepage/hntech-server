@@ -5,7 +5,7 @@ import hntech.hntechserver.question.Question
 import hntech.hntechserver.question.QuestionRepository
 import hntech.hntechserver.question.QuestionService
 import hntech.hntechserver.question.dto.*
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 

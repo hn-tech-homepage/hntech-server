@@ -27,5 +27,5 @@ const val STANDARD_IMAGE = "규격"
 
 // 관리자 인증 관련
 const val ADMIN = "admin" // 세션 키 용
-const val AUTH_DENIED = "인가 거부 - 로그인 되어 있지 않음."
-const val LOGIN_FAIL = "로그인 실패"
+const val AUTH_DENIED = "로그인 되어 있지 않음."
+const val LOGIN_FAIL = "비밀번호가 일치하지 않습니다."

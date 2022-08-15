@@ -2,7 +2,7 @@ package hntech.hntechserver.comment
 
 import hntech.hntechserver.question.*
 import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach

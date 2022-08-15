@@ -3,7 +3,7 @@ package hntech.hntechserver.admin
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.exception.ValidationException
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import io.swagger.annotations.ApiOperation
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*

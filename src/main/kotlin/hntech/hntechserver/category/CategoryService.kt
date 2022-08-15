@@ -4,7 +4,7 @@ import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.ARCHIVE
 import hntech.hntechserver.utils.config.MAX_MAIN_CATEGORY_COUNT
 import hntech.hntechserver.utils.config.PRODUCT
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.function.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

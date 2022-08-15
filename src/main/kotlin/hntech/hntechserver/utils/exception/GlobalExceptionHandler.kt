@@ -15,6 +15,9 @@ import javax.security.auth.login.LoginException
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception::class)
+    fun globalErrorHandle(ex: Exception) = badRequest(ex)
+
     @ExceptionHandler(FileException::class)
     fun fileUploadErrorHandle(ex: FileException) = badRequest(ex)
 
