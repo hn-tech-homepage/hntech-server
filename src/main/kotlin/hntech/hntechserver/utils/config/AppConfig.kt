@@ -1,6 +1,6 @@
 package hntech.hntechserver.utils.config
 
-import hntech.hntechserver.utils.LoggingInterceptor
+import hntech.hntechserver.utils.logging.LoggingInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.web.servlet.config.annotation.CorsRegistry
@@ -8,9 +8,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class AppConfig : WebMvcConfigurer {
+class AppConfig(private val loggingInterceptor: LoggingInterceptor) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(LoggingInterceptor())
+        registry.addInterceptor(loggingInterceptor)
             .order(1)
             .addPathPatterns("/**")
 

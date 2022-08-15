@@ -1,4 +1,5 @@
 spring:
+  # DB 설정
   jpa:
     hibernate:
       ddl-auto: create
@@ -6,30 +7,40 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
   # mail yml 파일 저장 경로, 배포 시 경로 수정 필요
   config:
     import: file:C:\application-mail.yml
 #    import: /home/ubuntu/spring/application-mail.yml
-  profiles:
-    active: db
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
   jackson:
     serialization:
       fail-on-empty-beans: false
+
   output:
     ansi:
       enabled: always
+
+  # 멀티파트 최대 사이즈 설정
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+
+  # 페이징 기본값 설정
   data:
     web:
       pageable:
-        default-page-size: 15 # 페이징 기본 값
+        default-page-size: 15
+  
+  profiles:
+    active: db
 
+# 에러 응답 설정
 server:
   error:
     include-stacktrace: on_param
@@ -38,6 +49,7 @@ server:
     session:
       tracking-modes: cookie
 
+# 로깅 레벨 설정
 logging:
   level:
     org.hibernate.SQL: info

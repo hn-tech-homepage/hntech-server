@@ -5,7 +5,7 @@ import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.PRODUCT_IMAGE
 import hntech.hntechserver.utils.config.REPRESENTATIVE_IMAGE
 import hntech.hntechserver.utils.config.STANDARD_IMAGE
-import hntech.hntechserver.utils.function.logger
+import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
