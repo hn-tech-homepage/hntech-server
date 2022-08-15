@@ -15,9 +15,13 @@ interface CategoryRepository : JpaRepository<Category, Long> {
     fun countMainCategories(): Int
 
     // 순서로 정렬된 카테고리 반환 [메인에 표시될 8개, 모든 카테고리]
-    @Query("SELECT c from Category c WHERE c.showInMain = true ORDER BY c.sequence")
+    @Query("SELECT c FROM Category c WHERE c.showInMain = true ORDER BY c.sequence")
     fun findAllByShowInMain(): List<Category>
+
     fun findAllByOrderBySequence(): List<Category>
+
+    @Query("SELECT c FROM Category c WHERE c.type = :type ORDER BY c.sequence")
+    fun findAllByType(@Param("type") type: String): List<Category>
 
     // 왼쪽에서 오른쪽으로 이동할 때
     @Modifying(flushAutomatically = true, clearAutomatically = true)

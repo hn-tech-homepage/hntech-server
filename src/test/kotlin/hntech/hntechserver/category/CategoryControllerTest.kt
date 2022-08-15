@@ -111,12 +111,6 @@ class CategoryControllerTest {
             .andExpect { status { isOk() } }
             .andDo { print() }
 
-        val result = mvc.get("/category/1") {}
-            .andExpect { status { isBadRequest() } }
-            .andDo { print() }
-            .andReturn()
-
-        jsonPrint(result)
     }
 
 

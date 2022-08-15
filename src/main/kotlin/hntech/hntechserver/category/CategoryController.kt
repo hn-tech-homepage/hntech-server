@@ -3,6 +3,8 @@ package hntech.hntechserver.category
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.auth.Auth
+import hntech.hntechserver.utils.config.ARCHIVE
+import hntech.hntechserver.utils.config.PRODUCT
 import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -17,11 +19,30 @@ class CategoryController(
     /**
      * 사용자 모드
      */
-    // 제품 카테고리 전체 조회
+    // 카테고리 전체 조회
     @GetMapping
-    fun getAllCategories() =
+    fun getAllCategories(): TotalCategoryListResponse {
+        val product = ProductCategoryListResponse(
+            categoryService.getAllByType(ARCHIVE).map { ProductCategoryResponse(it) }
+        )
+        val archive = ArchiveCategoryListResponse(
+            categoryService.getAllByType(PRODUCT).map { ArchiveCategoryResponse(it) }
+        )
+        return TotalCategoryListResponse(archive, product)
+    }
+
+    // 제품 카테고리 전체 조회
+    @GetMapping("/product")
+    fun getAllProductCategories() =
         ProductCategoryListResponse(
-            categoryService.getAllCategories().map { ProductCategoryResponse(it) }
+            categoryService.getAllByType(PRODUCT).map { ProductCategoryResponse(it) }
+        )
+
+    // 자료실 카테고리 전체 조회
+    @GetMapping("/archive")
+    fun getAllArchiveCategories() =
+        ArchiveCategoryListResponse(
+            categoryService.getAllByType(ARCHIVE).map { ArchiveCategoryResponse(it) }
         )
 
     // 메인에 보여질 카테고리 조회 (최대 개수는 GlobalConfig 에 정의)
