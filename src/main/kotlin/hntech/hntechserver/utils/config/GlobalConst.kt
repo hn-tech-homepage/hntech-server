@@ -12,11 +12,14 @@ const val VALIDATION_ERROR = "validation_error"
 
 // 카테고리
 const val MAX_MAIN_CATEGORY_COUNT = 8
+const val ARCHIVE = "archive"
+const val PRODUCT = "product"
 
 // 문의사항
 const val PAGE_SIZE = 15
 
 // 제품
+
 // 이미지 구분
 const val REPRESENTATIVE_IMAGE = "대표"
 const val PRODUCT_IMAGE = "제품"

@@ -1,9 +1,10 @@
 package hntech.hntechserver.admin
 
-import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.BoolResponse
+import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.exception.ValidationException
 import hntech.hntechserver.utils.logger
+import io.swagger.annotations.ApiOperation
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
@@ -36,13 +37,13 @@ class AdminController(private val adminService: AdminService) {
     ) = BoolResponse(adminService.login(form.password, request))
 
     // 관리자 로그아웃
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     fun logout(request: HttpServletRequest) =
         BoolResponse(adminService.logout(request))
 
     // 비밀번호 변경
     @Auth
-    @PostMapping("/password")
+    @PutMapping("/password")
     fun updatePassword(
         @Valid @RequestBody form: PasswordRequest,
         bindingResult: BindingResult
@@ -53,14 +54,17 @@ class AdminController(private val adminService: AdminService) {
 
     // 인사말 수정
     @Auth
-    @PostMapping("/introduce")
+    @PutMapping("/introduce")
     fun updateIntroduce(@RequestBody form: IntroduceDto) =
         IntroduceDto(adminService.updateIntroduce(form.newIntroduce))
 
     // 조직도, CI, 연혁 수정
+    @ApiOperation(
+        value = "조직도, CI, 연혁 수정",
+        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
     @Auth
-    @PostMapping("/image")
-    fun updateOrgChart(@ModelAttribute form: AdminImageRequest) =
+    @PutMapping("/image")
+    fun updateOthers(@ModelAttribute form: AdminImageRequest) =
         AdminImageResponse(
             where = form.where,
             updatedServerFilename = when(form.where) {
@@ -71,7 +75,7 @@ class AdminController(private val adminService: AdminService) {
 
     // 메일 설정
     @Auth
-    @PostMapping("/mail")
+    @PutMapping("/mail")
     fun updateMail(@Valid @RequestBody form: EmailRequest,
                    bindingResult: BindingResult
     ) {
@@ -81,6 +85,6 @@ class AdminController(private val adminService: AdminService) {
 
     // 하단 (footer) 수정
     @Auth
-    @PostMapping("/footer")
+    @PutMapping("/footer")
     fun updateFooter(@RequestBody form: FooterDto) = FooterDto(adminService.updateFooter(form))
 }

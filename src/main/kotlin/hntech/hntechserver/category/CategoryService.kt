@@ -37,7 +37,8 @@ class CategoryService(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                file = form.imageFileId?.let { fileService.getFile(it) }
+                file = form.imageFileId?.let { fileService.getFile(it) },
+                type = form.type
             )
         )
     }
@@ -47,6 +48,9 @@ class CategoryService(
      */
     // 카테고리 전체 조회
     fun getAllCategories(): List<Category> = categoryRepository.findAllByOrderBySequence()
+
+    // 타입으로 카테고리 전체 조회
+    fun getAllByType(type: String): List<Category> = categoryRepository.findAllByType(type)
 
     // 메인에 표시될 카테고리만 조회
     fun getMainCategories(): List<Category> = categoryRepository.findAllByShowInMain()
