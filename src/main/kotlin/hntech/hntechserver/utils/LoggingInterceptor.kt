@@ -3,6 +3,7 @@ package hntech.hntechserver.utils
 import hntech.hntechserver.utils.function.logger
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.util.ContentCachingResponseWrapper
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -26,6 +27,9 @@ class LoggingInterceptor : HandlerInterceptor {
         modelAndView: ModelAndView?
     ) {
         log.info("------------ Server Response ------------- result : {}", response.status)
+
+        val bytes = ContentCachingResponseWrapper(response).contentAsByteArray
+        print(String(bytes, Charsets.UTF_8))
         super.postHandle(request, response, handler, modelAndView)
     }
 }
