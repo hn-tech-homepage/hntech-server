@@ -5,9 +5,8 @@ import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.ADMIN
 import hntech.hntechserver.utils.config.LOGIN_FAIL
-import hntech.hntechserver.utils.config.YAML_FILE_PATH_LINUX
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import hntech.hntechserver.utils.scheduler.SchedulerConfig
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,7 +37,6 @@ class AdminService(
      */
     fun login(password: String, request: HttpServletRequest): Boolean {
         val admin = getAdmin()
-        println(password + " "+ admin.password)
         if (password == admin.password) {
             request.session.setAttribute(ADMIN, admin)
             return true

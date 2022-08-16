@@ -3,7 +3,7 @@ package hntech.hntechserver.admin
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.exception.ValidationException
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import io.swagger.annotations.ApiOperation
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -46,9 +46,9 @@ class AdminController(private val adminService: AdminService) {
     @PutMapping("/password")
     fun updatePassword(
         @Valid @RequestBody form: PasswordRequest,
-        bindingResult: BindingResult
+        br: BindingResult
     ): PasswordResponse {
-        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        if (br.hasErrors()) throw ValidationException(br)
         return PasswordResponse(adminService.updatePassword(form))
     }
 
@@ -63,23 +63,27 @@ class AdminController(private val adminService: AdminService) {
         value = "조직도, CI, 연혁 수정",
         notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
     @Auth
-    @PutMapping("/image")
-    fun updateOthers(@ModelAttribute form: AdminImageRequest) =
-        AdminImageResponse(
+    @PostMapping("/image")
+    fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImageResponse {
+        log.info("where = {}, file = {}", form.where, form.file)
+        return AdminImageResponse(
             where = form.where,
-            updatedServerFilename = when(form.where) {
-            ORG_CHART -> adminService.updateOrgChart(form.file)
-            CI -> adminService.updateCI(form.file)
-            else -> adminService.updateCompanyHistory(form.file) // history
-        })
+            updatedServerFilename = when (form.where) {
+                ORG_CHART -> adminService.updateOrgChart(form.file)
+                CI -> adminService.updateCI(form.file)
+                else -> adminService.updateCompanyHistory(form.file) // history
+            }
+        )
+    }
 
     // 메일 설정
     @Auth
-    @PutMapping("/mail")
-    fun updateMail(@Valid @RequestBody form: EmailRequest,
-                   bindingResult: BindingResult
+    @PostMapping("/mail")
+    fun updateMail(
+        @Valid @RequestBody form: EmailRequest,
+        br: BindingResult
     ) {
-        if (bindingResult.hasErrors()) throw ValidationException(bindingResult)
+        if (br.hasErrors()) throw ValidationException(br)
         adminService.updateMail(form)
     }
 

@@ -31,7 +31,7 @@ data class QuestionSimpleResponse(
         title = question.title,
         new = isNewCheck(question.createTime),
         status = question.status,
-        createTime = question.createTime.split(" ")[0],
+        createTime = question.createTime,
     )
 }
 
@@ -41,6 +41,7 @@ data class QuestionDetailResponse(
     var password: String,
     var title: String,
     var content: String,
+    var comments: List<CommentResponse>,
     var createTime: String,
     var updateTime: String
 ) {
@@ -50,28 +51,7 @@ data class QuestionDetailResponse(
         password = question.password,
         title = question.title,
         content = question.content,
-        createTime = question.createTime.split(" ")[0],
-        updateTime = question.updateTime
-    )
-}
-
-data class QuestionCompleteResponse(
-    var id: Long,
-    var writer: String,
-    var password: String,
-    var title: String,
-    var content: String,
-    var comments: List<CommentResponse>,
-    var createTime: String,
-    var updateTime: String
-) {
-    constructor(question: Question, comments: List<CommentResponse>): this(
-        id = question.id!!,
-        writer = question.writer,
-        password = question.password,
-        title = question.title,
-        content = question.content,
-        comments = comments,
+        comments = question.comments.map { CommentResponse(it) },
         createTime = question.createTime,
         updateTime = question.updateTime
     )

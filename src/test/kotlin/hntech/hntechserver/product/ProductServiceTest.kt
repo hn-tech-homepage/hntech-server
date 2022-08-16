@@ -6,12 +6,9 @@ import hntech.hntechserver.category.CreateCategoryForm
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.initTestFile
-import hntech.hntechserver.logResult
-import hntech.hntechserver.utils.logger
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 

@@ -3,7 +3,7 @@ package hntech.hntechserver.archive
 import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.config.PAGE_SIZE
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault

@@ -21,15 +21,9 @@ class CategoryController(
      */
     // 카테고리 전체 조회
     @GetMapping
-    fun getAllCategories(): TotalCategoryListResponse {
-        val product = ProductCategoryListResponse(
-            categoryService.getAllByType(ARCHIVE).map { ProductCategoryResponse(it) }
-        )
-        val archive = ArchiveCategoryListResponse(
-            categoryService.getAllByType(PRODUCT).map { ArchiveCategoryResponse(it) }
-        )
-        return TotalCategoryListResponse(archive, product)
-    }
+    fun getAllCategories() =
+        AllCategoryNameListResponse(categoryService.getAllNames())
+
 
     // 제품 카테고리 전체 조회
     @GetMapping("/product")

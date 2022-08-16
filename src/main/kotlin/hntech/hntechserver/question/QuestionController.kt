@@ -47,10 +47,19 @@ class QuestionController(private val questionService: QuestionService) {
         @PathVariable("questionId") id: Long,
         @Valid @RequestBody form: GetQuestionForm,
         br: BindingResult
-    ): QuestionCompleteResponse {
+    ): QuestionDetailResponse {
         if (br.hasErrors()) throw ValidationException(br)
-        return questionService.findQuestionByIdAndPassword(id, form.password)
+        return QuestionDetailResponse(
+            questionService.findQuestionByIdAndPassword(id, form.password)
+        )
     }
+
+    // FAQ 로 설정된 문의사항 상세 조회
+    @GetMapping("/{questionId}")
+    fun getQuestionWithNoPassword(@PathVariable("questionId") id: Long) =
+        QuestionDetailResponse(questionService.getQuestion(id))
+
+
 
     // 문의사항 제목, 내용 수정
     @PutMapping("/{questionId}")

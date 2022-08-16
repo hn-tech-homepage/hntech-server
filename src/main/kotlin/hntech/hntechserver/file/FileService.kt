@@ -1,8 +1,7 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.utils.config.FILE_SAVE_PATH_LINUX
 import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile

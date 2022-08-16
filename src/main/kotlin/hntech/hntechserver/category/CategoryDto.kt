@@ -61,9 +61,8 @@ data class ArchiveCategoryListResponse(
     var categories: List<ArchiveCategoryResponse>
 )
 
-data class TotalCategoryListResponse(
-    var archiveCategories: ArchiveCategoryListResponse,
-    var productCategories: ProductCategoryListResponse,
+data class AllCategoryNameListResponse(
+    var allCategoryNames: List<String>
 )
 
 fun convertDto(c: Category): ProductCategoryResponse =

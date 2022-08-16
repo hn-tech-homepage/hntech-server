@@ -1,6 +1,6 @@
 package hntech.hntechserver.utils.scheduler
 
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import org.springframework.context.annotation.Lazy
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.EnableScheduling

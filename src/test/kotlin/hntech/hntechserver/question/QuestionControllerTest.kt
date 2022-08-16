@@ -2,7 +2,7 @@ package hntech.hntechserver.question
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import hntech.hntechserver.question.dto.*
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 

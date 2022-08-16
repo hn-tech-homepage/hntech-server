@@ -1,12 +1,11 @@
 package hntech.hntechserver.product
 
 import hntech.hntechserver.category.CategoryService
-import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.PRODUCT_IMAGE
 import hntech.hntechserver.utils.config.REPRESENTATIVE_IMAGE
 import hntech.hntechserver.utils.config.STANDARD_IMAGE
-import hntech.hntechserver.utils.logger
+import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

@@ -1,8 +1,10 @@
 package hntech.hntechserver.question
 
 import hntech.hntechserver.comment.CommentRepository
-import hntech.hntechserver.comment.CommentResponse
-import hntech.hntechserver.question.dto.*
+import hntech.hntechserver.question.dto.CreateQuestionForm
+import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
+import hntech.hntechserver.question.dto.UpdateQuestionForm
+import hntech.hntechserver.question.dto.convertEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -15,7 +17,9 @@ class QuestionService(
     private val commentRepository: CommentRepository,
     private val questionAlarmManager: QuestionAlarmManager
 ) {
-    private fun getQuestion(questionId: Long): Question =
+
+    @Transactional(readOnly = true)
+    fun getQuestion(questionId: Long): Question =
         questionRepository.findById(questionId).orElseThrow { throw QuestionException(QUESTION_NOT_FOUND) }
 
     private fun getQuestionByIdAndPassword(questionId: Long, password: String): Question =
@@ -33,16 +37,15 @@ class QuestionService(
     // 전체 문의사항 페이징 조회
     fun findAllQuestions(pageable: Pageable): Page<Question> =
         questionRepository.findAll(pageable)
+
     
     // 자주 묻는 질문 리스트 조회
     fun findFAQ(pageable: Pageable): Page<Question> = questionRepository.findAllFAQ(pageable)
 
     // 작성한 비밀번호로 해당 문의사항 조회
-    fun findQuestionByIdAndPassword(id: Long, password: String): QuestionCompleteResponse {
-        val question = getQuestionByIdAndPassword(id, password)
-        val comments = commentRepository.findAllByQuestionId(id).map { CommentResponse(it) }
-        return QuestionCompleteResponse(question, comments)
-    }
+    fun findQuestionByIdAndPassword(id: Long, password: String): Question =
+        getQuestionByIdAndPassword(id, password)
+
 
     // 문의사항 제목, 내용 수정
     fun updateQuestion(id: Long, form: UpdateQuestionForm): Question {
