@@ -12,6 +12,7 @@ class File(
 
     var originalFilename: String = "",
     var serverFilename: String = "",
+    var savedPath: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "archive_id")
@@ -33,12 +34,14 @@ class File(
         serverFilename: String? = null,
         fileArchive: Archive? = null,
         fileProduct: Product? = null,
-        type: String? = null
+        type: String? = null,
+        savedPath: String? = null,
     ) {
         originalFilename?.let { this.originalFilename = it }
         serverFilename?.let { this.serverFilename = it }
         fileArchive?.let { this.fileArchive = it }
         fileProduct?.let { this.fileProduct = it }
         type?.let { this.type = it }
+        savedPath?.let { this.savedPath = it }
     }
 }

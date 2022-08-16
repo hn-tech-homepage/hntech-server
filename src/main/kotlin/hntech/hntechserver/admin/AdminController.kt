@@ -45,7 +45,7 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @PutMapping("/password")
     fun updatePassword(
-        @Valid @RequestBody form: PasswordRequest,
+        @Valid @RequestBody form: UpdatePasswordForm,
         br: BindingResult
     ): PasswordResponse {
         if (br.hasErrors()) throw ValidationException(br)

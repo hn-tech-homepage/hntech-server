@@ -17,7 +17,7 @@ data class IntroduceDto(
     var newIntroduce: String,
 )
 
-data class PasswordRequest(
+data class UpdatePasswordForm(
     @field:NotEmpty
     var curPassword: String,
 
