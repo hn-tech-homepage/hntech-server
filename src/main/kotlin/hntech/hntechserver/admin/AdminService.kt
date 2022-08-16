@@ -115,8 +115,8 @@ class AdminService(
 
     // 메일 변경
     fun updateMail(form: EmailRequest) {
-//        val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
-        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
+        val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
+//        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
         yml.print("")
         yml.write(
             "spring:\n" +

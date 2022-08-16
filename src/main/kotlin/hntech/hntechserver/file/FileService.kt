@@ -13,8 +13,8 @@ import java.util.*
 class FileService(private val fileRepository: FileRepository) {
     val log = logger()
 
-//    val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST
-    val baseFilePath = FILE_SAVE_PATH_LINUX
+    val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST
+//    val baseFilePath = FILE_SAVE_PATH_LINUX
 
     /**
      * 파일 생성(저장)

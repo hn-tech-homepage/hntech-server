@@ -33,8 +33,8 @@ class PropertiesManager {
             ReloadingFileBasedConfigurationBuilder(YAMLConfiguration::class.java)
                 .configure(Parameters().fileBased().setFile(
                     // yaml config 파일 경로
-//                    File("src/main/resources/application-mail.yml"))
-                    File(YAML_FILE_PATH_LINUX)
+                    File(YAML_FILE_PATH_WINDOW)
+//                    File(YAML_FILE_PATH_LINUX)
                 )
             )
 
