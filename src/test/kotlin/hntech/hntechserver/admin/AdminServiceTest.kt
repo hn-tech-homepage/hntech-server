@@ -22,12 +22,6 @@ class AdminServiceTest {
     @Autowired lateinit var fileService: FileService
     @Autowired lateinit var fileRepository: FileRepository
 
-//    @BeforeEach
-//    fun `어드민 생성`() {
-//        adminRepository.deleteAll()
-//        adminService.createAdmin("1234")
-//    }
-
     @AfterEach
     fun `mock 파일 삭제`() = fileService.deleteAllFiles(fileRepository.findAll())
 

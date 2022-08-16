@@ -8,7 +8,7 @@ import hntech.hntechserver.utils.config.ADMIN_IMAGE_SAVE_PATH_WINDOW
 import hntech.hntechserver.utils.config.LOGIN_FAIL
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logging.logger
-import hntech.hntechserver.utils.scheduler.SchedulerConfig
+import hntech.hntechserver.utils.scheduler.EmailSchedulingConfigurer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -22,7 +22,7 @@ class AdminService(
     private val adminRepository: AdminRepository,
     private val fileService: FileService,
     private val fileRepository: FileRepository,
-    private val schedulerConfig: SchedulerConfig
+    private val emailSchedulingConfigurer: EmailSchedulingConfigurer
     )
 {
     val log = logger()
@@ -119,7 +119,7 @@ class AdminService(
         )
 
     // 메일 변경
-    fun updateMail(form: EmailRequest) {
+    fun updateMail(form: UpdateEmailAccountForm): UpdateEmailAccountForm {
         val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
 //        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
         yml.print("")
@@ -139,6 +139,7 @@ class AdminService(
             "        starttls.enable: true"
         )
         yml.close()
+        return form
     }
 
     // 메일 전송 시각 조회
@@ -147,7 +148,7 @@ class AdminService(
     // 메일 전송 시각 수정
     fun updateMailSendingTime(newTime: String): String {
         getAdmin().update(newMailSendingTime = newTime)
-        schedulerConfig.setCron(newTime)
+        emailSchedulingConfigurer.setCron(newTime)
         return getMailSendingTime()
     }
 }

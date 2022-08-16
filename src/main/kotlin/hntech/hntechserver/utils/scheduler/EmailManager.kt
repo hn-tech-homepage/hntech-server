@@ -5,12 +5,13 @@ import hntech.hntechserver.utils.PropertiesManager
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Service
-class MailManager(
+@Component
+class EmailManager(
     private val mailSender: JavaMailSender,
     private val questionAlarmManager: QuestionAlarmManager,
     private val propertiesManager: PropertiesManager
@@ -47,7 +48,7 @@ class MailManager(
 
             questionAlarmManager.clearQuestionList()
         } catch (e: Exception) {
-            log.debug(e.message)
+            log.warn(e.message)
             throw EmailException(EMAIL_SEND_ERROR)
         }
     }

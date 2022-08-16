@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component
 @Component
 @EnableScheduling
 @EnableAsync
-class SchedulerConfig(
-    private val mailManager: MailManager
+class EmailSchedulingConfigurer(
+    private val emailManager: EmailManager
 ): SchedulingConfigurer {
     private val log = logger()
 
@@ -31,7 +31,7 @@ class SchedulerConfig(
         taskRegistrar.addTriggerTask(
             {
                 // cron 시간마다 실행할 작업
-                mailManager.sendMail()
+                emailManager.sendMail()
             },
             {
                 // 위에 정의한 작업의 실행 트리거 설정
