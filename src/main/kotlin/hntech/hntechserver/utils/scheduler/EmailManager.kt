@@ -36,9 +36,35 @@ class EmailManager(
             mailHelper.setTo(email)
             mailHelper.setSubject("HNTECH 웹페이지: $now 신규 등록된 문의사항")
             text += "<html>" +
-                    "<body>" +
-                    "<h3>HNTECH 웹페이지에 금일 등록된 문의사항 목록입니다.</h3>"
-            // TODO QuestionsToSend 받아서 파싱
+                    "<head>" +
+                    "   <meta charset='utf-8'>" +
+                    "</head>" +
+                    "<body>"
+
+            text += "<h3>금일 등록된 문의 내역</h3>" +
+                    "<table width='100%' style='border-collapse: collapse;' border=1>" +
+                    "<th>번호</th> <th>작성자</th> <th>제목</th>"
+            questions.newQuestions.forEach {
+                text += "<tr> " +
+                        "<td style='text-align: center;'>${it.id}</td> " +
+                        "<td style='text-align: center;'>${it.writer}</td> " +
+                        "<td style='text-align: center;'>${it.title}</td> " +
+                        "</tr>"
+            }
+            text += "</table>"
+            
+            text += "<h3>금일 새 댓글이 달린 문의 내역</h3>" +
+                    "<table width='100%' style='border-collapse: collapse;' border=1>" +
+                    "<th>번호</th> <th>작성자</th> <th>제목</th>"
+            questions.newCommentQuestions.forEach {
+                text += "<tr>" +
+                        "<td style='text-align: center;'>${it.id}</td>" +
+                        "<td style='text-align: center;'>${it.writer}</td> " +
+                        "<td style='text-align: center;'>${it.title}</td> " +
+                        "</tr>"
+            }
+            text += "</table>"
+
             text += "</body>" +
                     "</html>"
 
