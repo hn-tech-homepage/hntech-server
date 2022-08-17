@@ -65,7 +65,6 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @PostMapping("/image")
     fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImageResponse {
-        log.info("where = {}, file = {}", form.where, form.file)
         return AdminImageResponse(
             where = form.where,
             updatedServerFilename = when (form.where) {
