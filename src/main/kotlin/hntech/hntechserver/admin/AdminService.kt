@@ -4,10 +4,11 @@ import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.config.ADMIN
+import hntech.hntechserver.utils.config.ADMIN_IMAGE_SAVE_PATH_WINDOW
 import hntech.hntechserver.utils.config.LOGIN_FAIL
 import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logging.logger
-import hntech.hntechserver.utils.scheduler.SchedulerConfig
+import hntech.hntechserver.utils.scheduler.EmailSchedulingConfigurer
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -21,7 +22,7 @@ class AdminService(
     private val adminRepository: AdminRepository,
     private val fileService: FileService,
     private val fileRepository: FileRepository,
-    private val schedulerConfig: SchedulerConfig
+    private val emailSchedulingConfigurer: EmailSchedulingConfigurer
     )
 {
     val log = logger()
@@ -53,7 +54,8 @@ class AdminService(
      * 관리자 생성
      */
     fun createAdmin(password: String): Admin {
-        if (adminRepository.findAll().isNotEmpty()) throw AdminException("기존 관리자 존재. 중복 관리자 생성 불가능")
+        if (adminRepository.findAll().isNotEmpty())
+            throw AdminException("기존 관리자 존재. 중복 관리자 생성 불가능.")
         fileRepository.save(File(originalFilename = "관리자용 더미 파일", serverFilename = ""))
         return adminRepository.save(Admin(password = password))
     }
@@ -62,8 +64,10 @@ class AdminService(
      * 관리자 정보 수정
      */
     // 관리자 비밀번호 변경
-    fun updatePassword(form: PasswordRequest): String {
-        if (form.curPassword != form.curPasswordCheck) throw AdminException(ADMIN_PASSWORD_VALID_FAIL)
+    fun updatePassword(form: UpdatePasswordForm): String {
+        if (form.curPassword != form.curPasswordCheck)
+            throw AdminException(ADMIN_PASSWORD_VALID_FAIL)
+
         getAdmin().update(newPassword = form.newPassword)
         return getAdmin().password
     }
@@ -75,9 +79,12 @@ class AdminService(
         return admin.introduce
     }
 
-    private fun updateImage(newImage: MultipartFile, serverFilename: String): String {
+    private fun updateImage(
+        newImage: MultipartFile,
+        serverFilename: String,
+    ): String {
         val curImage = fileService.getFile(serverFilename)
-        val savedFile = fileService.updateFile(curImage, newImage)
+        val savedFile = fileService.updateFile(curImage, newImage, ADMIN_IMAGE_SAVE_PATH_WINDOW)
         return savedFile.serverFilename
     }
 
@@ -112,7 +119,7 @@ class AdminService(
         )
 
     // 메일 변경
-    fun updateMail(form: EmailRequest) {
+    fun updateMail(form: UpdateEmailAccountForm): UpdateEmailAccountForm {
         val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
 //        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
         yml.print("")
@@ -132,6 +139,7 @@ class AdminService(
             "        starttls.enable: true"
         )
         yml.close()
+        return form
     }
 
     // 메일 전송 시각 조회
@@ -140,7 +148,7 @@ class AdminService(
     // 메일 전송 시각 수정
     fun updateMailSendingTime(newTime: String): String {
         getAdmin().update(newMailSendingTime = newTime)
-        schedulerConfig.setCron(newTime)
+        emailSchedulingConfigurer.setCron(newTime)
         return getMailSendingTime()
     }
 }

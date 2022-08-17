@@ -15,57 +15,57 @@ class FileService(private val fileRepository: FileRepository) {
     val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST
 //    val baseFilePath = FILE_SAVE_PATH_LINUX
 
+
     /**
      * 파일 생성(저장)
      */
     // 단일 파일 저장
-    fun saveFile(file: MultipartFile): File {
+    fun saveFile(
+        file: MultipartFile,
+        path: String = baseFilePath
+    ): File {
         if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
             val originalFilename: String = file.originalFilename.toString()
             val extensionType: String = originalFilename.split(".")[1] // 파일 확장자 추출하기
             val serverFilename: String = UUID.randomUUID().toString() + ".$extensionType"
-            val savedPath = baseFilePath + serverFilename
-
+            val savedPath = path + serverFilename
             log.info("originFilename = {}, savedPath = {}", originalFilename, savedPath)
-
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
             return fileRepository.save(
                 File(
                     originalFilename = originalFilename,
-                    serverFilename = serverFilename
+                    serverFilename = serverFilename,
+                    savedPath = savedPath
                 )
             )
         } catch (e: Exception) {
-            log.error(e.message)
+            log.warn(e.message)
             throw FileException(FILE_SAVING_ERROR)
         }
     }
     
     // 복수 파일 저장
-    fun saveAllFiles(files: List<MultipartFile>): MutableList<File> {
-        val result: MutableList<File> = mutableListOf()
-        files.forEach { result.add(saveFile(it)) }
-        return result
-    }
+    fun saveAllFiles(files: List<MultipartFile>) =
+        files.map { saveFile(it) }.toMutableList()
 
     /**
      * 파일 조회
      */
-//    fun getFile(serverFilename: String): File =
-//        fileRepository.findByServerFilename(serverFilename) ?: throw FileException(FILE_NOT_FOUND)
     fun getFile(fileId: Long): File =
-        fileRepository.findById(fileId).orElseThrow { FileException(FILE_NOT_FOUND + " / 아이디 : $fileId") }
-    fun getFiles(idList: List<Long>): MutableList<File> {
-        val result: MutableList<File> = mutableListOf()
-        idList.forEach { result.add(getFile(it)) }
-        return result
-    }
+        fileRepository.findById(fileId).orElseThrow { FileException("$FILE_NOT_FOUND / 아이디 : $fileId") }
+
+    fun getFile(serverFilename: String): File =
+        fileRepository.findByServerFilename(serverFilename)!!
+
+    fun getFiles(idList: List<Long>) = idList.map { getFile(it) }.toMutableList()
+
     fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
-    fun getOriginalFilename(serverFilename: String): String = fileRepository.findByServerFilename(serverFilename)!!.originalFilename
-    fun getFile(serverFilename: String): File = fileRepository.findByServerFilename(serverFilename)!!
+
+    fun getOriginalFilename(serverFilename: String): String =
+        fileRepository.findByServerFilename(serverFilename)!!.originalFilename
 
     /**
      * 파일 삭제
@@ -113,23 +113,21 @@ class FileService(private val fileRepository: FileRepository) {
 
     // 복수 파일 삭제
     fun deleteAllFiles(files: MutableList<File>) = files.forEach { deleteFile(it) }
-
-    // 복수 파일 삭제
-    fun deleteFiles(idList: List<Long>) =
-        idList.forEach { deleteFile(it) }
+    fun deleteFiles(idList: List<Long>) = idList.forEach { deleteFile(it) }
 
     /**
      * 파일 수정 (업데이트 : 기존파일 삭제 후 새로운 파일 저장)
      */
     // 단일 파일 수정
-    fun updateFile(oldFile: File, newFile: MultipartFile, entity: Any? = null, fileType: String? = null): File {
+    fun updateFile(
+        oldFile: File,
+        newFile: MultipartFile,
+        newSavedPath: String? = null,
+    ): File {
         deleteFile(oldFile)
+        newSavedPath?.let {
+            return saveFile(newFile, path = newSavedPath)
+        } ?:
         return saveFile(newFile)
-    }
-
-    // 복수 파일 수정
-    fun updateFiles(oldFiles: List<File>, newFiles: List<MultipartFile>, entity: Any? = null, fileType: String? = null): List<File> {
-        deleteAllFiles(oldFiles as MutableList<File>)
-        return saveAllFiles(newFiles)
     }
 }

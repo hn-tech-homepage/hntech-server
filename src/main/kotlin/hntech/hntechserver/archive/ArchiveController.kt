@@ -1,8 +1,7 @@
 package hntech.hntechserver.archive
 
-import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.BoolResponse
-import hntech.hntechserver.utils.config.PAGE_SIZE
+import hntech.hntechserver.utils.auth.Auth
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -26,7 +25,7 @@ class ArchiveController(
 
     // 목록 조회
     @GetMapping("/all")
-    fun getArchives(@PageableDefault(size = PAGE_SIZE, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable) =
+    fun getArchives(@PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable) =
         ArchiveListResponse(archiveService.getArchives(pageable))
 
     /**

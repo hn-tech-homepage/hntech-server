@@ -1,12 +1,20 @@
 package hntech.hntechserver.utils.config
 
-const val IMAGE_PATH_FOR_WINDOW = "file:\\C:\\dev\\"
-const val FILE_SAVE_PATH_WINDOW_TEST = "C:\\dev\\"
-const val FILE_SAVE_PATH_LINUX = "/home/ubuntu/spring/files"
-
-// application-mail.yml 파일 위치
+/**
+ * 경로
+ */
+// Windows
+const val DOCS_SAVE_PATH_WINDOW = "C:\\dev\\files\\documents\\"
+const val IMAGE_SAVE_PATH_WINDOW = "C:\\dev\\files\\images\\"
+const val ADMIN_IMAGE_SAVE_PATH_WINDOW = "C:\\dev\\files\\admin\\"
+const val FILE_SAVE_PATH_WINDOW_TEST = "C:\\dev\\files\\"
 const val YAML_FILE_PATH_WINDOW = "C:\\application-mail.yml"
+const val DUMMY_FILE_PATH_WINDOW = "C:\\dev\\files\\dummy.jpg"
+
+// Linux
+const val FILE_SAVE_PATH_LINUX = "/home/ubuntu/spring/files"
 const val YAML_FILE_PATH_LINUX = "/home/ubuntu/spring/application-mail.yml"
+
 
 const val VALIDATION_ERROR = "validation_error"
 
@@ -14,9 +22,6 @@ const val VALIDATION_ERROR = "validation_error"
 const val MAX_MAIN_CATEGORY_COUNT = 8
 const val ARCHIVE = "archive"
 const val PRODUCT = "product"
-
-// 문의사항
-const val PAGE_SIZE = 15
 
 // 제품
 

@@ -17,7 +17,7 @@ data class IntroduceDto(
     var newIntroduce: String,
 )
 
-data class PasswordRequest(
+data class UpdatePasswordForm(
     @field:NotEmpty
     var curPassword: String,
 
@@ -42,10 +42,14 @@ data class AdminImageResponse(
     var updatedServerFilename: String,
 )
 
-data class EmailRequest(
+data class UpdateEmailAccountForm(
     @field:Email
     var email: String,
     var password: String,
+)
+
+data class EmailSendingTimeResponse(
+    var time: String,
 )
 
 data class FooterDto(

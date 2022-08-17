@@ -5,7 +5,6 @@ import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.setMockSession
 import hntech.hntechserver.testFile
-import hntech.hntechserver.utils.config.ADMIN
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.multipart
@@ -72,7 +70,7 @@ class AdminControllerTest {
 
     @Test
     fun `관리자 비밀번호 변경 성공`() {
-        val form = PasswordRequest("1234", "1234", "1111")
+        val form = UpdatePasswordForm("1234", "1234", "1111")
         mvc.post("/admin/password") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(form)

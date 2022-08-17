@@ -16,12 +16,14 @@ import java.nio.charset.Charset
 class FileController(private val fileService: FileService) {
 
     @PostMapping("/upload")
-    fun upload(@RequestParam("file") file: MultipartFile): FileResponse =
-        convertDto(fileService.saveFile(file))
+    fun upload(@RequestParam("file") file: MultipartFile) =
+        FileResponse(fileService.saveFile(file))
 
     @PostMapping("/upload-all")
     fun uploadAll(@ModelAttribute files: List<MultipartFile>): FileListResponse =
-        convertDto(fileService.saveAllFiles(files))
+        FileListResponse(
+            fileService.saveAllFiles(files).map { FileResponse(it) }
+        )
 
     @GetMapping("/download/{filename}")
     fun download(@PathVariable("filename") filename: String): ResponseEntity<Resource> {

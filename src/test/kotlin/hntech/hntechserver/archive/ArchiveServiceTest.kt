@@ -38,8 +38,8 @@ class ArchiveServiceTest {
         fileService.saveFile(testFile)
 
         // 제품 카테고리 세팅
-        categoryService.createCategory(CreateCategoryForm("스프링클러", testFileEntity1.id))
-        categoryService.createCategory(CreateCategoryForm("신축배관", testFileEntity1.id))
+        categoryService.createCategory(CreateCategoryForm("스프링클러", type = "product", imageFileId = testFileEntity1.id))
+        categoryService.createCategory(CreateCategoryForm("신축배관", type = "product", imageFileId = testFileEntity1.id))
 
         // 자료실 카테고리 세팅
         categoryService.createCategory(CreateCategoryForm("일반자료"))

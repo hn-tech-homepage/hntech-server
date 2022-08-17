@@ -2,6 +2,7 @@ package hntech.hntechserver.utils.logging
 
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.util.ContentCachingRequestWrapper
 import org.springframework.web.util.ContentCachingResponseWrapper
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -21,7 +22,7 @@ class ServletWrappingFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val wrapRequest = CustomRequestServletWrapper(request)
+        val wrapRequest = ContentCachingRequestWrapper(request)
         val wrapResponse = ContentCachingResponseWrapper(response)
         filterChain.doFilter(wrapRequest, wrapResponse)
         wrapResponse.copyBodyToResponse() // 이 부분이 핵심이다. 이를 통해 response 를 다시 읽을 수 있다.

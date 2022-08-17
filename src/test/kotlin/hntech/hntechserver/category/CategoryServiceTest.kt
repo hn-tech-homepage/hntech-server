@@ -48,7 +48,7 @@ internal class CategoryServiceTest(
         // 테스트 시작 전 테스트 데이터 저장
         beforeSpec {
             repeat(10) {
-                categoryService.createCategory(CreateCategoryForm("카테고리$it", uploadFile().id))
+                categoryService.createCategory(CreateCategoryForm("카테고리$it", imageFileId = uploadFile().id))
             }
         }
 
@@ -61,7 +61,7 @@ internal class CategoryServiceTest(
         }
 
         test("카테고리 생성 성공") {
-            val form = CreateCategoryForm("생성된 카테고리", uploadFile().id)
+            val form = CreateCategoryForm("생성된 카테고리", imageFileId = uploadFile().id)
 
             val expected = convertDto(categoryService.createCategory(form))
             val actual = categoryRepository.findAllByOrderBySequence().map { convertDto(it) }
@@ -69,7 +69,7 @@ internal class CategoryServiceTest(
             actual shouldContain expected
         }
         test("카테고리 생성 실패: 이미 존재하는 카테고리 이름") {
-            val form = CreateCategoryForm(savedCategories[0].categoryName, uploadFile().id)
+            val form = CreateCategoryForm(savedCategories[0].categoryName, imageFileId = uploadFile().id)
 
             shouldThrow<CategoryException> { categoryService.createCategory(form) }
             deleteFile()
@@ -183,7 +183,7 @@ internal class CategoryServiceTest(
         test("카테고리 삭제") {
             uploadFile()
             val category = categoryService.createCategory(
-                CreateCategoryForm("카테고리", savedFiles[fLastIdx].id))
+                CreateCategoryForm("카테고리", imageFileId = savedFiles[fLastIdx].id))
 
             categoryService.deleteCategory(category.id!!)
 

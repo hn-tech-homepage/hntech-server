@@ -45,7 +45,7 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @PutMapping("/password")
     fun updatePassword(
-        @Valid @RequestBody form: PasswordRequest,
+        @Valid @RequestBody form: UpdatePasswordForm,
         br: BindingResult
     ): PasswordResponse {
         if (br.hasErrors()) throw ValidationException(br)
@@ -80,12 +80,19 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @PostMapping("/mail")
     fun updateMail(
-        @Valid @RequestBody form: EmailRequest,
+        @Valid @RequestBody form: UpdateEmailAccountForm,
         br: BindingResult
-    ) {
+    ): UpdateEmailAccountForm {
         if (br.hasErrors()) throw ValidationException(br)
-        adminService.updateMail(form)
+        return adminService.updateMail(form)
     }
+
+    // 메일 시간 설정
+    @Auth
+    @PostMapping("/mail/{time}")
+    fun updateMailingTime(@PathVariable("time") time: String) =
+        EmailSendingTimeResponse(adminService.updateMailSendingTime(time))
+
 
     // 하단 (footer) 수정
     @Auth

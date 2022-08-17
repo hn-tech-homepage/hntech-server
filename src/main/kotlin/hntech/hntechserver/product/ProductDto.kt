@@ -1,7 +1,6 @@
 package hntech.hntechserver.product
 
 import hntech.hntechserver.file.FileResponse
-import hntech.hntechserver.file.convertDto
 import javax.validation.constraints.NotBlank
 
 // 문서 파일(버튼 이름 포함)
@@ -60,7 +59,7 @@ data class ProductDetailResponse(
         category = product.productCategory.categoryName,
         productName = product.productName,
         description = product.description,
-        files = product.files.map { convertDto(it) }
+        files = product.files.map { FileResponse(it) }
     )
 }
 
@@ -74,7 +73,7 @@ data class ProductSimpleResponse(
         id = product.id,
         sequence = product.sequence,
         productName = product.productName,
-        image = convertDto(product.files[0])
+        image = FileResponse(product.files[0])
     )
 }
 

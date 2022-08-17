@@ -8,7 +8,6 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -22,11 +21,6 @@ class AdminServiceTest {
     @Autowired lateinit var adminRepository: AdminRepository
     @Autowired lateinit var fileService: FileService
     @Autowired lateinit var fileRepository: FileRepository
-
-    @BeforeEach
-    fun `어드민 생성`() {
-        adminService.createAdmin("1234")
-    }
 
     @AfterEach
     fun `mock 파일 삭제`() = fileService.deleteAllFiles(fileRepository.findAll())
@@ -55,7 +49,7 @@ class AdminServiceTest {
     @Test
     fun `관리자 비밀번호 변경 성공`() {
         // given
-        val form = PasswordRequest("1234", "1234", "1111")
+        val form = UpdatePasswordForm("1234", "1234", "1111")
 
         // when
         val expected: String = adminService.updatePassword(form)
@@ -68,7 +62,7 @@ class AdminServiceTest {
 
     @Test
     fun `관리자 비밀번호 변경 실패 - 현재 비밀번호를 틀림`() {
-        val form = PasswordRequest("1234", "1111", "1234")
+        val form = UpdatePasswordForm("1234", "1111", "1234")
         shouldThrow<AdminException> { adminService.updatePassword(form) }
     }
 

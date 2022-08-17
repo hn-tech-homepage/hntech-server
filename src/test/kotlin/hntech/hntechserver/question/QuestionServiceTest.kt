@@ -4,10 +4,8 @@ import hntech.hntechserver.logResult
 import hntech.hntechserver.question.dto.CreateQuestionForm
 import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
 import hntech.hntechserver.question.dto.UpdateQuestionForm
-import hntech.hntechserver.utils.config.PAGE_SIZE
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,6 +26,7 @@ class QuestionServiceTest {
     val dummyForm = CreateQuestionForm(
         "userA",
         "1111",
+        "false",
         "test title1",
         "test contents1"
     )
@@ -46,7 +45,7 @@ class QuestionServiceTest {
     @Test
     fun `문의사항 목록 조회 (페이징)`() {
         // given
-        val pageable: Pageable = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "id")
+        val pageable: Pageable = PageRequest.of(0, 15, Sort.Direction.DESC, "id")
         repeat(30) { setDummyQuestion() }
 
         // when
@@ -65,7 +64,7 @@ class QuestionServiceTest {
     fun `자주 묻는 질문 조회 성공`() {
         // given
         val idList = mutableListOf<Long>()
-        val pageable: Pageable = PageRequest.of(0, PAGE_SIZE, Sort.Direction.DESC, "id")
+        val pageable: Pageable = PageRequest.of(0, 15, Sort.Direction.DESC, "id")
         repeat(20) {
             idList.add(setDummyQuestion().id!!)
         }
