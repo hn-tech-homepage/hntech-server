@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils.config
+package hntech.hntechserver.config
 
 /**
  * 경로
@@ -7,7 +7,7 @@ package hntech.hntechserver.utils.config
 const val DOCS_SAVE_PATH_WINDOW = "C:\\dev\\files\\documents\\"
 const val IMAGE_SAVE_PATH_WINDOW = "C:\\dev\\files\\images\\"
 const val ADMIN_IMAGE_SAVE_PATH_WINDOW = "C:\\dev\\files\\admin\\"
-const val FILE_SAVE_PATH_WINDOW_TEST = "C:\\dev\\files\\"
+const val FILE_SAVE_PATH_WINDOW = "C:\\dev\\files\\"
 const val YAML_FILE_PATH_WINDOW = "C:\\application-mail.yml"
 const val DUMMY_FILE_PATH_WINDOW = "C:\\dev\\files\\dummy.jpg"
 
@@ -22,8 +22,10 @@ const val VALIDATION_ERROR = "validation_error"
 const val MAX_MAIN_CATEGORY_COUNT = 8
 const val ARCHIVE = "archive"
 const val PRODUCT = "product"
+const val UNKNOWN = "Unknown"
 
-// 제품
+// 자료실
+const val MAX_NOTICE_NUM = 10
 
 // 이미지 구분
 const val REPRESENTATIVE_IMAGE = "대표"

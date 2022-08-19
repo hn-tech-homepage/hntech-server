@@ -2,7 +2,6 @@ package hntech.hntechserver.utils.logging
 
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
-import org.springframework.web.util.ContentCachingResponseWrapper
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -15,24 +14,28 @@ class LoggingInterceptor(
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         // form-data 를 담는 request 객체는 타입 캐스팅을 할 수 없어서 처리해준다
-        if (!request.contentType.startsWith("multipart/form-data")) {
-            val wrapRequest = request as MultiAccessRequestWrapper
-            val body = converter.convert(wrapRequest.getContents())
-            log.info(
-                "-------------> [REQUEST] {} {} {} BODY\n{}",
-                request.remoteAddr,
-                request.method,
-                request.requestURL,
-                body
-            )
-        } else {
-            log.info(
-                "-------------> [REQUEST] {} {} {}",
-                request.remoteAddr,
-                request.method,
-                request.requestURL,
-            )
-        }
+//        if (
+//            !request.contentType.startsWith("multipart/form-data") &&
+//            request.method.startsWith("POST") &&
+//            request.contentType.isNotEmpty()
+//        ) {
+//            val wrapRequest = request as MultiAccessRequestWrapper
+//            val body = converter.convert(wrapRequest.getContents())
+//            log.info(
+//                "-------------> [REQUEST] {} {} {} BODY\n{}",
+//                request.remoteAddr,
+//                request.method,
+//                request.requestURL,
+//                body
+//            )
+//        } else {
+//            log.info(
+//                "-------------> [REQUEST] {} {} {}",
+//                request.remoteAddr,
+//                request.method,
+//                request.requestURL,
+//            )
+//        }
         return super.preHandle(request, response, handler)
     }
 
@@ -43,9 +46,9 @@ class LoggingInterceptor(
         handler: Any,
         ex: Exception?
     ) {
-        val wrapResponse = response as ContentCachingResponseWrapper
-        val body = converter.convert(wrapResponse.contentAsByteArray)
-        log.info("<------------ [RESPONSE] {} JSON {}", response.status, body)
+//        val wrapResponse = response as ContentCachingResponseWrapper
+//        val body = converter.convert(wrapResponse.contentAsByteArray)
+//        log.info("<------------ [RESPONSE] {} JSON {}", response.status, body)
         super.afterCompletion(request, response, handler, ex)
     }
 

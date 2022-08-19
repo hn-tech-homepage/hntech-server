@@ -34,12 +34,17 @@ class AdminController(private val adminService: AdminService) {
     fun login(
         @RequestBody form: LoginForm,
         request: HttpServletRequest
-    ) = BoolResponse(adminService.login(form.password, request))
+    ): BoolResponse {
+        log.info("admin login")
+        return BoolResponse(adminService.login(form.password, request))
+    }
 
     // 관리자 로그아웃
     @GetMapping("/logout")
-    fun logout(request: HttpServletRequest) =
-        BoolResponse(adminService.logout(request))
+    fun logout(request: HttpServletRequest): BoolResponse {
+        log.info("admin logout")
+        return BoolResponse(adminService.logout(request))
+    }
 
     // 비밀번호 변경
     @Auth

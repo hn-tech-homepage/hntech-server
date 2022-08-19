@@ -1,12 +1,12 @@
 package hntech.hntechserver.admin
 
+import hntech.hntechserver.config.ADMIN
+import hntech.hntechserver.config.ADMIN_IMAGE_SAVE_PATH_WINDOW
+import hntech.hntechserver.config.LOGIN_FAIL
+import hntech.hntechserver.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.config.ADMIN
-import hntech.hntechserver.utils.config.ADMIN_IMAGE_SAVE_PATH_WINDOW
-import hntech.hntechserver.utils.config.LOGIN_FAIL
-import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logging.logger
 import hntech.hntechserver.utils.scheduler.EmailSchedulingConfigurer
 import org.springframework.stereotype.Service
@@ -39,7 +39,8 @@ class AdminService(
     fun login(password: String, request: HttpServletRequest): Boolean {
         val admin = getAdmin()
         if (password == admin.password) {
-            request.session.setAttribute(ADMIN, admin)
+            val session = request.getSession(true)
+            session.setAttribute(ADMIN, admin)
             return true
         }
         throw LoginException(LOGIN_FAIL)

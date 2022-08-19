@@ -56,14 +56,3 @@ data class QuestionDetailResponse(
         updateTime = question.updateTime
     )
 }
-
-
-fun convertDto(questions: Page<Question>): QuestionPagedResponse {
-    val questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
-    questions.forEach { questionList.add(QuestionSimpleResponse(it)) }
-    return QuestionPagedResponse(
-        currentPage = questions.number,
-        totalPage = questions.totalPages,
-        questions = questionList
-    )
-}

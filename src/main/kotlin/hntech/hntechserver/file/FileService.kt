@@ -1,6 +1,6 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
+import hntech.hntechserver.config.FILE_SAVE_PATH_WINDOW
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +12,7 @@ import java.util.*
 class FileService(private val fileRepository: FileRepository) {
     val log = logger()
 
-    val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST
+    val baseFilePath = FILE_SAVE_PATH_WINDOW
 //    val baseFilePath = FILE_SAVE_PATH_LINUX
 
 

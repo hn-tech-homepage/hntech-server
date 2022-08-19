@@ -26,8 +26,8 @@ class Category (
     @OneToMany(mappedBy = "productCategory", cascade = [CascadeType.ALL])
     var products: MutableList<Product> = mutableListOf(),
 
-    // archive 카테고리 전용
-    @OneToMany(mappedBy = "archiveCategory", cascade = [CascadeType.ALL])
+    // archive 카테고리 전용 (모든 카테고리가 들어감)
+    @OneToMany(mappedBy = "category", cascade = [CascadeType.ALL])
     var archives: MutableList<Archive> = mutableListOf(),
 ) {
     fun update(

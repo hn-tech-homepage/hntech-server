@@ -3,8 +3,8 @@ package hntech.hntechserver.category
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.auth.Auth
-import hntech.hntechserver.utils.config.ARCHIVE
-import hntech.hntechserver.utils.config.PRODUCT
+import hntech.hntechserver.config.ARCHIVE
+import hntech.hntechserver.config.PRODUCT
 import hntech.hntechserver.utils.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*

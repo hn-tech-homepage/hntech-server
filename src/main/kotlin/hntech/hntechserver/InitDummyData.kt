@@ -1,6 +1,8 @@
 package hntech.hntechserver
 
 import hntech.hntechserver.admin.AdminService
+import hntech.hntechserver.category.CategoryService
+import hntech.hntechserver.category.CreateCategoryForm
 import hntech.hntechserver.question.QuestionService
 import hntech.hntechserver.question.dto.CreateQuestionForm
 import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
@@ -35,5 +37,14 @@ class InitDummyData {
     fun adminInitializer(adminService: AdminService) =
         ApplicationRunner {
             adminService.createAdmin("1234")
+        }
+
+    @Bean
+    fun categoryInitializer(categoryService: CategoryService) =
+        ApplicationRunner {
+            categoryService.createCategory(CreateCategoryForm("스프링클러"))
+            categoryService.createCategory(CreateCategoryForm("일반자료"))
+            categoryService.createCategory(CreateCategoryForm("신축배관"))
+            categoryService.createCategory(CreateCategoryForm("제품승인서"))
         }
 }

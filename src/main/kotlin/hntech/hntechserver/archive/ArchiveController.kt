@@ -26,7 +26,15 @@ class ArchiveController(
     // 목록 조회
     @GetMapping("/all")
     fun getArchives(@PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable) =
-        ArchiveListResponse(archiveService.getArchives(pageable))
+        ArchivePagedResponse(archiveService.getArchives(pageable))
+
+    // 공지사항 조회
+    @GetMapping("/notice")
+    fun getAllNotice() =
+        ArchiveNoticeResponse(
+            archiveService.getAllNotice().map { ArchiveSimpleResponse(it) }
+        )
+
 
     /**
      * 관리자 모드

@@ -31,7 +31,4 @@ class MultiAccessRequestWrapper(request: HttpServletRequest) : HttpServletReques
 
     // contents 를 byteArray 로 반환
     fun getContents(): ByteArray = this.inputStream.readAllBytes()
-
-
-
 }

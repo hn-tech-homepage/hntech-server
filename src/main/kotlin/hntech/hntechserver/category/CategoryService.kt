@@ -1,9 +1,9 @@
 package hntech.hntechserver.category
 
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.config.ARCHIVE
-import hntech.hntechserver.utils.config.MAX_MAIN_CATEGORY_COUNT
-import hntech.hntechserver.utils.config.PRODUCT
+import hntech.hntechserver.config.ARCHIVE
+import hntech.hntechserver.config.MAX_MAIN_CATEGORY_COUNT
+import hntech.hntechserver.config.PRODUCT
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
