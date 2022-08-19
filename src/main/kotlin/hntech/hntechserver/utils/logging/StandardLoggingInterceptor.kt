@@ -1,5 +1,6 @@
 package hntech.hntechserver.utils.logging
 
+import hntech.hntechserver.utils.function.getHeadersAsString
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
@@ -14,7 +15,7 @@ class StandardLoggingInterceptor : HandlerInterceptor {
     val log = logger()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        log.info("{}", getHeadersAsString(request))
+        log.info("{}", request.getHeadersAsString())
         log.info(
             "-------------- User Request {} -------------- {}: {}",
             request.remoteAddr,
@@ -30,6 +31,7 @@ class StandardLoggingInterceptor : HandlerInterceptor {
         handler: Any,
         ex: Exception?
     ) {
+        log.info("{}", response.getHeadersAsString())
         log.info("------------ Server Response ------------- result : {}", response.status)
         super.afterCompletion(request, response, handler, ex)
     }

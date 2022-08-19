@@ -25,7 +25,7 @@ class ServletWrappingFilter : OncePerRequestFilter() {
         val wrapRequest = MultiAccessRequestWrapper(request) // 커스텀으로 생성한 Wrapper
         val wrapResponse = ContentCachingResponseWrapper(response)
         filterChain.doFilter(wrapRequest, wrapResponse)
-        wrapResponse.copyBodyToResponse() // 이 부분이 핵심이다. 이를 통해 response 를 다시 읽을 수 있다.
+        wrapResponse.copyBodyToResponse()
     }
 
 }

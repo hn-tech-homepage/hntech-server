@@ -18,6 +18,13 @@ class Admin(
     /**
      * 회사 정보
      */
+    // 로고
+    var logoImage: String = "",
+    
+    // 배너 사진
+    @OneToMany(mappedBy = "admin", cascade = [CascadeType.ALL])
+    var bannerImages: MutableList<Banner> = mutableListOf(),
+
     // 인사말
     var introduce: String = "",
 
@@ -38,24 +45,38 @@ class Admin(
     var phone: String = "", // TEL
     var fax: String = "", // FAX
 
-    // 문의사항 메일 발송 시각
-    var mailSendingTime: String = "", // cron
+    /**
+     * 알림 메일 관련
+     */
+    var sendEmailAccount: String = "",
+    var sendEmailPassword: String = "",
+    var receiveEmailAccount: String = "",
+    var emailSendingTime: String = "", // cron
 ) {
     fun update(
+        newLogo: String? = null,
         newPassword: String? = null,
         newIntroduce: String? = null,
         newOrgChartImage: String? = null,
         newCompInfoImage: String? = null,
         newHistoryImage: String? = null,
+        newSendEmailAccount: String? = null,
+        newSendEmailPassword: String? = null,
+        newReceiveEmailAccount: String? = null,
         newMailSendingTime: String? = null,
     ) {
+        newLogo?.let { this.logoImage = it }
         newPassword?.let { this.password = it }
         newIntroduce?.let { this.introduce = it }
         newOrgChartImage?.let { this.orgChartImage = it }
         newCompInfoImage?.let { this.compInfoImage = it }
         newHistoryImage?.let { this.historyImage = it }
-        newMailSendingTime?.let { this.mailSendingTime = it }
+        newSendEmailAccount?.let { this.sendEmailAccount = it }
+        newSendEmailPassword?.let { this.sendEmailPassword = it }
+        newReceiveEmailAccount?.let { this.receiveEmailAccount = it }
+        newMailSendingTime?.let { this.emailSendingTime = it }
     }
+
 
     fun updateFooter(newAddress: String, newAS: String, newPhone: String, newFax: String): Admin {
         this.address = newAddress
@@ -66,3 +87,16 @@ class Admin(
     }
 
 }
+
+@Entity
+class Banner(
+    @Id @GeneratedValue
+    @Column(name = "banner_id")
+    val id: Long? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    var admin: Admin,
+
+    var imgServerFilename: String = "",
+)

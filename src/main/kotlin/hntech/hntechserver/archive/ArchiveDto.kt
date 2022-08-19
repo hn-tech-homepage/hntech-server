@@ -16,6 +16,7 @@ data class ArchiveForm(
 data class ArchiveDetailResponse(
     var id: Long,
     var categoryName: String,
+    var notice: String,
     var title: String,
     var content: String,
     var createTime: String,
@@ -24,10 +25,11 @@ data class ArchiveDetailResponse(
     constructor(a: Archive) : this(
         id = a.id!!,
         categoryName = a.category?.categoryName ?: UNKNOWN,
+        notice = a.notice,
         title = a.title,
         content = a.content,
         createTime = a.updateTime,
-        files = a.files.map { FileResponse(it) }
+        files = a.files.map { FileResponse(it.file) }
     )
 }
 
@@ -49,12 +51,14 @@ data class ArchiveSimpleResponse(
 
 data class ArchivePagedResponse(
     var currentPage: Int,
-    var totalPage: Int,
+    var totalPages: Int,
+    var totalElements: Long,
     var archives: List<ArchiveSimpleResponse>
 ) {
     constructor(archives: Page<Archive>) : this(
         currentPage = archives.number,
-        totalPage = archives.totalPages,
+        totalPages = archives.totalPages,
+        totalElements = archives.totalElements,
         archives = archives.map { ArchiveSimpleResponse(it) }.toList()
     )
 }

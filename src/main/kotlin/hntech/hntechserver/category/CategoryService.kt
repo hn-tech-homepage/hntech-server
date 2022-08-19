@@ -1,9 +1,9 @@
 package hntech.hntechserver.category
 
-import hntech.hntechserver.file.FileService
 import hntech.hntechserver.config.ARCHIVE
 import hntech.hntechserver.config.MAX_MAIN_CATEGORY_COUNT
 import hntech.hntechserver.config.PRODUCT
+import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -134,7 +134,7 @@ class CategoryService(
         
         // 카테고리에 물려있는 파일들 삭제
         findCategory.file?.let { fileService.deleteFile(it) }
-        findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
+//        findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
         findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
 
         // 카테고리 순서 조정

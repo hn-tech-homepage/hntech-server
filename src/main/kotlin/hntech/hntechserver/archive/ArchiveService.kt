@@ -15,6 +15,7 @@ class ArchiveService(
     private val archiveRepository: ArchiveRepository,
     private val categoryService: CategoryService,
     private val fileService: FileService,
+    private val archiveFileRepository: ArchiveFileRepository,
     ) {
     val log = logger()
 
@@ -44,7 +45,10 @@ class ArchiveService(
 
         // 파일 지정하기 (파일이 없으면 수행 X)
         if (form.files.isNotEmpty()) {
-            val files = form.files.map { fileService.getFile(it) }.toMutableList()
+            val files = form.files.map {
+                val savedFile = fileService.getFile(it)
+                archiveFileRepository.save(ArchiveFile(archive = archive, file = savedFile))
+            }.toMutableList()
             archive.update(files = files)
         }
 
@@ -80,8 +84,13 @@ class ArchiveService(
         checkNoticeable()
 
         // 기존 오래된 파일들은 삭제
-        fileService.deleteAllFiles(archive.files)
-        val files = form.files.map { fileService.getFile(it) }.toMutableList()
+        fileService.deleteAllFiles(archive.files.map { it.file }.toMutableList())
+        archiveFileRepository.deleteAll(archive.files)
+
+        val files = form.files.map {
+            val savedFile = fileService.getFile(it)
+            archiveFileRepository.save(ArchiveFile(archive = archive, file = savedFile))
+        }.toMutableList()
 
         archive.update(
             notice = form.notice,
@@ -100,7 +109,7 @@ class ArchiveService(
     @Transactional
     fun deleteArchive(id: Long): Boolean {
         val targetArchive = getArchive(id)
-        fileService.deleteAllFiles(targetArchive.files)
+        fileService.deleteAllFiles(targetArchive.files.map { it.file }.toMutableList())
         archiveRepository.deleteById(id)
         return true
     }

@@ -20,9 +20,10 @@ import javax.servlet.http.HttpServletRequest
 @Transactional
 class AdminService(
     private val adminRepository: AdminRepository,
+    private val bannerRepository: BannerRepository,
     private val fileService: FileService,
     private val fileRepository: FileRepository,
-    private val emailSchedulingConfigurer: EmailSchedulingConfigurer
+    private val emailSchedulingConfigurer: EmailSchedulingConfigurer,
     )
 {
     val log = logger()
@@ -89,6 +90,29 @@ class AdminService(
         return savedFile.serverFilename
     }
 
+    // 로고 수정
+    fun updateLogo(newImage: MultipartFile): String {
+        val admin = getAdmin()
+        admin.update(newLogo = updateImage(newImage, admin.logoImage))
+        return admin.logoImage
+    }
+
+    // 배너 여러장 수정
+    fun updateBanner(newImages: List<String>): List<String> {
+        val admin = getAdmin()
+
+        // 기존에 저장된 배너 삭제
+        bannerRepository.deleteAll()
+        admin.bannerImages.clear()
+
+        newImages.forEach {
+            val banner = Banner(admin = admin, imgServerFilename = it)
+            bannerRepository.save(banner)
+        }
+
+        return newImages
+    }
+
     // 조직도 수정
     fun updateOrgChart(newImage: MultipartFile): String {
         val admin = getAdmin()
@@ -140,11 +164,16 @@ class AdminService(
             "        starttls.enable: true"
         )
         yml.close()
+        val admin = getAdmin()
+        admin.update(
+            newSendEmailAccount = form.email,
+            newSendEmailPassword = form.password
+        )
         return form
     }
 
     // 메일 전송 시각 조회
-    fun getMailSendingTime(): String = getAdmin().mailSendingTime
+    fun getMailSendingTime(): String = getAdmin().emailSendingTime
 
     // 메일 전송 시각 수정
     fun updateMailSendingTime(newTime: String): String {

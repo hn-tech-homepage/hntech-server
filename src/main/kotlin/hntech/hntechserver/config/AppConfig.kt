@@ -1,6 +1,6 @@
 package hntech.hntechserver.config
 
-import hntech.hntechserver.utils.logging.StandardLoggingInterceptor
+import hntech.hntechserver.utils.logging.JsonLoggingInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
@@ -8,11 +8,13 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class AppConfig(private val loggingInterceptor: StandardLoggingInterceptor) : WebMvcConfigurer {
+class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(loggingInterceptor)
             .order(1)
+//            .addPathPatterns("/admin", "/category", "/question", "/file", "/product", "/comment", "/files")
             .addPathPatterns("/**")
+            .excludePathPatterns("/files/**")
     }
 
     // CORS 설정
