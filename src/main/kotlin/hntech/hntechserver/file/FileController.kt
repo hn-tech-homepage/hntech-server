@@ -1,5 +1,6 @@
 package hntech.hntechserver.file
 
+import hntech.hntechserver.utils.BoolResponse
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.http.CacheControl
@@ -36,10 +37,13 @@ class FileController(private val fileService: FileService) {
         
         return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .cacheControl(CacheControl.noCache()) // 정적 리소스를 내려줄때 성능을 높히기 위해 브라우저에서 캐싱하는데, 이러면 오래된 리소스를 내려줄 위험이 있어서 캐시를 끈다.
+            .cacheControl(CacheControl.noCache())
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${finalFilename}")
             .body(resource)
     }
+
+    @DeleteMapping("/{fileId}")
+    fun deleteById(@PathVariable("fileId") id: Long) = BoolResponse(fileService.deleteFile(id))
 
 
 

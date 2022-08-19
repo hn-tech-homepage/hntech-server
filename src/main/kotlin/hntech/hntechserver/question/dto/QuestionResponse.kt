@@ -7,12 +7,14 @@ import org.springframework.data.domain.Page
 
 data class QuestionPagedResponse(
     var currentPage: Int,
-    var totalPage: Int,
+    var totalPages: Int,
+    var totalElements: Long,
     var questions: List<QuestionSimpleResponse>
 ) {
     constructor(questions: Page<Question>) : this(
         currentPage = questions.number,
-        totalPage = questions.totalPages,
+        totalPages = questions.totalPages,
+        totalElements = questions.totalElements,
         questions = questions.map { QuestionSimpleResponse(it) }.toList()
     )
 }
@@ -54,16 +56,5 @@ data class QuestionDetailResponse(
         comments = question.comments.map { CommentResponse(it) },
         createTime = question.createTime,
         updateTime = question.updateTime
-    )
-}
-
-
-fun convertDto(questions: Page<Question>): QuestionPagedResponse {
-    val questionList: ArrayList<QuestionSimpleResponse> = arrayListOf()
-    questions.forEach { questionList.add(QuestionSimpleResponse(it)) }
-    return QuestionPagedResponse(
-        currentPage = questions.number,
-        totalPage = questions.totalPages,
-        questions = questionList
     )
 }

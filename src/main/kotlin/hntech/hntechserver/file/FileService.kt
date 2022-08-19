@@ -1,6 +1,6 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
+import hntech.hntechserver.config.FILE_SAVE_PATH_WINDOW
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +12,7 @@ import java.util.*
 class FileService(private val fileRepository: FileRepository) {
     val log = logger()
 
-    val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST
+    val baseFilePath = FILE_SAVE_PATH_WINDOW
 //    val baseFilePath = FILE_SAVE_PATH_LINUX
 
 
@@ -55,17 +55,16 @@ class FileService(private val fileRepository: FileRepository) {
      * 파일 조회
      */
     fun getFile(fileId: Long): File =
-        fileRepository.findById(fileId).orElseThrow { FileException("$FILE_NOT_FOUND / 아이디 : $fileId") }
+        fileRepository.findById(fileId).orElseThrow { FileException("$FILE_NOT_FOUND / ID : $fileId") }
 
     fun getFile(serverFilename: String): File =
-        fileRepository.findByServerFilename(serverFilename)!!
+        fileRepository.findByServerFilename(serverFilename) ?: throw FileException(FILE_NOT_FOUND)
 
     fun getFiles(idList: List<Long>) = idList.map { getFile(it) }.toMutableList()
 
     fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
 
-    fun getOriginalFilename(serverFilename: String): String =
-        fileRepository.findByServerFilename(serverFilename)!!.originalFilename
+    fun getOriginalFilename(serverFilename: String): String = getFile(serverFilename).originalFilename
 
     /**
      * 파일 삭제
@@ -86,19 +85,24 @@ class FileService(private val fileRepository: FileRepository) {
     }
 
     // 단일 파일 삭제
+//    fun deleteFile(fileId: Long): Boolean {
+//        return try {
+//            val file = fileRepository.findById(fileId).get()
+//            val targetFile = java.io.File(baseFilePath + file.serverFilename)
+//            if (targetFile.exists()) {
+//                targetFile.delete()
+//                fileRepository.delete(file)
+//            }
+//            true
+//        } catch (e: Exception) {
+//            false
+//        }
+//    }
     fun deleteFile(fileId: Long): Boolean {
-        return try {
-            val file = fileRepository.findById(fileId).get()
-            val targetFile = java.io.File(baseFilePath + file.serverFilename)
-            if (targetFile.exists()) {
-                targetFile.delete()
-                fileRepository.delete(file)
-            }
-            true
-        } catch (e: Exception) {
-            false
-        }
+        fileRepository.deleteById(fileId)
+        return true
     }
+
     
     // 스토리지의 파일 삭제 (디비는 안건드림)
     fun deleteFile(serverFilename: String): Boolean {

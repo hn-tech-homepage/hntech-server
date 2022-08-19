@@ -6,7 +6,7 @@ import javax.persistence.*
 
 @Entity
 class Comment (
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     var id: Long? = null,
 

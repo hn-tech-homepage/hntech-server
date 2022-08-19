@@ -1,12 +1,15 @@
 package hntech.hntechserver.file
 
 import hntech.hntechserver.archive.Archive
+import hntech.hntechserver.archive.ArchiveFile
 import hntech.hntechserver.product.Product
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import javax.persistence.*
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class File(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
     val id: Long? = null,
 
@@ -14,9 +17,12 @@ class File(
     var serverFilename: String = "",
     var savedPath: String = "",
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "archive_id")
-    var fileArchive: Archive? = null,
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "archive_id")
+//    var fileArchive: Archive? = null,
+
+    @OneToMany(mappedBy = "file", cascade = [CascadeType.ALL])
+    var archives: MutableList<ArchiveFile> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -39,9 +45,16 @@ class File(
     ) {
         originalFilename?.let { this.originalFilename = it }
         serverFilename?.let { this.serverFilename = it }
-        fileArchive?.let { this.fileArchive = it }
+//        fileArchive?.let { this.fileArchive = it }
         fileProduct?.let { this.fileProduct = it }
         type?.let { this.type = it }
         savedPath?.let { this.savedPath = it }
     }
+
+    // DB 파일 엔티티가 삭제되면 로컬에 저장되있는 실제 파일도 삭제
+    @PreRemove
+    fun deleteSavedRealFile() {
+        java.io.File(savedPath).delete()
+    }
+    
 }
