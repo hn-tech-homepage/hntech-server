@@ -2,12 +2,11 @@ package hntech.hntechserver.product
 
 import hntech.hntechserver.category.Category
 import hntech.hntechserver.file.File
-import org.springframework.web.multipart.MultipartFile
 import javax.persistence.*
 
 @Entity
 class Product(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     var id: Long? = null,
 

@@ -6,14 +6,8 @@ import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
 @Entity
-@SequenceGenerator(
-    name = "ARCHIVE_PK_GENERATOR",
-    sequenceName = "ARCHIVE_SEQ",
-    initialValue = 1,
-    allocationSize = 50
-)
 class Archive(
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ARCHIVE_PK_GENERATOR")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "archive_id")
     var id: Long? = null,
 
@@ -50,7 +44,7 @@ class Archive(
 
 @Entity
 class ArchiveFile(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "archive_file_id")
     val id: Long? = null,
 

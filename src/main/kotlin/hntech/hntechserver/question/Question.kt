@@ -5,14 +5,8 @@ import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
 @Entity
-@SequenceGenerator(
-    name = "QUESTION_PK_GENERATOR",
-    sequenceName = "QUESTION_SEQ",
-    initialValue = 1,
-    allocationSize = 50
-)
 class Question(
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "QUESTION_PK_GENERATOR")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     var id: Long? = null,
 

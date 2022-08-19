@@ -3,13 +3,8 @@ package hntech.hntechserver.admin
 import javax.persistence.*
 
 @Entity
-@SequenceGenerator(
-    name = "ADMIN_PK_GENERATOR",
-    sequenceName = "ADMIN_SEQ",
-    initialValue = 1
-)
 class Admin(
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADMIN_PK_GENERATOR")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "admin_id")
     var id: Long? = null,
 
@@ -77,7 +72,6 @@ class Admin(
         newMailSendingTime?.let { this.emailSendingTime = it }
     }
 
-
     fun updateFooter(newAddress: String, newAS: String, newPhone: String, newFax: String): Admin {
         this.address = newAddress
         this.afterService = newAS
@@ -90,7 +84,7 @@ class Admin(
 
 @Entity
 class Banner(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "banner_id")
     val id: Long? = null,
 

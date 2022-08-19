@@ -3,11 +3,13 @@ package hntech.hntechserver.file
 import hntech.hntechserver.archive.Archive
 import hntech.hntechserver.archive.ArchiveFile
 import hntech.hntechserver.product.Product
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import javax.persistence.*
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 class File(
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
     val id: Long? = null,
 

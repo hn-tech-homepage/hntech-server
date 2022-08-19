@@ -8,7 +8,7 @@ import javax.persistence.*
 
 @Entity
 class Category (
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     val id: Long? = null,
 
