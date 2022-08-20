@@ -3,7 +3,7 @@ package hntech.hntechserver
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import hntech.hntechserver.admin.Admin
-import hntech.hntechserver.utils.config.ADMIN
+import hntech.hntechserver.config.ADMIN
 import org.springframework.mock.web.MockHttpSession
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MvcResult

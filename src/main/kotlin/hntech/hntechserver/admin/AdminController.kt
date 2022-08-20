@@ -26,6 +26,7 @@ class AdminController(private val adminService: AdminService) {
     @GetMapping("/footer")
     fun getFooter() = FooterDto(adminService.getAdmin())
 
+
     /**
      * 관리자 모드
      */
@@ -34,12 +35,23 @@ class AdminController(private val adminService: AdminService) {
     fun login(
         @RequestBody form: LoginForm,
         request: HttpServletRequest
-    ) = BoolResponse(adminService.login(form.password, request))
+    ): BoolResponse {
+        log.info("admin login")
+        return BoolResponse(adminService.login(form.password, request))
+    }
 
     // 관리자 로그아웃
     @GetMapping("/logout")
-    fun logout(request: HttpServletRequest) =
-        BoolResponse(adminService.logout(request))
+    fun logout(request: HttpServletRequest): BoolResponse {
+        log.info("admin logout")
+        return BoolResponse(adminService.logout(request))
+    }
+
+    // 관리자 패널 정보 조회
+    @Auth
+    @GetMapping("/panel")
+    fun getPanelInfo() =
+        AdminPanelInfoResponse(adminService.getAdmin())
 
     // 비밀번호 변경
     @Auth
@@ -58,23 +70,30 @@ class AdminController(private val adminService: AdminService) {
     fun updateIntroduce(@RequestBody form: IntroduceDto) =
         IntroduceDto(adminService.updateIntroduce(form.newIntroduce))
 
-    // 조직도, CI, 연혁 수정
+    // 로고, 조직도, CI, 연혁 수정
     @ApiOperation(
         value = "조직도, CI, 연혁 수정",
-        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
+        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 로고 : logo, 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
     @Auth
     @PostMapping("/image")
     fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImageResponse {
-        log.info("where = {}, file = {}", form.where, form.file)
         return AdminImageResponse(
             where = form.where,
             updatedServerFilename = when (form.where) {
+                LOGO -> adminService.updateLogo(form.file)
                 ORG_CHART -> adminService.updateOrgChart(form.file)
                 CI -> adminService.updateCI(form.file)
                 else -> adminService.updateCompanyHistory(form.file) // history
             }
         )
     }
+
+    // 배너 수정
+    @Auth
+    @PutMapping("/banner")
+    fun updateBanners(@RequestBody form: BannerDto) =
+        BannerDto(adminService.updateBanner(form.imgServerFilenameList))
+
 
     // 메일 설정
     @Auth

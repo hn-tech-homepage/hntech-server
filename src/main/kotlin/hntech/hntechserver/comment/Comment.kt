@@ -6,7 +6,7 @@ import javax.persistence.*
 
 @Entity
 class Comment (
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     var id: Long? = null,
 
@@ -16,9 +16,8 @@ class Comment (
 
     var writer: String = "",
     var sequence: Int = 0,
-
-    // 중복되는 부분
     var content: String = "",
+
 ) : BaseTimeEntity() {
 
     fun update(content: String) {

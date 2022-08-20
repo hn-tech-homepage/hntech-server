@@ -3,7 +3,7 @@ package hntech.hntechserver.question
 import hntech.hntechserver.logResult
 import hntech.hntechserver.question.dto.CreateQuestionForm
 import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
-import hntech.hntechserver.question.dto.UpdateQuestionForm
+import hntech.hntechserver.question.dto.UpdateClientQuestionForm
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -96,7 +96,7 @@ class QuestionServiceTest {
     fun `문의사항 내용 수정 성공`() {
         // given
         val origin = setDummyQuestion()
-        val updateForm = UpdateQuestionForm("test title2", "test contents2")
+        val updateForm = UpdateClientQuestionForm("test title2", "test contents2")
 
         // when
         val expected = questionService.updateQuestion(origin.id!!, updateForm)
@@ -114,7 +114,7 @@ class QuestionServiceTest {
         val updateForm = UpdateQuestionFAQForm("처리중")
 
         // when
-        val expected = questionService.updateStatus(origin.id!!, updateForm.FAQ)
+        val expected = questionService.setStatusComplete(origin.id!!, updateForm.FAQ)
         val actual = questionRepository.findById(origin.id!!).get()
 
         // then

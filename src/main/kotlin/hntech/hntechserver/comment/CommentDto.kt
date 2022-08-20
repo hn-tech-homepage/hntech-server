@@ -1,18 +1,20 @@
 package hntech.hntechserver.comment
 
-import hntech.hntechserver.question.Question
+import hntech.hntechserver.config.MAX_COMMENT_LENGTH
+import hntech.hntechserver.config.MAX_COMMENT_LENGTH_MSG
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.Size
 
 data class CreateCommentForm(
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = 10, message = "이름을 제대로 입력해 주세요.")
     var writer: String,
 
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = MAX_COMMENT_LENGTH, message = MAX_COMMENT_LENGTH_MSG)
     var content: String
 )
 
 data class UpdateCommentForm(
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = MAX_COMMENT_LENGTH, message = MAX_COMMENT_LENGTH_MSG)
     var content: String
 )
 
@@ -33,11 +35,3 @@ data class CommentResponse(
 data class CommentListResponse(
     var comments: List<CommentResponse>
 )
-
-fun convertEntity(comment: CreateCommentForm, question: Question): Comment {
-    return Comment(
-        question = question,
-        writer = comment.writer,
-        content = comment.content
-    )
-}

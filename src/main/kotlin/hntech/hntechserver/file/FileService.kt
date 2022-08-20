@@ -1,6 +1,6 @@
 package hntech.hntechserver.file
 
-import hntech.hntechserver.utils.config.FILE_SAVE_PATH_WINDOW_TEST
+import hntech.hntechserver.config.*
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +12,7 @@ import java.util.*
 class FileService(private val fileRepository: FileRepository) {
     val log = logger()
 
-    val baseFilePath = FILE_SAVE_PATH_WINDOW_TEST
+    val baseFilePath = FILE_SAVE_PATH_WINDOW
 //    val baseFilePath = FILE_SAVE_PATH_LINUX
 
 
@@ -22,15 +22,26 @@ class FileService(private val fileRepository: FileRepository) {
     // 단일 파일 저장
     fun saveFile(
         file: MultipartFile,
-        path: String = baseFilePath
+        saveType: String = FILE_TYPE_DEFAULT
     ): File {
         if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
             val originalFilename: String = file.originalFilename.toString()
             val extensionType: String = originalFilename.split(".")[1] // 파일 확장자 추출하기
             val serverFilename: String = UUID.randomUUID().toString() + ".$extensionType"
-            val savedPath = path + serverFilename
+            val savedPath = when(saveType) {
+                FILE_TYPE_ADMIN -> ADMIN_IMAGE_SAVE_PATH_WINDOW
+                FILE_TYPE_DOCS -> DOCS_SAVE_PATH_WINDOW
+                FILE_TYPE_IMAGE -> IMAGE_SAVE_PATH_WINDOW
+                else -> FILE_SAVE_PATH_WINDOW
+//                FILE_TYPE_ADMIN -> ADMIN_IMAGE_SAVE_PATH_LINUX
+//                FILE_TYPE_DOCS -> DOCS_SAVE_PATH_LINUX
+//                FILE_TYPE_IMAGE -> IMAGE_SAVE_PATH_LINUX
+//                else -> FILE_SAVE_PATH_WINDOW
+            } + serverFilename
+
             log.info("originFilename = {}, savedPath = {}", originalFilename, savedPath)
+
             // 서버 로컬 파일 스토리지에 해당 자료 저장
             file.transferTo(java.io.File(savedPath))
 
@@ -55,51 +66,24 @@ class FileService(private val fileRepository: FileRepository) {
      * 파일 조회
      */
     fun getFile(fileId: Long): File =
-        fileRepository.findById(fileId).orElseThrow { FileException("$FILE_NOT_FOUND / 아이디 : $fileId") }
+        fileRepository.findById(fileId).orElseThrow { FileException("$FILE_NOT_FOUND / ID : $fileId") }
 
     fun getFile(serverFilename: String): File =
-        fileRepository.findByServerFilename(serverFilename)!!
+        fileRepository.findByServerFilename(serverFilename) ?: throw FileException(FILE_NOT_FOUND)
 
     fun getFiles(idList: List<Long>) = idList.map { getFile(it) }.toMutableList()
 
     fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
 
-    fun getOriginalFilename(serverFilename: String): String =
-        fileRepository.findByServerFilename(serverFilename)!!.originalFilename
+    fun getOriginalFilename(serverFilename: String): String = getFile(serverFilename).originalFilename
 
     /**
      * 파일 삭제
      */
     // 단일 파일 삭제
-    fun deleteFile(file: File): Boolean {
-        return try {
-            val savedPath = baseFilePath + file.serverFilename
-            val targetFile = java.io.File(savedPath)
-            if (targetFile.exists()) {
-                targetFile.delete()
-                fileRepository.delete(file)
-            }
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
+    fun deleteFile(file: File) = fileRepository.delete(file)
+    fun deleteFile(fileId: Long) = fileRepository.deleteById(fileId)
 
-    // 단일 파일 삭제
-    fun deleteFile(fileId: Long): Boolean {
-        return try {
-            val file = fileRepository.findById(fileId).get()
-            val targetFile = java.io.File(baseFilePath + file.serverFilename)
-            if (targetFile.exists()) {
-                targetFile.delete()
-                fileRepository.delete(file)
-            }
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-    
     // 스토리지의 파일 삭제 (디비는 안건드림)
     fun deleteFile(serverFilename: String): Boolean {
         val targetFile = java.io.File(baseFilePath + serverFilename)
@@ -122,12 +106,9 @@ class FileService(private val fileRepository: FileRepository) {
     fun updateFile(
         oldFile: File,
         newFile: MultipartFile,
-        newSavedPath: String? = null,
+        saveType: String = FILE_TYPE_DEFAULT,
     ): File {
         deleteFile(oldFile)
-        newSavedPath?.let {
-            return saveFile(newFile, path = newSavedPath)
-        } ?:
-        return saveFile(newFile)
+        return saveFile(newFile, saveType)
     }
 }

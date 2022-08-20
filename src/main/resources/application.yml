@@ -3,10 +3,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-      use-new-id-generator-mappings: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        #format_sql: true
 
   # mail yml 파일 저장 경로, 배포 시 경로 수정 필요
   config:
@@ -50,8 +50,13 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+      # CORS 이슈때문에 일단 풀어놔야함.. 근데 보안상 이슈가 없는지는 모르겠음... 로컬 포스트맨으로 테스트 하고 싶으면 아래 주석해야함
+      cookie:
+        same-site: None
+        secure: true
 
 # 로깅 레벨 설정
 logging:
   level:
-    org.hibernate.SQL: info
+    org.hibernate.SQL: debug
+

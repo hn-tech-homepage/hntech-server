@@ -2,11 +2,15 @@ package hntech.hntechserver.archive
 
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.auth.Auth
+import hntech.hntechserver.utils.exception.ValidationException
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
+
 
 @RestController
 @RequestMapping("/archive")
@@ -24,9 +28,17 @@ class ArchiveController(
         ArchiveDetailResponse(archiveService.getArchive(id))
 
     // 목록 조회
-    @GetMapping("/all")
+    @GetMapping
     fun getArchives(@PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable) =
-        ArchiveListResponse(archiveService.getArchives(pageable))
+        ArchivePagedResponse(archiveService.getArchives(pageable))
+
+    // 공지사항 조회
+    @GetMapping("/notice")
+    fun getAllNotice() =
+        ArchiveNoticeResponse(
+            archiveService.getAllNotice().map { ArchiveSimpleResponse(it) }
+        )
+
 
     /**
      * 관리자 모드
@@ -34,14 +46,27 @@ class ArchiveController(
     // 자료글 생성
     @Auth
     @PostMapping
-    fun createArchive(@RequestBody form: ArchiveForm) =
-        ArchiveSimpleResponse(archiveService.createArchive(form))
+    fun createArchive(
+        @Valid @RequestBody form: ArchiveForm,
+        br: BindingResult
+    ): ArchiveDetailResponse {
+        if (br.hasErrors()) throw ValidationException(br)
+        return ArchiveDetailResponse(archiveService.createArchive(form))
+    }
+
 
     // 자료글 수정
     @Auth
     @PutMapping("/{archiveId}")
-    fun updateArchive(@PathVariable("archiveId") id: Long, @RequestBody form: ArchiveForm) =
-        ArchiveSimpleResponse(archiveService.updateArchive(id, form))
+    fun updateArchive(
+        @PathVariable("archiveId") id: Long,
+        @Valid @RequestBody form: ArchiveForm,
+        br: BindingResult
+    ): ArchiveDetailResponse {
+        if (br.hasErrors()) throw ValidationException(br)
+        return ArchiveDetailResponse(archiveService.updateArchive(id, form))
+    }
+
 
     // 자료글 삭제
     @Auth

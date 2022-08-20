@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 
+const val LOGO = "logo"
 const val CI = "ci"
 const val ORG_CHART = "orgChart"
 const val HISTORY = "companyHistory"
@@ -30,6 +31,10 @@ data class UpdatePasswordForm(
 
 data class PasswordResponse(
     var newPassword: String,
+)
+
+data class BannerDto(
+    var imgServerFilenameList: List<String>
 )
 
 data class AdminImageRequest(
@@ -59,4 +64,22 @@ data class FooterDto(
     var fax: String,
 ) {
     constructor(a: Admin) : this(a.address, a.afterService, a.phone, a.fax)
+}
+
+data class AdminPanelInfoResponse(
+    var adminPassword: String,
+    var sendEmailAccount: String,
+    var sendEmailPassword: String,
+    var receiveEmailAccount: String,
+    var emailSendingTime: String,
+    var footer: FooterDto
+) {
+    constructor(a: Admin) : this(
+        adminPassword = a.password,
+        sendEmailAccount = a.sendEmailAccount,
+        sendEmailPassword = a.sendEmailPassword,
+        receiveEmailAccount = a.receiveEmailAccount,
+        emailSendingTime = a.emailSendingTime,
+        footer = FooterDto(a)
+    )
 }

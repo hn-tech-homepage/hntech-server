@@ -1,5 +1,9 @@
 package hntech.hntechserver.file
 
+import hntech.hntechserver.utils.BoolResponse
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
+import io.swagger.annotations.ApiOperation
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.http.CacheControl
@@ -15,15 +19,28 @@ import java.nio.charset.Charset
 @RequestMapping("/file")
 class FileController(private val fileService: FileService) {
 
-    @PostMapping("/upload")
-    fun upload(@RequestParam("file") file: MultipartFile) =
-        FileResponse(fileService.saveFile(file))
-
-    @PostMapping("/upload-all")
-    fun uploadAll(@ModelAttribute files: List<MultipartFile>): FileListResponse =
-        FileListResponse(
-            fileService.saveAllFiles(files).map { FileResponse(it) }
+    @ApiOperation(
+        value = "파일 업로드",
+        notes = "저장 위치 설정하여 파일을 서버에 업로드"
+    )
+    @ApiImplicitParams(
+        ApiImplicitParam(
+        name = "type",
+        value = "{type} <= {image, docs, admin} \n " +
+                "image : 이미지들, 단순 그림 / docs : 자료실 자료 / admin : 관리자 관련 사진",
+        required = true
         )
+    )
+    @PostMapping("/{type}/upload")
+    fun upload(@PathVariable("type") type: String, @RequestParam("file") file: MultipartFile) =
+        FileResponse(fileService.saveFile(file, type))
+
+    @PostMapping("/{type}/upload-all")
+    fun uploadAll(
+        @PathVariable("type") type: String,
+        @ModelAttribute files: List<MultipartFile>
+    ) = FileListResponse(fileService.saveAllFiles(files).map { FileResponse(it) })
+
 
     @GetMapping("/download/{filename}")
     fun download(@PathVariable("filename") filename: String): ResponseEntity<Resource> {
@@ -36,15 +53,14 @@ class FileController(private val fileService: FileService) {
         
         return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .cacheControl(CacheControl.noCache()) // 정적 리소스를 내려줄때 성능을 높히기 위해 브라우저에서 캐싱하는데, 이러면 오래된 리소스를 내려줄 위험이 있어서 캐시를 끈다.
+            .cacheControl(CacheControl.noCache())
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${finalFilename}")
             .body(resource)
     }
 
-
-
-
-
-
-
+    @DeleteMapping("/{fileId}")
+    fun deleteById(@PathVariable("fileId") id: Long): BoolResponse {
+        fileService.deleteFile(id)
+        return BoolResponse()
+    }
 }

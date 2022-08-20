@@ -1,12 +1,12 @@
 package hntech.hntechserver.admin
 
+import hntech.hntechserver.config.ADMIN
+import hntech.hntechserver.config.ADMIN_IMAGE_SAVE_PATH_WINDOW
+import hntech.hntechserver.config.LOGIN_FAIL
+import hntech.hntechserver.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
-import hntech.hntechserver.utils.config.ADMIN
-import hntech.hntechserver.utils.config.ADMIN_IMAGE_SAVE_PATH_WINDOW
-import hntech.hntechserver.utils.config.LOGIN_FAIL
-import hntech.hntechserver.utils.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.utils.logging.logger
 import hntech.hntechserver.utils.scheduler.EmailSchedulingConfigurer
 import org.springframework.stereotype.Service
@@ -20,9 +20,10 @@ import javax.servlet.http.HttpServletRequest
 @Transactional
 class AdminService(
     private val adminRepository: AdminRepository,
+    private val bannerRepository: BannerRepository,
     private val fileService: FileService,
     private val fileRepository: FileRepository,
-    private val emailSchedulingConfigurer: EmailSchedulingConfigurer
+    private val emailSchedulingConfigurer: EmailSchedulingConfigurer,
     )
 {
     val log = logger()
@@ -39,7 +40,8 @@ class AdminService(
     fun login(password: String, request: HttpServletRequest): Boolean {
         val admin = getAdmin()
         if (password == admin.password) {
-            request.session.setAttribute(ADMIN, admin)
+            val session = request.getSession(true)
+            session.setAttribute(ADMIN, admin)
             return true
         }
         throw LoginException(LOGIN_FAIL)
@@ -86,6 +88,29 @@ class AdminService(
         val curImage = fileService.getFile(serverFilename)
         val savedFile = fileService.updateFile(curImage, newImage, ADMIN_IMAGE_SAVE_PATH_WINDOW)
         return savedFile.serverFilename
+    }
+
+    // 로고 수정
+    fun updateLogo(newImage: MultipartFile): String {
+        val admin = getAdmin()
+        admin.update(newLogo = updateImage(newImage, admin.logoImage))
+        return admin.logoImage
+    }
+
+    // 배너 여러장 수정
+    fun updateBanner(newImages: List<String>): List<String> {
+        val admin = getAdmin()
+
+        // 기존에 저장된 배너 삭제
+        bannerRepository.deleteAll()
+        admin.bannerImages.clear()
+
+        newImages.forEach {
+            val banner = Banner(admin = admin, imgServerFilename = it)
+            bannerRepository.save(banner)
+        }
+
+        return newImages
     }
 
     // 조직도 수정
@@ -139,11 +164,16 @@ class AdminService(
             "        starttls.enable: true"
         )
         yml.close()
+        val admin = getAdmin()
+        admin.update(
+            newSendEmailAccount = form.email,
+            newSendEmailPassword = form.password
+        )
         return form
     }
 
     // 메일 전송 시각 조회
-    fun getMailSendingTime(): String = getAdmin().mailSendingTime
+    fun getMailSendingTime(): String = getAdmin().emailSendingTime
 
     // 메일 전송 시각 수정
     fun updateMailSendingTime(newTime: String): String {

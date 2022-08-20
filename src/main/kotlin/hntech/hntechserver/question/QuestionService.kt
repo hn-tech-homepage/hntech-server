@@ -1,9 +1,8 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.comment.CommentRepository
 import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
-import hntech.hntechserver.question.dto.UpdateQuestionForm
+import hntech.hntechserver.question.dto.UpdateAdminQuestionForm
+import hntech.hntechserver.question.dto.UpdateClientQuestionForm
 import hntech.hntechserver.question.dto.convertEntity
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class QuestionService(
     private val questionRepository: QuestionRepository,
-    private val commentRepository: CommentRepository,
     private val questionAlarmManager: QuestionAlarmManager
 ) {
 
@@ -48,23 +46,22 @@ class QuestionService(
 
 
     // 문의사항 제목, 내용 수정
-    fun updateQuestion(id: Long, form: UpdateQuestionForm): Question {
+    fun updateClientQuestion(id: Long, form: UpdateClientQuestionForm): Question {
         val question = getQuestion(id)
-        question.update(form.title, form.content)
+        question.update(title = form.title, content = form.content)
         return question
     }
-    
-    // 문의사항 FAQ 지정 (수정)
-    fun updateFAQ(id: Long, form: UpdateQuestionFAQForm): Question {
+
+    fun updateAdminQuestion(id: Long, form: UpdateAdminQuestionForm): Question {
         val question = getQuestion(id)
-        question.update(FAQ = form.FAQ)
+        question.update(title = form.title, content = form.content, FAQ = form.FAQ)
         return question
     }
 
     // 문의사항 처리 상태 변경
-    fun updateStatus(id: Long, status: String): Question {
+    fun setStatusComplete(id: Long): Question {
         val question = getQuestion(id)
-        question.update(status = status)
+        question.update(status = "완료")
         return question
     }
     
