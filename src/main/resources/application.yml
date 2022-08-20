@@ -36,6 +36,8 @@ spring:
     web:
       pageable:
         default-page-size: 15
+        # 이거 쓰면 첫 페이지 인수 1부터 시작
+#        one-indexed-parameters: true
   
   profiles:
     active: db

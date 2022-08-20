@@ -14,22 +14,22 @@ class InitDummyData {
     @Bean
     fun questionInitializer(questionService: QuestionService) =
         ApplicationRunner {
-        // 문의사항 더미데이터
-        repeat(30) {
-            questionService.createQuestion(
-                CreateQuestionForm(
-                writer = "user$it",
-                password = "1234",
-                title = "user$it 의 문의사항",
-                content = "문의사항 내용.."
-            )
-            )
+            // 문의사항 더미데이터
+            repeat(30) {
+                questionService.createQuestion(
+                    CreateQuestionForm(
+                        writer = "user$it",
+                        password = "1234",
+                        title = "user$it 의 문의사항",
+                        content = "문의사항 내용.."
+                    )
+                )
+            }
+            // FAQ 더미데이터
+            repeat(10) {
+                questionService.updateFAQ((it + 1).toLong(), UpdateQuestionFAQForm("true"))
+            }
         }
-        // FAQ 더미데이터
-        repeat(10) {
-            questionService.updateFAQ((it + 1).toLong(), UpdateQuestionFAQForm("true"))
-        }
-    }
 
     @Bean
     fun adminInitializer(adminService: AdminService) =
