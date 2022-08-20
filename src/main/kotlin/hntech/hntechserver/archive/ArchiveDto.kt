@@ -1,14 +1,22 @@
 package hntech.hntechserver.archive
 
-import hntech.hntechserver.config.UNKNOWN
+import hntech.hntechserver.config.*
 import hntech.hntechserver.file.FileResponse
 import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page
+import javax.validation.constraints.Pattern
+import javax.validation.constraints.Size
 
 data class ArchiveForm(
+    @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
+
     var categoryName: String,
+
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var notice: String,
+
+    @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
     var content: String,
     var files: List<String>, // serverFilename
 )

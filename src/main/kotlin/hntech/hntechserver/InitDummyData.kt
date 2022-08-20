@@ -5,11 +5,13 @@ import hntech.hntechserver.archive.ArchiveForm
 import hntech.hntechserver.archive.ArchiveService
 import hntech.hntechserver.category.CategoryService
 import hntech.hntechserver.category.CreateCategoryForm
+import hntech.hntechserver.comment.CommentService
+import hntech.hntechserver.comment.CreateCommentForm
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.question.QuestionService
 import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
+import hntech.hntechserver.question.dto.UpdateAdminQuestionForm
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 
@@ -20,6 +22,7 @@ class InitDummyData(
     private val categoryService: CategoryService,
     private val questionService: QuestionService,
     private val archiveService: ArchiveService,
+    private val commentService: CommentService
 ) {
 
     @PostConstruct
@@ -31,6 +34,12 @@ class InitDummyData(
         repeat(3) {
             fileRepository.save(File(originalFilename = "test$it", serverFilename = "test$it.jpg"))
         }
+
+        // 카테고리 세팅
+        categoryService.createCategory(CreateCategoryForm("스프링클러"))
+        categoryService.createCategory(CreateCategoryForm("일반자료"))
+        categoryService.createCategory(CreateCategoryForm("신축배관"))
+        categoryService.createCategory(CreateCategoryForm("제품승인서"))
 
 
         // 문의사항 세팅
@@ -46,13 +55,13 @@ class InitDummyData(
         }
         // FAQ 세팅
         repeat(10) {
-            questionService.updateFAQ((it + 1).toLong(), UpdateQuestionFAQForm("true"))
+            questionService.updateAdminQuestion((it + 1).toLong(), UpdateAdminQuestionForm("제목", "내용", "true"))
         }
 
-        categoryService.createCategory(CreateCategoryForm("스프링클러"))
-        categoryService.createCategory(CreateCategoryForm("일반자료"))
-        categoryService.createCategory(CreateCategoryForm("신축배관"))
-        categoryService.createCategory(CreateCategoryForm("제품승인서"))
+        // 댓글 세팅
+        commentService.createComment(1L, CreateCommentForm("전예진", "나는 바보입니다"))
+        commentService.createComment(1L, CreateCommentForm("전예진", "나는 바보입니다2"))
+        commentService.createComment(1L, CreateCommentForm("관리자", "알고있습니다."))
 
         // 자료실 세팅
         val files = listOf("test0.jpg", "test1.jpg", "test2.jpg")

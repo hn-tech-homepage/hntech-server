@@ -12,9 +12,7 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(loggingInterceptor)
             .order(1)
-//            .addPathPatterns("/admin", "/category", "/question", "/file", "/product", "/comment", "/files")
             .addPathPatterns("/**")
-            .excludePathPatterns("/files/**")
     }
 
     // CORS 설정
@@ -31,14 +29,17 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
         // 파일
         registry.addResourceHandler("/files/**")
             .addResourceLocations("file:$FILE_SAVE_PATH_WINDOW")
+//            .addResourceLocations("file://$FILE_SAVE_PATH_LINUX")
 
         // 이미지
         registry.addResourceHandler("/files/images/**")
             .addResourceLocations("file:$IMAGE_SAVE_PATH_WINDOW")
+//            .addResourceLocations("file://$IMAGE_SAVE_PATH_LINUX")
 
         // 자료
         registry.addResourceHandler("/files/documents/**")
             .addResourceLocations("file:$DOCS_SAVE_PATH_WINDOW")
+            .addResourceLocations("file://$DOCS_SAVE_PATH_LINUX")
 
 
     }

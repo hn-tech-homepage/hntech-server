@@ -1,5 +1,6 @@
 package hntech.hntechserver.question.dto
 
+import hntech.hntechserver.config.*
 import hntech.hntechserver.question.Question
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
@@ -15,30 +16,38 @@ data class CreateQuestionForm(
     @field:PositiveOrZero(message = "비밀번호는 0~9의 숫자로만 입력 가능합니다.")
     var password: String,
 
-    @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
+    @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
+    var title: String,
+
+    @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
+    var content: String,
+
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var FAQ: String = "false",
+)
 
-    @field:NotBlank
+data class UpdateClientQuestionForm(
+    @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
 
-    @field:NotBlank
-    var content: String
+    @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
+    var content: String,
 )
 
-data class UpdateQuestionForm(
-    @field:NotBlank
+data class UpdateAdminQuestionForm(
+    @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
 
-    @field:NotBlank
-    var content: String
+    @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
+    var content: String,
+
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
+    var FAQ: String = "false"
 )
 
-data class UpdateQuestionFAQForm(
-    @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
-    var FAQ: String
-)
 
 data class UpdateQuestionStatusForm(
+    @field:Pattern(regexp = "^(대기중|처리중|완료)$", message = "대기중, 처리중, 완료 중 하나만 입력 가능합니다.")
     var status: String
 )
 
