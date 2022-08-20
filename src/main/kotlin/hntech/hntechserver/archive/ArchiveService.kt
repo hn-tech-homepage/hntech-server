@@ -1,10 +1,13 @@
 package hntech.hntechserver.archive
 
+import com.querydsl.jpa.impl.JPAQueryFactory
+import hntech.hntechserver.archive.QArchive.archive
 import hntech.hntechserver.category.CategoryService
 import hntech.hntechserver.config.MAX_NOTICE_NUM
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +19,7 @@ class ArchiveService(
     private val categoryService: CategoryService,
     private val fileService: FileService,
     private val archiveFileRepository: ArchiveFileRepository,
+    private val query: JPAQueryFactory
     ) {
     val log = logger()
 
@@ -62,9 +66,35 @@ class ArchiveService(
     fun getArchive(id: Long): Archive =
         archiveRepository.findById(id).orElseThrow { ArchiveException(ARCHIVE_NOT_FOUND) }
 
+    // 동적 쿼리 사용 함수
+    fun keywordContains(keyword: String?) =
+        keyword?.let { archive.title.contains(it).or(archive.content.contains(it)) }
+    fun categoryNameEq(categoryName: String?) =
+        categoryName?.let { archive.category.categoryName.eq(it) }
+
     // 자료 목록 조회 (페이징)
-    fun getArchives(pageable: Pageable): Page<Archive> =
-        archiveRepository.findAll(pageable)
+    fun getArchives(pageable: Pageable, categoryName: String? = null, keyword: String? = null): PageImpl<Archive> {
+        val result: List<Archive> = query
+            .selectFrom(archive)
+            .where(
+                categoryNameEq(categoryName),
+                keywordContains(keyword)
+            )
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+
+        val totalCount = query
+            .select(archive.count())
+            .from(archive)
+            .where(
+                categoryNameEq(categoryName),
+                keywordContains(keyword)
+            )
+            .fetchOne()
+
+        return PageImpl<Archive>(result, pageable, totalCount!!)
+    }
 
     // 공지사항 모두 조회 (페이징)
     fun getAllNotice(): List<Archive> =

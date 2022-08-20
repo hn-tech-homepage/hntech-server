@@ -61,13 +61,14 @@ class ProductService(
         // 카테고리 가져오기
         val category = categoryService.getCategory(form.categoryName)
 
+        productRepository.adjustSequenceToRightAll()
+
         // 제품 글 저장
         val product = productRepository.save(
             Product(
                 productCategory = category,
                 productName = form.productName,
-                description = form.description,
-                sequence = getLastProduct()?.let { it.sequence + 1 } ?: run { 1 }
+                description = form.description
             )
         )
         
@@ -85,7 +86,7 @@ class ProductService(
     @Transactional(readOnly = true)
     fun getAllProducts(categoryName: String? = null): List<Product> {
         categoryName?.let {
-            return categoryService.getCategory(it).products
+            return categoryService.getCategory(it).products.sortedBy { p -> p.sequence }
         } ?: run {
             return productRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"))
         }

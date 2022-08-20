@@ -1,5 +1,8 @@
 package hntech.hntechserver.product
 
+import com.querydsl.core.types.dsl.BooleanExpression
+import com.querydsl.core.util.StringUtils
+import com.querydsl.jpa.impl.JPAQueryFactory
 import hntech.hntechserver.category.Category
 import hntech.hntechserver.category.CategoryService
 import hntech.hntechserver.category.CreateCategoryForm
@@ -15,7 +18,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeAll
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
+import hntech.hntechserver.product.QProduct.product as product
 
 @SpringBootTest
 @Transactional
@@ -24,6 +30,8 @@ internal class ProductServiceTest {
     @Autowired lateinit var productRepository: ProductRepository
     @Autowired lateinit var categoryService: CategoryService
     @Autowired lateinit var fileService: FileService
+
+    @Autowired lateinit var query: JPAQueryFactory
 
     private val testFile = initTestFile()
     private val usedFiles: MutableList<File> = mutableListOf()
@@ -36,8 +44,7 @@ internal class ProductServiceTest {
 
     companion object {
         @BeforeAll @JvmStatic
-        fun initCategories(@Autowired categoryService: CategoryService,
-                           @Autowired fileService: FileService) {
+        fun initCategories(@Autowired categoryService: CategoryService) {
             categoryService.createCategory(CreateCategoryForm("카테고리1"))
             categoryService.createCategory(CreateCategoryForm("카테고리2"))
         }
@@ -90,6 +97,33 @@ internal class ProductServiceTest {
     }
 
     @Test
+    fun `제품 검색 Querydsl 사용`() {
+        // 검색 요건 : 카테고리 제품명 설명 모두 포함
+        var page = 0;
+
+        var category = getCategoryList()[0].id
+        var name: String? = null
+        var description: String? = null
+
+        val pageable = PageRequest.of(page, 15, Sort.Direction.ASC, "sequence")
+        repeat(16) { productService.createProduct(generateCreateForm(0, "제품$it", listOf())) }
+        repeat(16) { productService.createProduct(generateCreateForm(1, "제품" + (it + 16), listOf())) }
+
+        val result = query
+            .selectFrom(product)
+            .where(
+                nameContains(name)?.or(descriptionContains(description))
+            )
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .fetch()
+        println(result.map { ProductSimpleResponse(it).id })
+    }
+
+    fun nameContains(name: String?) = name?.let { product.productName.contains(it) }
+    fun descriptionContains(description: String?) = description?.let { product.description.contains(description) }
+
+    @Test
     fun `제품 생성 실패 #이미 존재하는 제품명`() {
         // given
         productService.createProduct(generateCreateForm(0, "제품", listOf()))
@@ -111,9 +145,11 @@ internal class ProductServiceTest {
 
         val firstCategoryProducts = // 첫 번째 카테고리의 제품 목록
             productService.getAllProducts(getCategoryList()[0].categoryName)
+        println(firstCategoryProducts.map { it.sequence }.toString())
 
         val secondCategoryProducts = // 두 번째 카테고리의 제품 목록
             productService.getAllProducts(getCategoryList()[1].categoryName)
+        println(secondCategoryProducts.map { it.sequence }.toString())
 
         // then
         allProducts shouldContainAll productRepository.findAll()
@@ -174,7 +210,7 @@ internal class ProductServiceTest {
     fun `제품 순서 변경`() {
         // given
         repeat(10) { // 테스트 제품 10개 저장
-            productService.createProduct(generateCreateForm(0, "제품$it", listOf())) }
+            productService.createProduct(generateCreateForm(0, "제품${9 - it}", listOf())) }
 
         // case1: 맨 앞 제품을 맨 뒤로
         var productList = productService.getAllProducts()

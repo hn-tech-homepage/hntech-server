@@ -19,7 +19,12 @@ interface ProductRepository: JpaRepository<Product, Long> {
     @Query("UPDATE Product p SET p.sequence = p.sequence + 1 WHERE p.sequence >= :target AND p.sequence < :self")
     fun adjustSequenceToRight(@Param("target") target: Int, @Param("self") self: Int): Int
 
-    // 삭제할 때
+    // 생성하기 전 모든 제품 sequence++
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("UPDATE Product p SET p.sequence = p.sequence + 1")
+    fun adjustSequenceToRightAll(): Int
+
+    // 삭제할 때 삭제되는 제품 기준 오른쪽 제품들 sequence--
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Product p SET p.sequence = p.sequence - 1 WHERE p.sequence > :self")
     fun adjustSequenceToLeftAll(@Param("self") self: Int): Int
