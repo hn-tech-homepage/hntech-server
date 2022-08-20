@@ -16,30 +16,38 @@ data class CreateQuestionForm(
     @field:PositiveOrZero(message = "비밀번호는 0~9의 숫자로만 입력 가능합니다.")
     var password: String,
 
+    @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
+    var title: String,
+
+    @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
+    var content: String,
+
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var FAQ: String = "false",
+)
 
+data class UpdateClientQuestionForm(
     @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
 
     @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
-    var content: String
+    var content: String,
 )
 
-data class UpdateQuestionForm(
+data class UpdateAdminQuestionForm(
     @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
 
     @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
-    var content: String
-)
+    var content: String,
 
-data class UpdateQuestionFAQForm(
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
-    var FAQ: String
+    var FAQ: String = "false"
 )
+
 
 data class UpdateQuestionStatusForm(
+    @field:Pattern(regexp = "^(대기중|처리중|완료)$", message = "대기중, 처리중, 완료 중 하나만 입력 가능합니다.")
     var status: String
 )
 

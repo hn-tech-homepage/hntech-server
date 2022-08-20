@@ -31,6 +31,9 @@ class CommentService(
         // 클라이언트가 새 댓글 등록 시 메일로 보낼 문의사항 리스트에 추가
         if (form.writer != "관리자")
             questionAlarmManager.addNewCommentQuestion(question)
+        else // 관리자가 답글 작성시 문의사항 진행도 변경
+            question.update(status = "처리중")
+
         return question.comments
     }
 

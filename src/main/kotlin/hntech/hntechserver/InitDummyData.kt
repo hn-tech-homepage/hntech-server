@@ -11,7 +11,7 @@ import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.question.QuestionService
 import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
+import hntech.hntechserver.question.dto.UpdateAdminQuestionForm
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 
@@ -55,7 +55,7 @@ class InitDummyData(
         }
         // FAQ 세팅
         repeat(10) {
-            questionService.updateFAQ((it + 1).toLong(), UpdateQuestionFAQForm("true"))
+            questionService.updateAdminQuestion((it + 1).toLong(), UpdateAdminQuestionForm("제목", "내용", "true"))
         }
 
         // 댓글 세팅

@@ -40,21 +40,19 @@ data class QuestionSimpleResponse(
 data class QuestionDetailResponse(
     var id: Long,
     var writer: String,
-    var password: String,
     var title: String,
     var content: String,
     var comments: List<CommentResponse>,
     var createTime: String,
-    var updateTime: String
+    var status: String,
 ) {
     constructor(question: Question): this(
         id = question.id!!,
         writer = question.writer,
-        password = question.password,
         title = question.title,
         content = question.content,
         comments = question.comments.map { CommentResponse(it) },
         createTime = question.createTime,
-        updateTime = question.updateTime
+        status = question.status,
     )
 }
