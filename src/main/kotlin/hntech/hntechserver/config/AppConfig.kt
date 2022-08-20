@@ -1,11 +1,15 @@
 package hntech.hntechserver.config
 
+import com.querydsl.jpa.impl.JPAQueryFactory
 import hntech.hntechserver.utils.logging.JsonLoggingInterceptor
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @Configuration
 class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvcConfigurer {
@@ -43,4 +47,11 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
 
 
     }
+}
+
+// JPAQueryFactory 빈 등록
+@Configuration
+class QuerydslConfig(@PersistenceContext private val em: EntityManager) {
+    @Bean
+    fun jpaQueryFactory(): JPAQueryFactory = JPAQueryFactory(this.em)
 }

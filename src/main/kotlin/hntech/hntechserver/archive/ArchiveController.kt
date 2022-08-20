@@ -27,10 +27,15 @@ class ArchiveController(
     fun getArchive(@PathVariable("archiveId") id: Long) =
         ArchiveDetailResponse(archiveService.getArchive(id))
 
-    // 목록 조회
+    // 목록 조회 + 검색
     @GetMapping
-    fun getArchives(@PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable) =
-        ArchivePagedResponse(archiveService.getArchives(pageable))
+    fun getArchives(
+        @PageableDefault(sort = ["id"], size = 15, direction = Sort.Direction.DESC) pageable: Pageable,
+        @RequestParam(name = "category", required = false) categoryName: String?,
+        @RequestParam(name = "keyword", required = false) keyword: String?
+    ) =
+        ArchivePagedResponse(archiveService.getArchives(pageable, categoryName, keyword))
+
 
     // 공지사항 조회
     @GetMapping("/notice")
@@ -38,7 +43,6 @@ class ArchiveController(
         ArchiveNoticeResponse(
             archiveService.getAllNotice().map { ArchiveSimpleResponse(it) }
         )
-
 
     /**
      * 관리자 모드
