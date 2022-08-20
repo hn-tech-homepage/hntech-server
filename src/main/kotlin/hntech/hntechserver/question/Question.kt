@@ -19,7 +19,10 @@ class Question(
     var comments: MutableList<Comment> = mutableListOf(),
 
     var title: String = "",
+
+    @Column(length = 750)
     var content: String = "",
+
 ) : BaseTimeEntity() {
 
     fun update(

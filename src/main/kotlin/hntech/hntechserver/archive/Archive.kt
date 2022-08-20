@@ -23,9 +23,12 @@ class Archive(
     @OneToMany(mappedBy = "archive", cascade = [CascadeType.ALL])
     var files: MutableList<ArchiveFile> = mutableListOf(),
 
-    // 중복되는 부분
     var title: String = "",
+
+    @Column(length = 750)
     var content: String = "",
+
+
 ) : BaseTimeEntity() {
     fun update(
         notice: String? = null,

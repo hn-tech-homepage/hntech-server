@@ -1,5 +1,6 @@
 package hntech.hntechserver.question.dto
 
+import hntech.hntechserver.config.*
 import hntech.hntechserver.question.Question
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
@@ -15,26 +16,26 @@ data class CreateQuestionForm(
     @field:PositiveOrZero(message = "비밀번호는 0~9의 숫자로만 입력 가능합니다.")
     var password: String,
 
-    @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var FAQ: String = "false",
 
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
 
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
     var content: String
 )
 
 data class UpdateQuestionForm(
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
     var title: String,
 
-    @field:NotBlank
+    @field:NotBlank @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
     var content: String
 )
 
 data class UpdateQuestionFAQForm(
-    @field:Pattern(regexp = "^(true|false)$", message = "true 또는 false로 입력 가능합니다.")
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var FAQ: String
 )
 

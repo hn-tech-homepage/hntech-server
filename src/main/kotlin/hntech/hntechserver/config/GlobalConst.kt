@@ -1,28 +1,23 @@
 package hntech.hntechserver.config
 
 /**
- * 경로
+ * 유효성 검증
  */
-// Windows
-const val DOCS_SAVE_PATH_WINDOW = "C:\\dev\\files\\documents\\"
-const val IMAGE_SAVE_PATH_WINDOW = "C:\\dev\\files\\images\\"
-const val ADMIN_IMAGE_SAVE_PATH_WINDOW = "C:\\dev\\files\\admin\\"
-const val FILE_SAVE_PATH_WINDOW = "C:\\dev\\files\\"
-const val YAML_FILE_PATH_WINDOW = "C:\\application-mail.yml"
-const val DUMMY_FILE_PATH_WINDOW = "C:\\dev\\files\\dummy.jpg"
-
-// Linux
-const val FILE_SAVE_PATH_LINUX = "/home/ubuntu/spring/files"
-const val YAML_FILE_PATH_LINUX = "/home/ubuntu/spring/application-mail.yml"
-
-
-const val VALIDATION_ERROR = "validation_error"
+const val VALIDATION_ERROR = "ValidationError"
+const val MAX_TITLE_LENGTH = 50
+const val MAX_CONTENT_LENGTH = 750
+const val MAX_COMMENT_LENGTH = 50
+const val MAX_TITLE_LENGTH_MSG = "제목 최대 글자수는 (공백 포함) 50자 입니다."
+const val MAX_CONTENT_LENGTH_MSG = "내용 최대 글자수는 (공백 포함) 750자 입니다."
+const val MAX_COMMENT_LENGTH_MSG = "최대 글자수는 (공백 포함) 50자 입니다."
+const val REG_BOOL = "^(true|false)$"
+const val REG_BOOL_MSG = "true 또는 false 값만 입력 가능합니다."
 
 // 카테고리
 const val MAX_MAIN_CATEGORY_COUNT = 8
 const val ARCHIVE = "archive"
 const val PRODUCT = "product"
-const val UNKNOWN = "Unknown"
+const val UNKNOWN = "unknown"
 
 // 자료실
 const val MAX_NOTICE_NUM = 10
