@@ -2,7 +2,6 @@ package hntech.hntechserver.question
 
 import hntech.hntechserver.logResult
 import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.question.dto.UpdateQuestionFAQForm
 import hntech.hntechserver.question.dto.UpdateClientQuestionForm
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
@@ -69,7 +68,7 @@ class QuestionServiceTest {
             idList.add(setDummyQuestion().id!!)
         }
         repeat(10) {
-            questionService.updateFAQ(idList[it], UpdateQuestionFAQForm("true"))
+            
         }
 
         // when
@@ -92,37 +91,7 @@ class QuestionServiceTest {
         expected.id shouldBe actual.id
     }
 
-    @Test
-    fun `문의사항 내용 수정 성공`() {
-        // given
-        val origin = setDummyQuestion()
-        val updateForm = UpdateClientQuestionForm("test title2", "test contents2")
-
-        // when
-        val expected = questionService.updateQuestion(origin.id!!, updateForm)
-        val actual = questionRepository.findById(origin.id!!).get()
-
-        // then
-        expected shouldBe actual
-        logResult(actual, expected)
-    }
-    
-    @Test
-    fun `자주 묻는 질문으로 수정 성공`() {
-        // given
-        val origin = setDummyQuestion()
-        val updateForm = UpdateQuestionFAQForm("처리중")
-
-        // when
-        val expected = questionService.setStatusComplete(origin.id!!, updateForm.FAQ)
-        val actual = questionRepository.findById(origin.id!!).get()
-
-        // then
-        assertSoftly(expected) {
-            FAQ shouldBe actual.FAQ
-            it shouldBe actual
-        }
-    }
+    // TODO 수정 로직
 
     @Test
     fun `문의사항 삭제 성공`() {

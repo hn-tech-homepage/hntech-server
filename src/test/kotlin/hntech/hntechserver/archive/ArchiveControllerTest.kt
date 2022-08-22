@@ -1,8 +1,11 @@
 package hntech.hntechserver.archive
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import hntech.hntechserver.category.CategoryService
-import hntech.hntechserver.category.CreateCategoryForm
+import hntech.hntechserver.domain.archive.Archive
+import hntech.hntechserver.domain.archive.ArchiveForm
+import hntech.hntechserver.domain.archive.ArchiveService
+import hntech.hntechserver.domain.category.CategoryService
+import hntech.hntechserver.domain.category.CreateCategoryForm
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
@@ -15,9 +18,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
 import org.springframework.transaction.annotation.Transactional
@@ -60,8 +60,7 @@ class ArchiveControllerTest {
             )
         val form = ArchiveForm(
             title = "스프링클러 자료 입니다",
-            productCategoryName = "스프링클러",
-            archiveCategoryName = "일반자료",
+            categoryName = "스프링클러",
             notice = "false",
             content = "테스트",
             files = savedFileEntities.map { it.serverFilename }.toList()
@@ -77,8 +76,7 @@ class ArchiveControllerTest {
             )
         val body = ArchiveForm(
             title = "스프링클러 자료 입니다",
-            productCategoryName = "스프링클러",
-            archiveCategoryName = "일반자료",
+            categoryName = "스프링클러",
             notice = "true",
             content = "테스트",
             files = savedFileEntities.map { it.serverFilename }.toList()
@@ -122,8 +120,7 @@ class ArchiveControllerTest {
             )
         val body = ArchiveForm(
             title = "수정",
-            productCategoryName = "신축배관",
-            archiveCategoryName = "제품승인서",
+            categoryName = "신축배관",
             notice = "false",
             content = "수정본",
             files = savedFileEntities.map { it.serverFilename }.toList()

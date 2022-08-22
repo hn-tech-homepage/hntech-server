@@ -35,17 +35,25 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
             .addResourceLocations("file:$FILE_SAVE_PATH_WINDOW")
 //            .addResourceLocations("file://$FILE_SAVE_PATH_LINUX")
 
-        // 이미지
-        registry.addResourceHandler("/files/images/**")
-            .addResourceLocations("file:$IMAGE_SAVE_PATH_WINDOW")
-//            .addResourceLocations("file://$IMAGE_SAVE_PATH_LINUX")
+        // 관리자
+        registry.addResourceHandler("/files/admin/**")
+            .addResourceLocations("file:$ADMIN_SAVE_PATH_WINDOW")
+//            .addResourceLocations("file://$ADMIN_SAVE_PATH_LINUX")
 
-        // 자료
-        registry.addResourceHandler("/files/documents/**")
-            .addResourceLocations("file:$DOCS_SAVE_PATH_WINDOW")
-            .addResourceLocations("file://$DOCS_SAVE_PATH_LINUX")
+        // 카테고리
+        registry.addResourceHandler("/files/admin/**")
+            .addResourceLocations("file:$CATEGORY_SAVE_PATH_WINDOW")
+//            .addResourceLocations("file://$CATEGORY_SAVE_PATH_LINUX")
 
+        // 제품
+        registry.addResourceHandler("/files/admin/**")
+            .addResourceLocations("file:$PRODUCT_SAVE_PATH_WINDOW")
+//            .addResourceLocations("file://$PRODUCT_SAVE_PATH_LINUX")
 
+        // 자료실
+        registry.addResourceHandler("/files/admin/**")
+            .addResourceLocations("file:$ARCHIVE_SAVE_PATH_WINDOW")
+//            .addResourceLocations("file://$ARCHIVE_SAVE_PATH_LINUX")
     }
 }
 

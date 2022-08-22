@@ -1,9 +1,8 @@
 package hntech.hntechserver.product
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import hntech.hntechserver.category.Category
-import hntech.hntechserver.category.CategoryService
-import hntech.hntechserver.category.CreateCategoryForm
+import hntech.hntechserver.domain.category.CategoryService
+import hntech.hntechserver.domain.category.CreateCategoryForm
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService
