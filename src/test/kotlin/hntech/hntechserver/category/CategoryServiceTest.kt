@@ -1,5 +1,6 @@
 package hntech.hntechserver.category
 
+import hntech.hntechserver.domain.category.*
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileRepository
 import hntech.hntechserver.file.FileService

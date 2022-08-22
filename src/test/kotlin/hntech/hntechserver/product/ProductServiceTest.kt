@@ -1,11 +1,9 @@
 package hntech.hntechserver.product
 
-import com.querydsl.core.types.dsl.BooleanExpression
-import com.querydsl.core.util.StringUtils
 import com.querydsl.jpa.impl.JPAQueryFactory
-import hntech.hntechserver.category.Category
-import hntech.hntechserver.category.CategoryService
-import hntech.hntechserver.category.CreateCategoryForm
+import hntech.hntechserver.domain.category.Category
+import hntech.hntechserver.domain.category.CategoryService
+import hntech.hntechserver.domain.category.CreateCategoryForm
 import hntech.hntechserver.file.File
 import hntech.hntechserver.file.FileService
 import hntech.hntechserver.initTestFile

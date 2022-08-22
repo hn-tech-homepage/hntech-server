@@ -1,12 +1,15 @@
 package hntech.hntechserver.utils.scheduler
 
-import hntech.hntechserver.question.*
+import hntech.hntechserver.domain.admin.AdminRepository
+import hntech.hntechserver.domain.question.EMAIL_NOT_FOUND
+import hntech.hntechserver.domain.question.EMAIL_SEND_ERROR
+import hntech.hntechserver.domain.question.EmailException
+import hntech.hntechserver.domain.question.QuestionAlarmManager
 import hntech.hntechserver.utils.PropertiesManager
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -14,16 +17,20 @@ import java.time.format.DateTimeFormatter
 class EmailManager(
     private val mailSender: JavaMailSender,
     private val questionAlarmManager: QuestionAlarmManager,
-    private val propertiesManager: PropertiesManager
+    private val propertiesManager: PropertiesManager,
+    private val adminRepository: AdminRepository
 ) {
     private val log = logger()
 
     fun sendMail() {
-        // 설정 파일로부터 이메일 주소 찾기
-        val email = propertiesManager.getConfiguration()?.let {
+        // 설정 파일로부터 송신 이메일 찾기
+        val sendEmail = propertiesManager.getConfiguration()?.let {
             it.getString("spring.mail.username")
         } ?: run { throw EmailException(EMAIL_NOT_FOUND) }
-        log.info("송신 이메일 주소 : {}", email)
+        // DB 에서 수신 이메일 찾기
+        val receiveEmail = adminRepository.findAll()[0].receiveEmailAccount
+        log.info("송신 이메일 주소 : {}", sendEmail)
+        log.info("수신 이메일 주소 : {}", receiveEmail)
 
         try {
             val mail = mailSender.createMimeMessage()
@@ -32,8 +39,8 @@ class EmailManager(
             val questions = questionAlarmManager.getQuestionListToSend()
             var text = ""
 
-            mailHelper.setFrom(email, "HNTECH 웹페이지")
-            mailHelper.setTo(email)
+            mailHelper.setFrom(sendEmail, "HNTECH 웹페이지")
+            mailHelper.setTo(receiveEmail)
             mailHelper.setSubject("HNTECH 웹페이지: $now 신규 등록된 문의사항")
             text += "<html>" +
                     "<head>" +

@@ -1,17 +1,18 @@
 package hntech.hntechserver
 
-import hntech.hntechserver.admin.AdminService
-import hntech.hntechserver.archive.ArchiveForm
-import hntech.hntechserver.archive.ArchiveService
-import hntech.hntechserver.category.CategoryService
-import hntech.hntechserver.category.CreateCategoryForm
-import hntech.hntechserver.comment.CommentService
-import hntech.hntechserver.comment.CreateCommentForm
-import hntech.hntechserver.file.File
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.question.QuestionService
-import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.question.dto.UpdateAdminQuestionForm
+import hntech.hntechserver.domain.admin.AdminService
+import hntech.hntechserver.domain.admin.FooterDto
+import hntech.hntechserver.domain.archive.ArchiveForm
+import hntech.hntechserver.domain.archive.ArchiveService
+import hntech.hntechserver.domain.category.CategoryService
+import hntech.hntechserver.domain.category.CreateCategoryForm
+import hntech.hntechserver.domain.comment.CommentService
+import hntech.hntechserver.domain.comment.CreateCommentForm
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.question.QuestionService
+import hntech.hntechserver.domain.question.dto.CreateQuestionForm
+import hntech.hntechserver.domain.question.dto.UpdateAdminQuestionForm
 import org.springframework.stereotype.Component
 import javax.annotation.PostConstruct
 
@@ -29,6 +30,14 @@ class InitDummyData(
     fun initDummyData() {
         // 어드민 세팅
         adminService.createAdmin("1234")
+        adminService.updateFooter(
+            FooterDto(
+                address = "주소주소주소",
+                afterService = "000-000-0000",
+                phone = "031-337-4005",
+                fax = "031-337-4006"
+            )
+        )
 
         // 파일 세팅
         repeat(3) {
