@@ -55,10 +55,6 @@ class Admin(
         newOrgChartImage: String? = null,
         newCompInfoImage: String? = null,
         newHistoryImage: String? = null,
-        newSendEmailAccount: String? = null,
-        newSendEmailPassword: String? = null,
-        newReceiveEmailAccount: String? = null,
-        newMailSendingTime: String? = null,
     ) {
         newLogo?.let { this.logoImage = it }
         newPassword?.let { this.password = it }
@@ -66,10 +62,6 @@ class Admin(
         newOrgChartImage?.let { this.orgChartImage = it }
         newCompInfoImage?.let { this.compInfoImage = it }
         newHistoryImage?.let { this.historyImage = it }
-        newSendEmailAccount?.let { this.sendEmailAccount = it }
-        newSendEmailPassword?.let { this.sendEmailPassword = it }
-        newReceiveEmailAccount?.let { this.receiveEmailAccount = it }
-        newMailSendingTime?.let { this.emailSendingTime = it }
     }
 
     fun updateFooter(newAddress: String, newAS: String, newPhone: String, newFax: String): Admin {
@@ -78,6 +70,19 @@ class Admin(
         this.phone = newPhone
         this.fax = newFax
         return this
+    }
+
+    fun updatePanel(form: UpdateAdminPanelForm) {
+        this.sendEmailAccount = form.sendEmailAccount
+        this.sendEmailPassword = form.sendEmailPassword
+        this.receiveEmailAccount = form.receiveEmailAccount
+        this.emailSendingTime = form.emailSendingTime
+
+        // footer
+        this.address = form.address
+        this.afterService = form.afterService
+        this.phone = form.phone
+        this.fax = form.fax
     }
 
 }

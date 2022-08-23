@@ -17,25 +17,20 @@ class Archive(
     @JoinColumn(name = "category_id")
     var category: Category? = null,
 
-//    @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL])
-//    var files: MutableList<File> = mutableListOf(),
-
-    @OneToMany(mappedBy = "archive", cascade = [CascadeType.ALL])
-    var files: MutableList<ArchiveFile> = mutableListOf(),
+    @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL])
+    var files: MutableList<File> = mutableListOf(),
 
     var title: String = "",
 
     @Column(length = 750)
     var content: String = "",
-
-
-    ) : BaseTimeEntity() {
+) : BaseTimeEntity() {
     fun update(
         notice: String? = null,
         title: String? = null,
         content: String? = null,
         category: Category? = null,
-        files: MutableList<ArchiveFile>? = null
+        files: MutableList<File>? = null,
     ) {
         notice?.let { this.notice = notice }
         title?.let { this.title = title }
@@ -44,18 +39,3 @@ class Archive(
         files?.let { this.files = files }
     }
 }
-
-@Entity
-class ArchiveFile(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "archive_file_id")
-    val id: Long? = null,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "archive_id")
-    var archive: Archive,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
-    var file: File,
-)

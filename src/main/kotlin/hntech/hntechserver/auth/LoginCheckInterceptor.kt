@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils.auth
+package hntech.hntechserver.auth
 
 import hntech.hntechserver.config.ADMIN
 import hntech.hntechserver.config.AUTH_DENIED

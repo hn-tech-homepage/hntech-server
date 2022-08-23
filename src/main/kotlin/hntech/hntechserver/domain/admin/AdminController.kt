@@ -1,8 +1,8 @@
 package hntech.hntechserver.domain.admin
 
+import hntech.hntechserver.auth.Auth
+import hntech.hntechserver.exception.ValidationException
 import hntech.hntechserver.utils.BoolResponse
-import hntech.hntechserver.utils.auth.Auth
-import hntech.hntechserver.utils.exception.ValidationException
 import hntech.hntechserver.utils.logging.logger
 import io.swagger.annotations.ApiOperation
 import org.springframework.validation.BindingResult
@@ -47,23 +47,6 @@ class AdminController(private val adminService: AdminService) {
         return BoolResponse(adminService.logout(request))
     }
 
-    // 관리자 패널 정보 조회
-    @Auth
-    @GetMapping("/panel")
-    fun getPanelInfo() =
-        AdminPanelInfoResponse(adminService.getAdmin())
-
-    // 비밀번호 변경
-    @Auth
-    @PutMapping("/password")
-    fun updatePassword(
-        @Valid @RequestBody form: UpdatePasswordForm,
-        br: BindingResult
-    ): PasswordResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return PasswordResponse(adminService.updatePassword(form))
-    }
-
     // 인사말 수정
     @Auth
     @PutMapping("/introduce")
@@ -94,27 +77,25 @@ class AdminController(private val adminService: AdminService) {
     fun updateBanners(@RequestBody form: BannerDto) =
         BannerDto(adminService.updateBanner(form.imgServerFilenameList))
 
-
-    // 메일 설정
+    // 관리자 패널 정보 조회
     @Auth
-    @PostMapping("/mail")
-    fun updateMail(
-        @Valid @RequestBody form: UpdateEmailAccountForm,
+    @GetMapping("/panel")
+    fun getPanelInfo() = AdminPanelResponse(adminService.getAdmin())
+
+    // 관리자 비밀번호 변경
+    @Auth
+    @PutMapping("/password")
+    fun updatePassword(@RequestBody form: UpdatePasswordForm) =
+        PasswordResponse(adminService.updatePassword(form))
+
+    // 관리자 패널 정보 수정
+
+    @PutMapping("/panel")
+    fun updatePanelInfo(
+        @Valid @RequestBody form: UpdateAdminPanelForm,
         br: BindingResult
-    ): UpdateEmailAccountForm {
+    ): AdminPanelResponse {
         if (br.hasErrors()) throw ValidationException(br)
-        return adminService.updateMail(form)
+        return AdminPanelResponse(adminService.updatePanel(form))
     }
-
-    // 메일 시간 설정
-    @Auth
-    @PostMapping("/mail/{time}")
-    fun updateMailingTime(@PathVariable("time") time: String) =
-        EmailSendingTimeResponse(adminService.updateMailSendingTime(time))
-
-
-    // 하단 (footer) 수정
-    @Auth
-    @PutMapping("/footer")
-    fun updateFooter(@RequestBody form: FooterDto) = FooterDto(adminService.updateFooter(form))
 }

@@ -1,7 +1,6 @@
 package hntech.hntechserver.domain.file
 
 import hntech.hntechserver.domain.archive.Archive
-import hntech.hntechserver.domain.archive.ArchiveFile
 import hntech.hntechserver.domain.product.Product
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import javax.persistence.*
@@ -17,12 +16,12 @@ class File(
     var serverFilename: String = "",
     var savedPath: String = "",
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "archive_id")
-//    var fileArchive: Archive? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "archive_id")
+    var fileArchive: Archive? = null,
 
-    @OneToMany(mappedBy = "file", cascade = [CascadeType.ALL])
-    var archives: MutableList<ArchiveFile> = mutableListOf(),
+//    @OneToMany(mappedBy = "file", cascade = [CascadeType.ALL])
+//    var archives: MutableList<ArchiveFile> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")

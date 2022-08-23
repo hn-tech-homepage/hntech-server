@@ -1,6 +1,6 @@
 package hntech.hntechserver.domain.comment
 
-import hntech.hntechserver.utils.exception.ValidationException
+import hntech.hntechserver.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid

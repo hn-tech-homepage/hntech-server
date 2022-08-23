@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils.exception
+package hntech.hntechserver.exception
 
 import hntech.hntechserver.utils.ErrorListResponse
 import hntech.hntechserver.utils.ErrorResponse
