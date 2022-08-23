@@ -1,6 +1,9 @@
 package hntech.hntechserver.domain.admin
 
-import hntech.hntechserver.config.*
+import hntech.hntechserver.config.ADMIN
+import hntech.hntechserver.config.ADMIN_SAVE_PATH_WINDOW
+import hntech.hntechserver.config.LOGIN_FAIL
+import hntech.hntechserver.config.YAML_FILE_PATH_WINDOW
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
 import hntech.hntechserver.domain.file.FileService
@@ -57,28 +60,24 @@ class AdminService(
             throw AdminException("기존 관리자 존재. 중복 관리자 생성 불가능.")
         fileRepository.save(File(originalFilename = "관리자용 더미 파일", serverFilename = ""))
         adminRepository.save(Admin(password = password))
-        getAdmin().update(
-            newMailSendingTime = "12",
-            newSendEmailAccount = "ahdwjdtprtm@naver.com",
-            newSendEmailPassword = "wnrduqjflsek1",
-            newReceiveEmailAccount = "ahdwjdtprtm@naver.com"
+        val initForm = UpdateAdminPanelForm(
+            emailSendingTime = "12",
+            sendEmailAccount = "ahdwjdtprtm@naver.com",
+            sendEmailPassword = "wnrduqjflsek1",
+            receiveEmailAccount = "ahdwjdtprtm@naver.com",
+
+            address = "주소주소주소",
+            afterService = "000-000-0000",
+            phone = "031-337-4005",
+            fax = "031-337-4006"
         )
+        getAdmin().updatePanel(initForm)
         return getAdmin()
     }
 
     /**
      * 관리자 정보 수정
      */
-    // 관리자 비밀번호 변경
-    fun updatePassword(form: UpdatePasswordForm): String {
-        if (!form.passwordCheck()) throw AdminException(ADMIN_PASSWORD_CHECK_FAIL)
-        if (form.curPassword != getAdmin().password)
-            throw AdminException(ADMIN_PASSWORD_VALID_FAIL)
-
-        getAdmin().update(newPassword = form.newPassword)
-        return getAdmin().password
-    }
-
     // 인사말 수정
     fun updateIntroduce(newIntroduce: String): String {
         val admin = getAdmin()
@@ -142,51 +141,52 @@ class AdminService(
         return admin.historyImage
     }
 
-    // 하단 (footer) 수정
-    fun updateFooter(form: FooterDto): Admin =
-        getAdmin().updateFooter(
-            newAddress = form.address,
-            newAS = form.afterService,
-            newPhone = form.phone,
-            newFax = form.fax
-        )
+    /**
+     * 관리자 패널
+     * - 관리자 비밀번호
+     * - 메일 송신 계정 + 비번
+     * - 메일 수신 계정
+     * - 메일 발송 시각
+     * - footer 회사 정보
+     */
+    // 관리자 비밀번호 변경
+    fun updatePassword(form: UpdatePasswordForm): String {
+        // 비밀번호 검증
+        if (form.newPassword != form.newPasswordCheck)
+            throw AdminException(ADMIN_PASSWORD_CHECK_FAIL)
+        if (form.curPassword != getAdmin().password)
+            throw AdminException(ADMIN_PASSWORD_VALID_FAIL)
 
-    // 메일 변경
-    fun updateMail(form: UpdateEmailAccountForm): UpdateEmailAccountForm {
+        val admin = getAdmin()
+        getAdmin().update(newPassword = form.newPassword)
+        return admin.password
+    }
+
+    // 패널 정보 수정 (비번, 메일 송신 계정+비번, 수신 계정, 시각, footer)
+    fun updatePanel(form: UpdateAdminPanelForm): Admin {
+        // 메일 전송 계정 yml 수정
         val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
 //        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
         yml.print("")
         yml.write(
             "spring:\n" +
-            "  mail:\n" +
-            "    host: smtp.naver.com\n" +
-            "    port: 465\n" +
-            "    username: " + form.email + "\n" +
-            "    password: " + form.password + "\n" +
-            "    properties:\n" +
-            "      mail.smtp:\n" +
-            "        auth: true\n" +
-            "        ssl:\n" +
-            "          enable: true\n" +
-            "          trust: smtp.naver.com\n" +
-            "        starttls.enable: true"
+                    "  mail:\n" +
+                    "    host: smtp.naver.com\n" +
+                    "    port: 465\n" +
+                    "    username: " + form.sendEmailAccount + "\n" +
+                    "    password: " + form.sendEmailPassword + "\n" +
+                    "    properties:\n" +
+                    "      mail.smtp:\n" +
+                    "        auth: true\n" +
+                    "        ssl:\n" +
+                    "          enable: true\n" +
+                    "          trust: smtp.naver.com\n" +
+                    "        starttls.enable: true"
         )
         yml.close()
+        // 어드민 업데이트
         val admin = getAdmin()
-        admin.update(
-            newSendEmailAccount = form.email,
-            newSendEmailPassword = form.password
-        )
-        return form
-    }
-
-    // 메일 전송 시각 조회
-    fun getMailSendingTime(): String = getAdmin().emailSendingTime
-
-    // 메일 전송 시각 수정
-    fun updateMailSendingTime(newTime: String): String {
-        getAdmin().update(newMailSendingTime = newTime)
-        emailSchedulingConfigurer.setCron(newTime)
-        return getMailSendingTime()
+        admin.updatePanel(form)
+        return admin
     }
 }

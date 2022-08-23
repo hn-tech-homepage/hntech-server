@@ -5,8 +5,8 @@ import hntech.hntechserver.domain.question.dto.QuestionDetailResponse
 import hntech.hntechserver.domain.question.dto.QuestionSimpleResponse
 import hntech.hntechserver.domain.question.dto.UpdateAdminQuestionForm
 import hntech.hntechserver.utils.BoolResponse
-import hntech.hntechserver.utils.auth.Auth
-import hntech.hntechserver.utils.exception.ValidationException
+import hntech.hntechserver.auth.Auth
+import hntech.hntechserver.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
