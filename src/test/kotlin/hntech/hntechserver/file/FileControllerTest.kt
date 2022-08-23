@@ -1,6 +1,9 @@
 
 package hntech.hntechserver.file
 
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

@@ -1,9 +1,9 @@
 package hntech.hntechserver.category
 
 import hntech.hntechserver.domain.category.*
-import hntech.hntechserver.file.File
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.initTestFile
 import hntech.hntechserver.utils.logging.logger
 import io.kotest.assertions.throwables.shouldThrow

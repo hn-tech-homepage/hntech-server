@@ -1,8 +1,9 @@
 package hntech.hntechserver.admin
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.admin.*
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.setMockSession
 import hntech.hntechserver.testFile
 import org.junit.jupiter.api.AfterEach

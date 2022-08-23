@@ -1,8 +1,8 @@
 package hntech.hntechserver.question
 
-import hntech.hntechserver.logResult
-import hntech.hntechserver.question.dto.CreateQuestionForm
-import hntech.hntechserver.question.dto.UpdateClientQuestionForm
+
+import hntech.hntechserver.domain.question.*
+import hntech.hntechserver.domain.question.dto.CreateQuestionForm
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe

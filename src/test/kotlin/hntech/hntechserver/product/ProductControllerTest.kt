@@ -3,9 +3,10 @@ package hntech.hntechserver.product
 import com.fasterxml.jackson.databind.ObjectMapper
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm
-import hntech.hntechserver.file.File
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
+import hntech.hntechserver.domain.product.*
 import hntech.hntechserver.initTestFile
 import hntech.hntechserver.setMockSession
 import org.junit.jupiter.api.AfterAll
