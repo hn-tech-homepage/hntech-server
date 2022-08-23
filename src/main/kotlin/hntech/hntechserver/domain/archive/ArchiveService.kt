@@ -1,9 +1,9 @@
 package hntech.hntechserver.domain.archive
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import hntech.hntechserver.config.MAX_NOTICE_NUM
 import hntech.hntechserver.domain.archive.QArchive.archive
 import hntech.hntechserver.domain.category.CategoryService
-import hntech.hntechserver.config.MAX_NOTICE_NUM
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.PageImpl
@@ -17,8 +17,7 @@ class ArchiveService(
     private val archiveRepository: ArchiveRepository,
     private val categoryService: CategoryService,
     private val fileService: FileService,
-    private val archiveFileRepository: ArchiveFileRepository,
-    private val query: JPAQueryFactory
+    private val query: JPAQueryFactory,
     ) {
     val log = logger()
 
@@ -49,8 +48,9 @@ class ArchiveService(
         // 파일 지정하기 (파일이 없으면 수행 X)
         if (form.files.isNotEmpty()) {
             val files = form.files.map {
-                val savedFile = fileService.getFile(it)
-                archiveFileRepository.save(ArchiveFile(archive = archive, file = savedFile))
+                val file = fileService.getFile(it)
+                file.fileArchive = archive
+                file
             }.toMutableList()
             archive.update(files = files)
         }
@@ -106,21 +106,22 @@ class ArchiveService(
      */
     @Transactional
     fun updateArchive(id: Long, form: ArchiveForm): Archive {
+
         val archive = getArchive(id)
 
         // 카테고리 가져오기
         val category = categoryService.getCategory(form.categoryName)
 
         // 공지사항 최대 개수 체크
-        checkNoticeable()
+        if (form.notice == "true") checkNoticeable()
 
-        // 기존 오래된 파일들은 삭제
-        fileService.deleteAllFiles(archive.files.map { it.file }.toMutableList())
-        archiveFileRepository.deleteAll(archive.files)
-
+        // 파일 업데이트
+        fileService.deleteAllFiles(archive.files)
+        archive.files.clear()
         val files = form.files.map {
-            val savedFile = fileService.getFile(it)
-            archiveFileRepository.save(ArchiveFile(archive = archive, file = savedFile))
+            val newFile = fileService.getFile(it)
+            newFile.fileArchive = archive
+            newFile
         }.toMutableList()
 
         archive.update(
@@ -139,8 +140,6 @@ class ArchiveService(
      */
     @Transactional
     fun deleteArchive(id: Long): Boolean {
-        val targetArchive = getArchive(id)
-        fileService.deleteAllFiles(targetArchive.files.map { it.file }.toMutableList())
         archiveRepository.deleteById(id)
         return true
     }

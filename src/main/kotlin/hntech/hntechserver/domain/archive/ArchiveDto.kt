@@ -37,7 +37,7 @@ data class ArchiveDetailResponse(
         title = a.title,
         content = a.content,
         createTime = a.updateTime,
-        files = a.files.map { FileResponse(it.file) }
+        files = a.files.map { FileResponse(it) }
     )
 }
 

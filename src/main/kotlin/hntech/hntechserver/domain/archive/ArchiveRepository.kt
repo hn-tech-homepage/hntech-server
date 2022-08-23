@@ -17,7 +17,4 @@ interface ArchiveRepository : JpaRepository<Archive, Long> {
     fun countNotice(): Long
 }
 
-interface ArchiveFileRepository : JpaRepository<ArchiveFile, Long> {}
-
-
 

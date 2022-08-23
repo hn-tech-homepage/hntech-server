@@ -65,13 +65,14 @@ class InitDummyData(
         // 자료실 세팅
         val files = listOf("test0.jpg", "test1.jpg", "test2.jpg")
         val form = ArchiveForm("테스트", "스프링클러", "false", "내용", files)
-        repeat(30) {
-            archiveService.createArchive(form)
-        }
-        val form2 = ArchiveForm("공지사항", "일반자료", "true", "전예진", files)
-        repeat(10) {
-            archiveService.createArchive(form2)
-        }
+        archiveService.createArchive(form)
+    //        repeat(30) {
+//            archiveService.createArchive(form)
+//        }
+//        val form2 = ArchiveForm("공지사항", "일반자료", "true", "전예진", files)
+//        repeat(10) {
+//            archiveService.createArchive(form2)
+//        }
 
 
     }
