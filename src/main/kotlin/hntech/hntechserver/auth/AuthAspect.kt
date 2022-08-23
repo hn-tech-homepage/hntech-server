@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils.auth
+package hntech.hntechserver.auth
 
 import hntech.hntechserver.config.ADMIN
 import hntech.hntechserver.config.AUTH_DENIED
@@ -12,7 +12,7 @@ import javax.security.auth.login.LoginException
 @Aspect
 @Component
 class AuthAspect {
-    @Before("@annotation(hntech.hntechserver.utils.auth.Auth)")
+    @Before("@annotation(hntech.hntechserver.auth.Auth)")
     fun authCheck() {
         val request = RequestContextHolder.currentRequestAttributes() as ServletRequestAttributes
         request.request.session.getAttribute(ADMIN) ?: throw LoginException(AUTH_DENIED)

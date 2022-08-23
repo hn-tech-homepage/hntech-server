@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils.auth
+package hntech.hntechserver.auth
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)

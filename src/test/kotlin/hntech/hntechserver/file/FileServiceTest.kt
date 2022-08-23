@@ -1,5 +1,8 @@
 package hntech.hntechserver.file
 
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.logResult
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach

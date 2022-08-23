@@ -3,7 +3,7 @@ package hntech.hntechserver.domain.question.controller
 import hntech.hntechserver.domain.question.QuestionService
 import hntech.hntechserver.domain.question.dto.*
 import hntech.hntechserver.utils.BoolResponse
-import hntech.hntechserver.utils.exception.ValidationException
+import hntech.hntechserver.exception.ValidationException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault

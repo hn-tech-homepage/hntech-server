@@ -1,21 +1,18 @@
 package hntech.hntechserver.admin
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.admin.*
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.setMockSession
 import hntech.hntechserver.testFile
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.multipart
-import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.*
 import org.springframework.transaction.annotation.Transactional
 
 
@@ -30,10 +27,10 @@ class AdminControllerTest {
     @Autowired lateinit var fileService: FileService
     @Autowired lateinit var adminService: AdminService
 
-    @BeforeEach
-    fun `관리자 생성 및 세션 생성`() {
-        adminService.createAdmin("1234")
-    }
+//    @BeforeEach
+//    fun `관리자 생성 및 세션 생성`() {
+//        adminService.createAdmin("1234")
+//    }
 
     @AfterEach
     fun `mock 파일 삭제`() = fileService.deleteAllFiles(fileRepository.findAll())
@@ -61,7 +58,7 @@ class AdminControllerTest {
 
     @Test
     fun `관리자 로그아웃 성공`() {
-        mvc.post("/admin/logout") {
+        mvc.get("/admin/logout") {
             contentType = MediaType.APPLICATION_JSON
         }
             .andExpect { status { isOk() } }
@@ -91,7 +88,7 @@ class AdminControllerTest {
 
     @Test
     fun `인사말 수정 성공`() {
-        mvc.post("/admin/introduce") {
+        mvc.put("/admin/introduce") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(IntroduceDto("안녕"))
             session = setMockSession()
@@ -147,7 +144,7 @@ class AdminControllerTest {
     @Test
     fun `footer 수정 성공`() {
         val form = FooterDto("처인구", "A/S", "전화번호", "FAX")
-        mvc.post("/admin/footer") {
+        mvc.put("/admin/footer") {
             contentType = MediaType.APPLICATION_JSON
             content = mapper.writeValueAsString(form)
             session = setMockSession()

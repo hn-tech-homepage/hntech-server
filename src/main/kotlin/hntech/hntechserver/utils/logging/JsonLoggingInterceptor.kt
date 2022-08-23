@@ -26,7 +26,8 @@ class JsonLoggingInterceptor(
 
         if (request.contentType != null &&
             request.contentType.startsWith("application/json") &&
-            request.method.startsWith("POST") &&
+            (request.method.startsWith("POST") ||
+            request.method.startsWith("PUT")) &&
             request is MultiAccessRequestWrapper){
             val body = converter.convert(request.getContents())
             println("BODY\n$body")

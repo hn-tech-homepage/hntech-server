@@ -41,17 +41,17 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
 //            .addResourceLocations("file://$ADMIN_SAVE_PATH_LINUX")
 
         // 카테고리
-        registry.addResourceHandler("/files/admin/**")
+        registry.addResourceHandler("/files/category/**")
             .addResourceLocations("file:$CATEGORY_SAVE_PATH_WINDOW")
 //            .addResourceLocations("file://$CATEGORY_SAVE_PATH_LINUX")
 
         // 제품
-        registry.addResourceHandler("/files/admin/**")
+        registry.addResourceHandler("/files/product/**")
             .addResourceLocations("file:$PRODUCT_SAVE_PATH_WINDOW")
 //            .addResourceLocations("file://$PRODUCT_SAVE_PATH_LINUX")
 
         // 자료실
-        registry.addResourceHandler("/files/admin/**")
+        registry.addResourceHandler("/files/archive/**")
             .addResourceLocations("file:$ARCHIVE_SAVE_PATH_WINDOW")
 //            .addResourceLocations("file://$ARCHIVE_SAVE_PATH_LINUX")
     }

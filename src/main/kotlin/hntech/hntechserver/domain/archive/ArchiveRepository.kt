@@ -17,8 +17,7 @@ interface ArchiveRepository : JpaRepository<Archive, Long> {
     fun countNotice(): Long
 }
 
-interface ArchiveFileRepository : JpaRepository<ArchiveFile, Long> {}
-
 interface QArchiveRepository {
     fun searchArchive(pageable: Pageable, categoryName: String?, keyword: String?): Page<Archive>
 }
+

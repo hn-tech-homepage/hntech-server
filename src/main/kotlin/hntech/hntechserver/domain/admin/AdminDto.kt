@@ -1,8 +1,8 @@
 package hntech.hntechserver.domain.admin
 
+import hntech.hntechserver.config.UNKNOWN
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Email
-import javax.validation.constraints.NotEmpty
 
 const val LOGO = "logo"
 const val CI = "ci"
@@ -19,17 +19,10 @@ data class IntroduceDto(
 )
 
 data class UpdatePasswordForm(
-    @field:NotEmpty
     var curPassword: String,
-
-    @field:NotEmpty
     var newPassword: String,
-
-    @field:NotEmpty
     var newPasswordCheck: String,
-) {
-    fun passwordCheck(): Boolean = newPassword == newPasswordCheck
-}
+)
 
 data class PasswordResponse(
     var newPassword: String,
@@ -49,16 +42,6 @@ data class AdminImageResponse(
     var updatedServerFilename: String,
 )
 
-data class UpdateEmailAccountForm(
-    @field:Email
-    var email: String,
-    var password: String,
-)
-
-data class EmailSendingTimeResponse(
-    var time: String,
-)
-
 data class FooterDto(
     var address: String,
     var afterService: String,
@@ -68,7 +51,26 @@ data class FooterDto(
     constructor(a: Admin) : this(a.address, a.afterService, a.phone, a.fax)
 }
 
-data class AdminPanelInfoResponse(
+data class UpdateAdminPanelForm(
+    // 메일 전송 계정 변경
+    @field:Email
+    var sendEmailAccount: String = "init@email.com",
+    var sendEmailPassword: String = UNKNOWN,
+
+    // 메일 수신 계정 변경
+    var receiveEmailAccount: String = "init@email.com",
+
+    // 메일 발송 시각 변경
+    var emailSendingTime: String = "12",
+
+    // footer
+    var address: String = UNKNOWN,
+    var afterService: String = UNKNOWN,
+    var phone: String = UNKNOWN,
+    var fax: String = UNKNOWN,
+)
+
+data class AdminPanelResponse(
     var adminPassword: String,
     var sendEmailAccount: String,
     var sendEmailPassword: String,
@@ -85,3 +87,4 @@ data class AdminPanelInfoResponse(
         footer = FooterDto(a)
     )
 }
+
