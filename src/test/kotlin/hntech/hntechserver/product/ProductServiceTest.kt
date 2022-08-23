@@ -4,22 +4,22 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import hntech.hntechserver.domain.category.Category
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm
-import hntech.hntechserver.file.File
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileService
+import hntech.hntechserver.domain.product.*
+import hntech.hntechserver.domain.product.QProduct.product
 import hntech.hntechserver.initTestFile
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
-import hntech.hntechserver.product.QProduct.product as product
 
 @SpringBootTest
 @Transactional

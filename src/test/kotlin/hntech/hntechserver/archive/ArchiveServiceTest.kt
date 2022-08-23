@@ -1,13 +1,13 @@
 package hntech.hntechserver.archive
 
 import com.querydsl.jpa.impl.JPAQueryFactory
-import hntech.hntechserver.archive.QArchive.archive
 import hntech.hntechserver.domain.archive.*
+import hntech.hntechserver.domain.archive.QArchive.archive
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm
-import hntech.hntechserver.file.File
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.testFile
 import hntech.hntechserver.testFile2
 import io.kotest.assertions.throwables.shouldThrow

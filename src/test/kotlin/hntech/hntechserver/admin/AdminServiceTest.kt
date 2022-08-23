@@ -1,7 +1,8 @@
 package hntech.hntechserver.admin
 
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.admin.*
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.logResult
 import hntech.hntechserver.testFile
 import io.kotest.assertions.throwables.shouldThrow

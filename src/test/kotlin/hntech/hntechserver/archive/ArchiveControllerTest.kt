@@ -6,9 +6,9 @@ import hntech.hntechserver.domain.archive.ArchiveForm
 import hntech.hntechserver.domain.archive.ArchiveService
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm
-import hntech.hntechserver.file.File
-import hntech.hntechserver.file.FileRepository
-import hntech.hntechserver.file.FileService
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.setMockSession
 import hntech.hntechserver.testFile
 import hntech.hntechserver.testFile2
