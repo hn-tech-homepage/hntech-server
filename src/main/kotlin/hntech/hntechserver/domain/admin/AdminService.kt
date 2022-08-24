@@ -1,9 +1,6 @@
 package hntech.hntechserver.domain.admin
 
-import hntech.hntechserver.config.ADMIN
-import hntech.hntechserver.config.ADMIN_SAVE_PATH_WINDOW
-import hntech.hntechserver.config.LOGIN_FAIL
-import hntech.hntechserver.config.YAML_FILE_PATH_WINDOW
+import hntech.hntechserver.config.*
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
 import hntech.hntechserver.domain.file.FileService
@@ -90,10 +87,7 @@ class AdminService(
         serverFilename: String,
     ): String {
         val curImage = fileService.getFile(serverFilename)
-        val savedFile = fileService.updateFile(curImage, newImage,
-            ADMIN_SAVE_PATH_WINDOW
-//            ADMIN_IMAGE_SAVE_PATH_LINUX
-        )
+        val savedFile = fileService.updateFile(curImage, newImage, ADMIN_SAVE_PATH)
         return savedFile.serverFilename
     }
 
@@ -165,8 +159,7 @@ class AdminService(
     // 패널 정보 수정 (비번, 메일 송신 계정+비번, 수신 계정, 시각, footer)
     fun updatePanel(form: UpdateAdminPanelForm): Admin {
         // 메일 전송 계정 yml 수정
-        val yml = PrintWriter(YAML_FILE_PATH_WINDOW)
-//        val yml = PrintWriter(YAML_FILE_PATH_LINUX)
+        val yml = PrintWriter(YAML_FILE_PATH)
         yml.print("")
         yml.write(
             "spring:\n" +

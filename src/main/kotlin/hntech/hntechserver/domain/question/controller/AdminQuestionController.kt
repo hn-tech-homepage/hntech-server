@@ -31,9 +31,9 @@ class AdminQuestionController(private val questionService: QuestionService) {
         @PathVariable("questionId") id: Long,
         @Valid @RequestBody form: UpdateAdminQuestionForm,
         br: BindingResult
-    ): QuestionSimpleResponse {
+    ): QuestionDetailResponse {
         if (br.hasErrors()) throw ValidationException(br)
-        return QuestionSimpleResponse(questionService.updateAdminQuestion(id, form))
+        return QuestionDetailResponse(questionService.updateAdminQuestion(id, form))
     }
 
     // 문의사항 답변완료

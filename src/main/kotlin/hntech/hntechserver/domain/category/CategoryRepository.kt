@@ -11,11 +11,11 @@ interface CategoryRepository : JpaRepository<Category, Long> {
     fun existsByCategoryName(categoryName: String) : Boolean
     fun findFirstByOrderBySequenceDesc(): Category?
 
-    @Query("SELECT COUNT(c) FROM Category c WHERE c.showInMain = true")
+    @Query("SELECT COUNT(c) FROM Category c WHERE c.showInMain LIKE 'true'")
     fun countMainCategories(): Int
 
     // 순서로 정렬된 카테고리 반환 [메인에 표시될 8개, 모든 카테고리]
-    @Query("SELECT c FROM Category c WHERE c.showInMain = true ORDER BY c.sequence")
+    @Query("SELECT c FROM Category c WHERE c.showInMain LIKE 'true' ORDER BY c.sequence")
     fun findAllByShowInMain(): List<Category>
 
     fun findAllByOrderBySequence(): List<Category>

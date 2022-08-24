@@ -1,5 +1,7 @@
 package hntech.hntechserver.domain.category
 
+import hntech.hntechserver.config.REG_BOOL
+import hntech.hntechserver.config.REG_BOOL_MSG
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Positive
@@ -13,15 +15,19 @@ data class CreateCategoryForm(
 
     @field:Positive
     var imageFileId: Long? = null,
+
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
+    var showInMain: String = "false"
 )
 
 data class UpdateCategoryForm(
     @field:NotBlank
     var categoryName: String,
 
-    @field:Positive
-    var imageFileId: Long?,
-    var showInMain: Boolean,
+    var imageServerFilename: String?,
+
+    @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
+    var showInMain: String,
 )
 
 data class UpdateCategorySequenceForm(
@@ -32,14 +38,16 @@ data class UpdateCategorySequenceForm(
 data class ProductCategoryResponse(
     var id: Long,
     var categoryName: String,
-    var sequence: Int,
     var imageServerFilename: String? = "",
+    var imageOriginalFilename: String? = "",
+    var showInMain: String = "false"
 ) {
     constructor(category: Category): this(
         id = category.id!!,
         categoryName = category.categoryName,
-        sequence = category.sequence,
-        imageServerFilename = category.file?.serverFilename
+        imageOriginalFilename = category.file?.originalFilename,
+        imageServerFilename = category.file?.serverFilename,
+        showInMain = category.showInMain
     )
 }
 
@@ -65,14 +73,6 @@ data class AllCategoryListResponse(
     var categories: List<ArchiveCategoryResponse>
 )
 
-fun convertDto(c: Category): ProductCategoryResponse =
-    ProductCategoryResponse(
-        id = c.id!!,
-        categoryName = c.categoryName,
-        sequence = c.sequence,
-        imageServerFilename = c.file?.serverFilename
-    )
-
 fun convertDto(categories: List<Category>): ProductCategoryListResponse {
-    return ProductCategoryListResponse(categories.map { convertDto(it) })
+    return ProductCategoryListResponse(categories.map { ProductCategoryResponse(it) })
 }

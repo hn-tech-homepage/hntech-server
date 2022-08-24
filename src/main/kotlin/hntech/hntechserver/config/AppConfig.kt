@@ -32,28 +32,23 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         // 파일
         registry.addResourceHandler("/files/**")
-            .addResourceLocations("file:$FILE_SAVE_PATH_WINDOW")
-//            .addResourceLocations("file://$FILE_SAVE_PATH_LINUX")
+            .addResourceLocations("file:$FILE_SAVE_PATH")
 
         // 관리자
         registry.addResourceHandler("/files/admin/**")
-            .addResourceLocations("file:$ADMIN_SAVE_PATH_WINDOW")
-//            .addResourceLocations("file://$ADMIN_SAVE_PATH_LINUX")
+            .addResourceLocations("file:$ADMIN_SAVE_PATH")
 
         // 카테고리
         registry.addResourceHandler("/files/category/**")
-            .addResourceLocations("file:$CATEGORY_SAVE_PATH_WINDOW")
-//            .addResourceLocations("file://$CATEGORY_SAVE_PATH_LINUX")
+            .addResourceLocations("file:$CATEGORY_SAVE_PATH")
 
         // 제품
         registry.addResourceHandler("/files/product/**")
-            .addResourceLocations("file:$PRODUCT_SAVE_PATH_WINDOW")
-//            .addResourceLocations("file://$PRODUCT_SAVE_PATH_LINUX")
+            .addResourceLocations("file:$PRODUCT_SAVE_PATH")
 
         // 자료실
         registry.addResourceHandler("/files/archive/**")
-            .addResourceLocations("file:$ARCHIVE_SAVE_PATH_WINDOW")
-//            .addResourceLocations("file://$ARCHIVE_SAVE_PATH_LINUX")
+            .addResourceLocations("file:$ARCHIVE_SAVE_PATH")
     }
 }
 

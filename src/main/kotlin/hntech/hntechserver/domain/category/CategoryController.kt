@@ -73,7 +73,7 @@ class CategoryController(
         br: BindingResult
     ): ProductCategoryListResponse {
         if (br.hasErrors()) {
-            fileService.deleteFile(form.imageFileId!!)
+            fileService.deleteFile(form.imageServerFilename!!)
             throw ValidationException(br)
         }
         return ProductCategoryListResponse(
