@@ -16,7 +16,7 @@ class Category (
 
     // product 카테고리 전용
     var sequence: Int = 1,
-    var showInMain: Boolean = false,
+    var showInMain: String = "false",
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "file_id")
@@ -31,7 +31,7 @@ class Category (
 ) {
     fun update(
         categoryName: String? = null,
-        showInMain: Boolean? = null,
+        showInMain: String? = null,
         sequence: Int? = null,
         file: File? = null
     ) {

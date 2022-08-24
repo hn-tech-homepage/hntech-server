@@ -34,13 +34,15 @@ class CategoryService(
     @Transactional
     fun createCategory(form: CreateCategoryForm): Category {
         checkCategoryName(form.categoryName)
+        if (form.showInMain == "true") checkMainCategoryCount()
 
         return categoryRepository.save(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
                 file = form.imageFileId?.let { fileService.getFile(it) },
-                type = form.type
+                type = form.type,
+                showInMain = form.showInMain
             )
         )
     }
@@ -90,14 +92,14 @@ class CategoryService(
 
         // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
         if (category.categoryName != form.categoryName) checkCategoryName(form.categoryName)
-        
-        // 수정하려는 파일이 현재 파일과 같지 않으면 기존 파일 삭제
-        if (category.file!!.id!! != form.imageFileId!!) fileService.deleteFile(category.file!!)
+
+        fileService.deleteFile(category.file!!)
+        category.file = null
 
         category.update(
             categoryName = form.categoryName,
             showInMain = form.showInMain,
-            file = fileService.getFile(form.imageFileId!!)
+            file = fileService.getFile(form.imageServerFilename!!)
         )
         return getAllCategories()
     }

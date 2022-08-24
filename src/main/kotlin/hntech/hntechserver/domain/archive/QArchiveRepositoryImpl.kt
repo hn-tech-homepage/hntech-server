@@ -39,6 +39,6 @@ class QArchiveRepositoryImpl(private val jpaQueryFactory: JPAQueryFactory): QArc
             )
             .fetchOne()
 
-        return PageImpl<Archive>(result, pageable, totalCount!!)
+        return PageImpl(result, pageable, totalCount!!)
     }
 }

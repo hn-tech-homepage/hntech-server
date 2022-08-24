@@ -1,7 +1,6 @@
 package hntech.hntechserver.utils
 
-import hntech.hntechserver.config.YAML_FILE_PATH_LINUX
-import hntech.hntechserver.config.YAML_FILE_PATH_WINDOW
+import hntech.hntechserver.config.YAML_FILE_PATH
 import hntech.hntechserver.utils.logging.logger
 import org.apache.commons.configuration2.Configuration
 import org.apache.commons.configuration2.YAMLConfiguration
@@ -34,8 +33,7 @@ class PropertiesManager {
             ReloadingFileBasedConfigurationBuilder(YAMLConfiguration::class.java)
                 .configure(Parameters().fileBased().setFile(
                     // yaml config 파일 경로
-                    File(YAML_FILE_PATH_WINDOW)
-//                    File(YAML_FILE_PATH_LINUX)
+                    File(YAML_FILE_PATH)
                 )
             )
 

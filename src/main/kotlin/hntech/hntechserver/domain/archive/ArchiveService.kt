@@ -4,6 +4,7 @@ import hntech.hntechserver.config.MAX_NOTICE_NUM
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

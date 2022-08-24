@@ -64,8 +64,8 @@ internal class CategoryServiceTest(
         test("카테고리 생성 성공") {
             val form = CreateCategoryForm("생성된 카테고리", imageFileId = uploadFile().id)
 
-            val expected = convertDto(categoryService.createCategory(form))
-            val actual = categoryRepository.findAllByOrderBySequence().map { convertDto(it) }
+            val expected = ProductCategoryResponse(categoryService.createCategory(form))
+            val actual = categoryRepository.findAllByOrderBySequence().map { ProductCategoryResponse(it) }
 
             actual shouldContain expected
         }
@@ -84,16 +84,16 @@ internal class CategoryServiceTest(
         test("카테고리 ID로 조회") {
             val idx = 0 // 0~4
 
-            val expected = convertDto(categoryService.getCategory(savedCategories[idx].id!!))
-            val actual = convertDto(categoryRepository.findById(savedCategories[idx].id!!).get())
+            val expected = ProductCategoryResponse(categoryService.getCategory(savedCategories[idx].id!!))
+            val actual = ProductCategoryResponse(categoryRepository.findById(savedCategories[idx].id!!).get())
 
             actual shouldBe expected
         }
         test("카테고리 이름으로 조회") {
             val name = savedCategories[0].categoryName
 
-            val expected = convertDto(categoryService.getCategory(name))
-            val actual = convertDto(categoryRepository.findByCategoryName(name) ?: Category())
+            val expected = ProductCategoryResponse(categoryService.getCategory(name))
+            val actual = ProductCategoryResponse(categoryRepository.findByCategoryName(name) ?: Category())
 
             actual shouldBe expected
         }

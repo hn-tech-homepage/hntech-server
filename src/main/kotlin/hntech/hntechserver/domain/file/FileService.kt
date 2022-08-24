@@ -12,9 +12,7 @@ import java.util.*
 class FileService(private val fileRepository: FileRepository) {
     val log = logger()
 
-    val baseFilePath = FILE_SAVE_PATH_WINDOW
-//    val baseFilePath = FILE_SAVE_PATH_LINUX
-
+    val baseFilePath = FILE_SAVE_PATH
 
     /**
      * 파일 생성(저장)
@@ -30,16 +28,11 @@ class FileService(private val fileRepository: FileRepository) {
             val extensionType: String = originalFilename.split(".")[1] // 파일 확장자 추출하기
             val serverFilename: String = UUID.randomUUID().toString() + ".$extensionType"
             val savedPath = when(saveType) {
-                FILE_TYPE_ADMIN -> ADMIN_SAVE_PATH_WINDOW
-                FILE_TYPE_CATEGORY -> CATEGORY_SAVE_PATH_WINDOW
-                FILE_TYPE_PRODUCT -> PRODUCT_SAVE_PATH_WINDOW
-                FILE_TYPE_ARCHIVE -> ARCHIVE_SAVE_PATH_WINDOW
-                else -> FILE_SAVE_PATH_WINDOW
-//                FILE_TYPE_ADMIN -> ADMIN_SAVE_PATH_LINUX
-//                FILE_TYPE_CATEGORY -> CATEGORY_SAVE_PATH_LINUX
-//                FILE_TYPE_PRODUCT -> PRODUCT_SAVE_PATH_LINUX
-//                FILE_TYPE_ARCHIVE -> ARCHIVE_SAVE_PATH_LINUX
-//                else -> FILE_SAVE_PATH_LINUX
+                FILE_TYPE_ADMIN -> ADMIN_SAVE_PATH
+                FILE_TYPE_CATEGORY -> CATEGORY_SAVE_PATH
+                FILE_TYPE_PRODUCT -> PRODUCT_SAVE_PATH
+                FILE_TYPE_ARCHIVE -> ARCHIVE_SAVE_PATH
+                else -> FILE_SAVE_PATH
             } + serverFilename
 
             log.info("originFilename = {}, savedPath = {}", originalFilename, savedPath)
