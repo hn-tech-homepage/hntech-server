@@ -98,7 +98,7 @@ internal class CategoryServiceTest(
             actual shouldBe expected
         }
         test("카테고리 수정") {
-            val updateForm = UpdateCategoryForm("수정된 카테고리", savedFiles[fLastIdx].id, true)
+            val updateForm = UpdateCategoryForm("수정된 카테고리", savedFiles[fLastIdx].serverFilename, true)
 
             categoryService.updateCategory(savedCategories[cLastIdx].id!!, updateForm)
 
@@ -109,11 +109,11 @@ internal class CategoryServiceTest(
         }
         test("카테고리 수정 후 카테고리 조회") {
             categoryService.updateCategory(
-                savedCategories[0].id!!, UpdateCategoryForm(savedCategories[0].categoryName, uploadFile().id, true))
+                savedCategories[0].id!!, UpdateCategoryForm(savedCategories[0].categoryName, uploadFile().serverFilename, true))
             categoryService.updateCategory(
-                savedCategories[2].id!!, UpdateCategoryForm(savedCategories[2].categoryName, uploadFile().id, true))
+                savedCategories[2].id!!, UpdateCategoryForm(savedCategories[2].categoryName, uploadFile().serverFilename, true))
             categoryService.updateCategory(
-                savedCategories[4].id!!, UpdateCategoryForm(savedCategories[4].categoryName, uploadFile().id, true))
+                savedCategories[4].id!!, UpdateCategoryForm(savedCategories[4].categoryName, uploadFile().serverFilename, true))
 
             val actual = categoryService.getMainCategories() // 메인 카테고리 조회
 

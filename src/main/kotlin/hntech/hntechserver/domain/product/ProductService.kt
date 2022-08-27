@@ -25,6 +25,7 @@ class ProductService(
         if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
     }
 
+    // 미리 업로드된 파일들의 type 지정(대표, 제품, 규격, 문서)
     private fun setFileTypes(files: UploadedFiles, product: Product) {
         fileService.getFile(files.representativeImage).update(
             fileProduct = product,

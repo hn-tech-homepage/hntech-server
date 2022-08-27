@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest
 @Transactional
 class AdminService(
     private val adminRepository: AdminRepository,
-    private val bannerRepository: BannerRepository,
     private val fileService: FileService,
     private val fileRepository: FileRepository,
     private val emailSchedulingConfigurer: EmailSchedulingConfigurer,
@@ -91,27 +90,20 @@ class AdminService(
         return savedFile.serverFilename
     }
 
-    // 로고 수정
-    fun updateLogo(newImage: MultipartFile): String {
-        val admin = getAdmin()
-        admin.update(newLogo = updateImage(newImage, admin.logoImage))
-        return admin.logoImage
-    }
-
-    // 배너 여러장 수정
-    fun updateBanner(newImages: List<String>): List<String> {
+    // 로고, 배너 여러장 등록, 수정
+    fun updateImages(form: AdminImagesRequest): Admin {
         val admin = getAdmin()
 
-        // 기존에 저장된 배너 삭제
-        bannerRepository.deleteAll()
-        admin.bannerImages.clear()
+        var images: MutableList<File> = admin.images
 
-        newImages.forEach {
-            val banner = Banner(admin = admin, imgServerFilename = it)
-            bannerRepository.save(banner)
+        images.forEach {
+            if (it.type == form.where) fileService.deleteFile(it)
+        }
+        form.imgServerFilenameList.forEach {
+            fileService.getFile(it).update(type = form.where, fileAdmin = admin)
         }
 
-        return newImages
+        return getAdmin()
     }
 
     // 조직도 수정

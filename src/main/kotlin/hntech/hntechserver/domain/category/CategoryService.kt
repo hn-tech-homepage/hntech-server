@@ -93,13 +93,15 @@ class CategoryService(
         // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
         if (category.categoryName != form.categoryName) checkCategoryName(form.categoryName)
 
-        fileService.deleteFile(category.file!!)
-        category.file = null
+        category.file?.let {
+            fileService.deleteFile(category.file!!)
+            category.file = null
+        }
 
         category.update(
             categoryName = form.categoryName,
             showInMain = form.showInMain,
-            file = fileService.getFile(form.imageServerFilename!!)
+            file = form.imageServerFilename?.let { fileService.getFile(form.imageServerFilename!!) }
         )
         return getAllCategories()
     }

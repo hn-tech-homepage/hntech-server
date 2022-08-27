@@ -47,23 +47,28 @@ class AdminController(private val adminService: AdminService) {
         return BoolResponse(adminService.logout(request))
     }
 
+    // 홈페이지 모든 이미지 조회
+    @Auth
+    @GetMapping("/images")
+    fun getAllImages(): AdminImagesResponse =
+        getAdminImagesResponse(adminService.getAdmin())
+
     // 인사말 수정
     @Auth
     @PutMapping("/introduce")
     fun updateIntroduce(@RequestBody form: IntroduceDto) =
         IntroduceDto(adminService.updateIntroduce(form.newIntroduce))
 
-    // 로고, 조직도, CI, 연혁 수정
+    // 조직도, CI, 연혁 수정
     @ApiOperation(
         value = "조직도, CI, 연혁 수정",
-        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 로고 : logo, 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
+        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
     @Auth
     @PostMapping("/image")
     fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImageResponse {
         return AdminImageResponse(
             where = form.where,
             updatedServerFilename = when (form.where) {
-                LOGO -> adminService.updateLogo(form.file)
                 ORG_CHART -> adminService.updateOrgChart(form.file)
                 CI -> adminService.updateCI(form.file)
                 else -> adminService.updateCompanyHistory(form.file) // history
@@ -71,11 +76,14 @@ class AdminController(private val adminService: AdminService) {
         )
     }
 
-    // 배너 수정
+    // 로도, 배너 등록, 수정
+    @ApiOperation(
+        value = "로고, 배너 등록/수정",
+        notes = "where로 어느 부분인지 명시. 로고 : logo, 배너 : banner")
     @Auth
-    @PutMapping("/banner")
-    fun updateBanners(@RequestBody form: BannerDto) =
-        BannerDto(adminService.updateBanner(form.imgServerFilenameList))
+    @PutMapping("/images")
+    fun updateBanners(@RequestBody form: AdminImagesRequest) =
+        getAdminImagesResponse(adminService.updateImages(form))
 
     // 관리자 패널 정보 조회
     @Auth
@@ -89,7 +97,6 @@ class AdminController(private val adminService: AdminService) {
         PasswordResponse(adminService.updatePassword(form))
 
     // 관리자 패널 정보 수정
-
     @PutMapping("/panel")
     fun updatePanelInfo(
         @Valid @RequestBody form: UpdateAdminPanelForm,

@@ -25,10 +25,11 @@ class FileController(private val fileService: FileService) {
     )
     @ApiImplicitParams(
         ApiImplicitParam(
-        name = "type",
-        value = "{type} <= {image, docs, admin} \n " +
-                "image : 이미지들, 단순 그림 / docs : 자료실 자료 / admin : 관리자 관련 사진",
-        required = true
+            name = "type",
+            value = "{type} <= {admin, category, product, archive} \n " +
+                    "업로드 하려는 파일의 타입을 지정하기 위함 \n " +
+                    "해당 파일의 도메인을 type 으로 요청",
+            required = true
         )
     )
     @PostMapping("/{type}/upload")
@@ -39,12 +40,11 @@ class FileController(private val fileService: FileService) {
     fun uploadAll(
         @PathVariable("type") type: String,
         @ModelAttribute files: List<MultipartFile>
-    ) = FileListResponse(fileService.saveAllFiles(files).map { FileResponse(it) })
-
+    ) = FileListResponse(fileService.saveAllFiles(type, files).map { FileResponse(it) })
 
     @GetMapping("/download/{filename}")
     fun download(@PathVariable("filename") filename: String): ResponseEntity<Resource> {
-        val resource = UrlResource("file:" + fileService.getSavedPath(filename))
+        val resource = UrlResource("file:" + fileService.getFile(filename).savedPath)
         
         // 한글 깨짐 처리
         val byteArray = fileService.getOriginalFilename(filename)
