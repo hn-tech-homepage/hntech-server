@@ -54,8 +54,8 @@ class FileService(private val fileRepository: FileRepository) {
     }
     
     // 복수 파일 저장
-    fun saveAllFiles(files: List<MultipartFile>) =
-        files.map { saveFile(it) }.toMutableList()
+    fun saveAllFiles(type: String, files: List<MultipartFile>) =
+        files.map { saveFile(it, type) }.toMutableList()
 
     /**
      * 파일 조회

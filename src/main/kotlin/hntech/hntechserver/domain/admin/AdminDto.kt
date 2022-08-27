@@ -3,8 +3,10 @@ package hntech.hntechserver.domain.admin
 import hntech.hntechserver.config.UNKNOWN
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Email
+import javax.validation.constraints.Pattern
 
 const val LOGO = "logo"
+const val BANNER = "banner"
 const val CI = "ci"
 const val ORG_CHART = "orgChart"
 const val HISTORY = "companyHistory"
@@ -28,7 +30,9 @@ data class PasswordResponse(
     var newPassword: String,
 )
 
-data class BannerDto(
+data class AdminImagesRequest(
+    @field:Pattern(regexp = "^(logo|banner)$", message = "logo 또는 banner 로 입력 가능합니다.")
+    var where: String,
     var imgServerFilenameList: List<String>
 )
 
@@ -41,6 +45,32 @@ data class AdminImageResponse(
     var where: String,
     var updatedServerFilename: String,
 )
+
+data class AdminImagesResponse(
+    var logoImages: MutableList<String> = mutableListOf(),
+    var bannerImages: MutableList<String> = mutableListOf(),
+    var orgChartImage: String = "",
+    var compInfoImage: String = "",
+    var historyImage: String = "",
+    var catalogImage: String = "",
+    var materialApprovalImage: String = "",
+)
+
+fun getAdminImagesResponse(admin: Admin): AdminImagesResponse {
+    var result = AdminImagesResponse()
+    admin.images.forEach {
+        when (it.type) {
+            LOGO -> result.logoImages.add(it.serverFilename)
+            BANNER -> result.bannerImages.add(it.serverFilename)
+        }
+    }
+    result.orgChartImage = admin.orgChartImage
+    result.compInfoImage = admin.compInfoImage
+    result.historyImage = admin.historyImage
+    result.catalogImage = admin.catalogImage
+    result.materialApprovalImage = admin.materialApprovalImage
+    return result
+}
 
 data class FooterDto(
     var address: String,

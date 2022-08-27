@@ -27,7 +27,7 @@ data class UpdateCategoryForm(
     var imageServerFilename: String?,
 
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
-    var showInMain: String,
+    var showInMain: String = "false",
 )
 
 data class UpdateCategorySequenceForm(

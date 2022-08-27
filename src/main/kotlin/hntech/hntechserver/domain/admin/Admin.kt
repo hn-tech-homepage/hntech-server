@@ -1,5 +1,6 @@
 package hntech.hntechserver.domain.admin
 
+import hntech.hntechserver.domain.file.File
 import javax.persistence.*
 
 @Entity
@@ -13,12 +14,9 @@ class Admin(
     /**
      * 회사 정보
      */
-    // 로고
-    var logoImage: String = "",
-    
-    // 배너 사진
-    @OneToMany(mappedBy = "admin", cascade = [CascadeType.ALL])
-    var bannerImages: MutableList<Banner> = mutableListOf(),
+    // 로고, 배너 사진
+    @OneToMany(mappedBy = "fileAdmin", cascade = [CascadeType.ALL])
+    var images: MutableList<File> = mutableListOf(),
 
     // 인사말
     var introduce: String = "",
@@ -32,7 +30,13 @@ class Admin(
     // 회사 연혁 이미지 서버 저장 이름
     var historyImage: String = "",
 
-    /**
+    // 카다록
+    var catalogImage: String = "",
+
+    // 자재승인서
+    var materialApprovalImage: String = "",
+
+    /*
      * 하단 (footer) 정보
      */
     var address: String = "", // 본사
@@ -49,14 +53,12 @@ class Admin(
     var emailSendingTime: String = "", // cron
 ) {
     fun update(
-        newLogo: String? = null,
         newPassword: String? = null,
         newIntroduce: String? = null,
         newOrgChartImage: String? = null,
         newCompInfoImage: String? = null,
         newHistoryImage: String? = null,
     ) {
-        newLogo?.let { this.logoImage = it }
         newPassword?.let { this.password = it }
         newIntroduce?.let { this.introduce = it }
         newOrgChartImage?.let { this.orgChartImage = it }
@@ -72,6 +74,8 @@ class Admin(
         return this
     }
 
+    fun updateImages(images: MutableList<File>) { this.images = images }
+
     fun updatePanel(form: UpdateAdminPanelForm) {
         this.sendEmailAccount = form.sendEmailAccount
         this.sendEmailPassword = form.sendEmailPassword
@@ -86,16 +90,3 @@ class Admin(
     }
 
 }
-
-@Entity
-class Banner(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "banner_id")
-    val id: Long? = null,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    var admin: Admin,
-
-    var imgServerFilename: String = "",
-)

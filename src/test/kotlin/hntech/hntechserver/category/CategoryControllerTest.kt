@@ -30,7 +30,7 @@ class CategoryControllerTest {
             categoryService.createCategory(CreateCategoryForm("스프링클러$it"))
         }
         repeat(3) {
-            categoryService.getCategory("스프링클러$it").update(showInMain = true)
+            categoryService.getCategory("스프링클러$it").update(showInMain = "true")
         }
     }
 
