@@ -51,7 +51,7 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @GetMapping("/images")
     fun getAllImages(): AdminImagesResponse =
-        getAdminImagesResponse(adminService.getAdmin())
+        AdminImagesResponse(adminService.getAdmin())
 
     // 인사말 수정
     @Auth
@@ -59,16 +59,17 @@ class AdminController(private val adminService: AdminService) {
     fun updateIntroduce(@RequestBody form: IntroduceDto) =
         IntroduceDto(adminService.updateIntroduce(form.newIntroduce))
 
-    // 조직도, CI, 연혁 수정
+    // 조직도, CI, 연혁 등록, 수정
     @ApiOperation(
-        value = "조직도, CI, 연혁 수정",
-        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
+        value = "로고, 조직도, CI, 연혁 등록/수정",
+        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 로고 : logo 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
     @Auth
     @PostMapping("/image")
-    fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImageResponse {
-        return AdminImageResponse(
-            where = form.where,
-            updatedServerFilename = when (form.where) {
+    fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImagesResponse {
+        if (form.file.isEmpty) return AdminImagesResponse(adminService.getAdmin())
+        return AdminImagesResponse(
+            when (form.where) {
+                LOGO -> adminService.updateLogo(form.file)
                 ORG_CHART -> adminService.updateOrgChart(form.file)
                 CI -> adminService.updateCI(form.file)
                 else -> adminService.updateCompanyHistory(form.file) // history
@@ -76,14 +77,11 @@ class AdminController(private val adminService: AdminService) {
         )
     }
 
-    // 로도, 배너 등록, 수정
-    @ApiOperation(
-        value = "로고, 배너 등록/수정",
-        notes = "where로 어느 부분인지 명시. 로고 : logo, 배너 : banner")
+    // 배너 등록, 수정
     @Auth
-    @PutMapping("/images")
-    fun updateBanners(@RequestBody form: AdminImagesRequest) =
-        getAdminImagesResponse(adminService.updateImages(form))
+    @PostMapping("/banner")
+    fun updateBanners(@ModelAttribute form: AdminImagesRequest): AdminImagesResponse =
+        AdminImagesResponse(adminService.updateImages(form))
 
     // 관리자 패널 정보 조회
     @Auth

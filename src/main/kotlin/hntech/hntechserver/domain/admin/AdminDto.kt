@@ -3,10 +3,8 @@ package hntech.hntechserver.domain.admin
 import hntech.hntechserver.config.UNKNOWN
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Email
-import javax.validation.constraints.Pattern
 
 const val LOGO = "logo"
-const val BANNER = "banner"
 const val CI = "ci"
 const val ORG_CHART = "orgChart"
 const val HISTORY = "companyHistory"
@@ -31,9 +29,7 @@ data class PasswordResponse(
 )
 
 data class AdminImagesRequest(
-    @field:Pattern(regexp = "^(logo|banner)$", message = "logo 또는 banner 로 입력 가능합니다.")
-    var where: String,
-    var imgServerFilenameList: List<String>
+    var files: List<MultipartFile>
 )
 
 data class AdminImageRequest(
@@ -47,29 +43,19 @@ data class AdminImageResponse(
 )
 
 data class AdminImagesResponse(
-    var logoImages: MutableList<String> = mutableListOf(),
-    var bannerImages: MutableList<String> = mutableListOf(),
+    var logoImage: String = "",
+    var bannerImages: List<String> = listOf(),
     var orgChartImage: String = "",
     var compInfoImage: String = "",
     var historyImage: String = "",
-    var catalogImage: String = "",
-    var materialApprovalImage: String = "",
-)
-
-fun getAdminImagesResponse(admin: Admin): AdminImagesResponse {
-    var result = AdminImagesResponse()
-    admin.images.forEach {
-        when (it.type) {
-            LOGO -> result.logoImages.add(it.serverFilename)
-            BANNER -> result.bannerImages.add(it.serverFilename)
-        }
-    }
-    result.orgChartImage = admin.orgChartImage
-    result.compInfoImage = admin.compInfoImage
-    result.historyImage = admin.historyImage
-    result.catalogImage = admin.catalogImage
-    result.materialApprovalImage = admin.materialApprovalImage
-    return result
+) {
+    constructor(admin: Admin): this(
+        logoImage = admin.logoImage,
+        bannerImages = admin.bannerImages.map { it.serverFilename },
+        orgChartImage = admin.orgChartImage,
+        compInfoImage = admin.compInfoImage,
+        historyImage = admin.historyImage
+    )
 }
 
 data class FooterDto(
