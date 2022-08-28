@@ -70,6 +70,7 @@ class ProductService(
                 description = form.description
             )
         )
+        category.products.add(product)
         
         // 제품 파일 저장
         form.files?.let { setFileTypes(it, product) }
