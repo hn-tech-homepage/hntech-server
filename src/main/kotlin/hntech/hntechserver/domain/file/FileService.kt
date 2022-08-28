@@ -78,9 +78,11 @@ class FileService(private val fileRepository: FileRepository) {
     // 단일 파일 삭제
     fun deleteFile(file: File) = fileRepository.delete(file)
     fun deleteFile(fileId: Long) = fileRepository.deleteById(fileId)
+    fun deleteFile(serverFilename: String) =
+        fileRepository.findByServerFilename(serverFilename)?.let { fileRepository.delete(it) }
 
     // 스토리지의 파일 삭제 (디비는 안건드림)
-    fun deleteFile(serverFilename: String): Boolean {
+    fun deleteFileOnly(serverFilename: String): Boolean {
         val targetFile = java.io.File(baseFilePath + serverFilename)
         return try {
             if (targetFile.exists()) targetFile.delete()

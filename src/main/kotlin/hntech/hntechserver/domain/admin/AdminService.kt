@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest
 class AdminService(
     private val adminRepository: AdminRepository,
     private val fileService: FileService,
-    private val fileRepository: FileRepository,
     private val emailSchedulingConfigurer: EmailSchedulingConfigurer,
     )
 {
@@ -54,7 +53,6 @@ class AdminService(
     fun createAdmin(password: String): Admin {
         if (adminRepository.findAll().isNotEmpty())
             throw AdminException("기존 관리자 존재. 중복 관리자 생성 불가능.")
-        fileRepository.save(File(originalFilename = "관리자용 더미 파일", serverFilename = ""))
         adminRepository.save(Admin(password = password))
         val initForm = UpdateAdminPanelForm(
             emailSendingTime = "12",
@@ -90,41 +88,60 @@ class AdminService(
         return savedFile.serverFilename
     }
 
-    // 로고, 배너 여러장 등록, 수정
+    // 배너 여러장 등록, 수정
     fun updateImages(form: AdminImagesRequest): Admin {
         val admin = getAdmin()
 
-        var images: MutableList<File> = admin.images
+        if (form.files[0].isEmpty) return admin
 
-        images.forEach {
-            if (it.type == form.where) fileService.deleteFile(it)
-        }
-        form.imgServerFilenameList.forEach {
-            fileService.getFile(it).update(type = form.where, fileAdmin = admin)
-        }
+        admin.bannerImages.forEach { fileService.deleteFile(it) }
+        admin.updateBanner(
+            form.files.map {
+                fileService.saveFile(it, FILE_TYPE_ADMIN).update(fileAdmin = admin)
+            }.toMutableList()
+        )
 
-        return getAdmin()
+        return admin
+    }
+
+    // 로고 수정
+    fun updateLogo(newImage: MultipartFile): Admin {
+        val admin = getAdmin()
+        fileService.deleteFile(admin.logoImage)
+        admin.update(
+            newLogoImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+        )
+        return admin
     }
 
     // 조직도 수정
-    fun updateOrgChart(newImage: MultipartFile): String {
+    fun updateOrgChart(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        admin.update(newOrgChartImage = updateImage(newImage, admin.orgChartImage))
-        return admin.orgChartImage
+        fileService.deleteFile(admin.orgChartImage)
+        admin.update(
+            newOrgChartImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+        )
+        return admin
     }
 
     // CI 수정
-    fun updateCI(newImage: MultipartFile): String {
+    fun updateCI(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        admin.update(newCompInfoImage = updateImage(newImage, admin.compInfoImage))
-        return admin.compInfoImage
+        fileService.deleteFile(admin.compInfoImage)
+        admin.update(
+            newCompInfoImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+        )
+        return admin
     }
 
     // 연혁 수정
-    fun updateCompanyHistory(newImage: MultipartFile): String {
+    fun updateCompanyHistory(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        admin.update(newHistoryImage = updateImage(newImage, admin.historyImage))
-        return admin.historyImage
+        fileService.deleteFile(admin.historyImage)
+        admin.update(
+            newHistoryImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+        )
+        return admin
     }
 
     /**
@@ -152,8 +169,7 @@ class AdminService(
     fun updatePanel(form: UpdateAdminPanelForm): Admin {
         // 메일 전송 계정 yml 수정
         val yml = PrintWriter(YAML_FILE_PATH)
-        yml.print("")
-        yml.write(
+        yml.print(""); yml.write(
             "spring:\n" +
                     "  mail:\n" +
                     "    host: smtp.naver.com\n" +
@@ -167,8 +183,7 @@ class AdminService(
                     "          enable: true\n" +
                     "          trust: smtp.naver.com\n" +
                     "        starttls.enable: true"
-        )
-        yml.close()
+        ); yml.close()
         // 어드민 업데이트
         val admin = getAdmin()
         admin.updatePanel(form)

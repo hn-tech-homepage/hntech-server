@@ -40,7 +40,7 @@ internal class CategoryServiceTest(
         return saved
     }
     fun deleteFile() {
-        fileService.deleteFile(savedFiles[fLastIdx].serverFilename)
+        fileService.deleteFileOnly(savedFiles[fLastIdx].serverFilename)
         savedFiles = fileRepository.findAll()
         fLastIdx = savedFiles.size - 1
     }
