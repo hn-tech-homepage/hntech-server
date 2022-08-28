@@ -33,7 +33,7 @@ class ProductController(
                       br: BindingResult
     ): ProductDetailResponse {
         if (br.hasErrors()) {
-            fileService.deleteFiles(form.files.getFileIds())
+            form.files?.let { fileService.deleteFiles(it.getFileIds()) }
             throw ValidationException(br)
         }
         return ProductDetailResponse(productService.createProduct(form))

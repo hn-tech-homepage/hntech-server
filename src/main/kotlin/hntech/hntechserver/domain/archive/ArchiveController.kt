@@ -6,6 +6,7 @@ import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.data.web.PageableDefault
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -51,7 +52,7 @@ class ArchiveController(
     @Auth
     @PostMapping
     fun createArchive(
-        @Valid @RequestBody form: ArchiveForm,
+        @Valid @ModelAttribute form: ArchiveForm,
         br: BindingResult
     ): ArchiveDetailResponse {
         if (br.hasErrors()) throw ValidationException(br)
@@ -60,22 +61,40 @@ class ArchiveController(
 
 
     // 자료글 수정
+//    @Auth
+//    @PutMapping("/{archiveId}")
+//    fun updateArchive(
+//        @PathVariable("archiveId") id: Long,
+//        @Valid @RequestBody form: ArchiveForm,
+//        br: BindingResult
+//    ): ArchiveDetailResponse {
+//        if (br.hasErrors()) throw ValidationException(br)
+//        return ArchiveDetailResponse(archiveService.updateArchive(id, form))
+//    }
+
     @Auth
     @PutMapping("/{archiveId}")
     fun updateArchive(
         @PathVariable("archiveId") id: Long,
-        @Valid @RequestBody form: ArchiveForm,
+        @Valid @ModelAttribute form: ArchiveForm,
         br: BindingResult
     ): ArchiveDetailResponse {
         if (br.hasErrors()) throw ValidationException(br)
         return ArchiveDetailResponse(archiveService.updateArchive(id, form))
     }
 
-
     // 자료글 삭제
     @Auth
     @DeleteMapping("/{archiveId}")
     fun deleteArchive(@PathVariable("archiveId") id: Long) =
         BoolResponse(archiveService.deleteArchive(id))
+
+    // 자료글에 첨부되어있는 파일 삭제
+    @Auth
+    @DeleteMapping("/{archiveId}/file/{fileId}")
+    fun deleteAttachedFile(
+        @PathVariable("archiveId") archiveId: Long,
+        @PathVariable("fileId") fileId: Long,
+    ) = BoolResponse(archiveService.deleteAttachedFile(archiveId, fileId))
 
 }

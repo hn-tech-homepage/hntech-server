@@ -24,6 +24,17 @@ class ArchiveService(
             throw ArchiveException(OVER_NOTICE_MAX_NUM)
     }
 
+    private fun setNewFiles(form: ArchiveForm, archive: Archive) {
+        form.files?.let {
+            val newSavedFiles = it.map { newFile ->
+                val newSavedFileEntity = fileService.saveFile(newFile)
+                newSavedFileEntity.fileArchive = archive
+                newSavedFileEntity // return
+            }.toMutableList()
+            archive.files.addAll(newSavedFiles)
+        }
+    }
+
     /**
      * 자료실 글 생성
      */
@@ -43,15 +54,8 @@ class ArchiveService(
             category = category
         ))
 
-        // 파일 지정하기 (파일이 없으면 수행 X)
-        if (form.files.isNotEmpty()) {
-            val files = form.files.map {
-                val file = fileService.getFile(it)
-                file.fileArchive = archive
-                file
-            }.toMutableList()
-            archive.update(files = files)
-        }
+        // 파일 저장 (파일이 없으면 수행 X)
+        setNewFiles(form, archive)
 
         return archive
     }
@@ -68,15 +72,45 @@ class ArchiveService(
         qArchiveRepository.searchArchive(pageable, categoryName, keyword)
 
     // 공지사항 모두 조회 (페이징)
-    fun getAllNotice(): List<Archive> =
-        archiveRepository.findAllNotice()
+    fun getAllNotice(): List<Archive> = archiveRepository.findAllNotice()
 
     /**
      * 자료 수정
      */
+//    @Transactional
+//    fun updateArchive(id: Long, form: ArchiveForm): Archive {
+//
+//        val archive = getArchive(id)
+//
+//        // 카테고리 가져오기
+//        val category = categoryService.getCategory(form.categoryName)
+//
+//        // 공지사항 최대 개수 체크
+//        if (form.notice == "true") checkNoticeable()
+//
+//        // 파일 업데이트
+//        fileService.deleteAllFiles(archive.files)
+//        archive.files.clear()
+//        val files = form.files.map {
+//            val newFile = fileService.getFile(it)
+//            newFile.fileArchive = archive
+//            newFile
+//        }.toMutableList()
+//
+//        archive.update(
+//            notice = form.notice,
+//            title = form.title,
+//            content = form.content,
+//            category = category,
+//            files = files
+//        )
+//
+//        return archive
+//    }
+
     @Transactional
     fun updateArchive(id: Long, form: ArchiveForm): Archive {
-
+        // 자료실 가져오기
         val archive = getArchive(id)
 
         // 카테고리 가져오기
@@ -85,25 +119,20 @@ class ArchiveService(
         // 공지사항 최대 개수 체크
         if (form.notice == "true") checkNoticeable()
 
-        // 파일 업데이트
-        fileService.deleteAllFiles(archive.files)
-        archive.files.clear()
-        val files = form.files.map {
-            val newFile = fileService.getFile(it)
-            newFile.fileArchive = archive
-            newFile
-        }.toMutableList()
+        // 파일 변경
+        setNewFiles(form, archive)
 
         archive.update(
             notice = form.notice,
             title = form.title,
             content = form.content,
             category = category,
-            files = files
         )
 
         return archive
     }
+
+
 
     /**
      * 자료 삭제
@@ -111,6 +140,14 @@ class ArchiveService(
     @Transactional
     fun deleteArchive(id: Long): Boolean {
         archiveRepository.deleteById(id)
+        return true
+    }
+
+    @Transactional
+    fun deleteAttachedFile(archiveId: Long, fileId: Long): Boolean {
+        val targetFile = fileService.getFile(fileId)
+        getArchive(archiveId).files.remove(targetFile)
+        fileService.deleteFile(targetFile)
         return true
     }
 }

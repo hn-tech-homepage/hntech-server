@@ -20,7 +20,6 @@ class ProductService(
     val log = logger()
 
     // 제품명 중복체크
-    @Transactional(readOnly = true)
     private fun checkProductName(name: String) {
         if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
     }
@@ -52,7 +51,6 @@ class ProductService(
     }
 
     // 마지막 순서의 제품 조회
-    @Transactional(readOnly = true)
     private fun getLastProduct(): Product? = productRepository.findFirstByOrderBySequenceDesc()
 
     // 제품 생성
@@ -74,8 +72,8 @@ class ProductService(
         )
         
         // 제품 파일 저장
-        setFileTypes(form.files, product)
-        product.update(files = fileService.getFiles(form.files.getFileIds()))
+        form.files?.let { setFileTypes(it, product) }
+        product.update(files = form.files?.let { fileService.getFiles(it.getFileIds()) })
 
         return product
     }

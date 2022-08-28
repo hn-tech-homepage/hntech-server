@@ -1,5 +1,6 @@
 package hntech.hntechserver
 
+import hntech.hntechserver.config.PRODUCT
 import hntech.hntechserver.domain.admin.AdminService
 import hntech.hntechserver.domain.archive.ArchiveForm
 import hntech.hntechserver.domain.archive.ArchiveService
@@ -8,6 +9,7 @@ import hntech.hntechserver.domain.category.CreateCategoryForm
 import hntech.hntechserver.domain.comment.CommentService
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.product.ProductService
 import hntech.hntechserver.domain.question.QuestionService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -21,7 +23,8 @@ class InitDummyData(
     private val categoryService: CategoryService,
     private val questionService: QuestionService,
     private val archiveService: ArchiveService,
-    private val commentService: CommentService
+    private val commentService: CommentService,
+    private val productService: ProductService,
 ) {
 
     @PostConstruct
@@ -35,9 +38,9 @@ class InitDummyData(
         }
 
         // 카테고리 세팅
-        categoryService.createCategory(CreateCategoryForm("스프링클러"))
+        categoryService.createCategory(CreateCategoryForm("스프링클러", type=PRODUCT))
         categoryService.createCategory(CreateCategoryForm("일반자료"))
-        categoryService.createCategory(CreateCategoryForm("신축배관"))
+        categoryService.createCategory(CreateCategoryForm("신축배관", type=PRODUCT))
         categoryService.createCategory(CreateCategoryForm("제품승인서"))
 
 
@@ -63,9 +66,9 @@ class InitDummyData(
 //        commentService.createComment(1L, CreateCommentForm("관리자", "알고있습니다."))
 //
         // 자료실 세팅
-        val files = listOf("test0.jpg", "test1.jpg", "test2.jpg")
-        val form = ArchiveForm("테스트", "스프링클러", "false", "내용", files)
-        archiveService.createArchive(form)
+//        val files = listOf("test0.jpg", "test1.jpg", "test2.jpg")
+//        val form = ArchiveForm("테스트", "스프링클러", "false", "내용", files)
+//        archiveService.createArchive(form)
     //        repeat(30) {
 //            archiveService.createArchive(form)
 //        }
@@ -73,6 +76,10 @@ class InitDummyData(
 //        repeat(10) {
 //            archiveService.createArchive(form2)
 //        }
+
+
+        // 제품 세팅
+
 
 
     }

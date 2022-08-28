@@ -47,7 +47,7 @@ data class ProductCreateForm(
     var productName: String,
     var description: String,
 
-    var files: UploadedFiles
+    var files: UploadedFiles?
 )
 
 data class ProductUpdateForm(

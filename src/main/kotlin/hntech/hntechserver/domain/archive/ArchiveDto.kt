@@ -4,8 +4,10 @@ import hntech.hntechserver.config.*
 import hntech.hntechserver.domain.file.FileResponse
 import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page
+import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
+
 
 data class ArchiveForm(
     @field:Size(max = MAX_TITLE_LENGTH, message = MAX_TITLE_LENGTH_MSG)
@@ -18,7 +20,7 @@ data class ArchiveForm(
 
     @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
     var content: String,
-    var files: List<String>, // serverFilename
+    var files: List<MultipartFile>?, // serverFilename
 )
 
 data class ArchiveDetailResponse(
