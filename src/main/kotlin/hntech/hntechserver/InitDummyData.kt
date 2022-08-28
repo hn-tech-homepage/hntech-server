@@ -9,6 +9,7 @@ import hntech.hntechserver.domain.category.CreateCategoryForm
 import hntech.hntechserver.domain.comment.CommentService
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.product.ProductCreateForm
 import hntech.hntechserver.domain.product.ProductService
 import hntech.hntechserver.domain.question.QuestionService
 import org.springframework.stereotype.Component
@@ -79,6 +80,11 @@ class InitDummyData(
 
 
         // 제품 세팅
+//        repeat(10) {
+//            productService.createProduct(
+//                ProductCreateForm("스프링클러", "스프링죠아$it", "이것은 스프링$it")
+//            )
+//        }
 
 
 

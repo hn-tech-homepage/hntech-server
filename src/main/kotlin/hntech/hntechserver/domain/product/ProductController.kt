@@ -17,11 +17,14 @@ class ProductController(
      * 사용자 모드
      */
     @GetMapping
-    fun getAllProducts(@RequestParam(name = "category", required = false) categoryName: String?): ProductListResponse =
-        ProductListResponse(productService.getAllProducts(categoryName).map { ProductSimpleResponse(it) })
+    fun getAllProducts(
+        @RequestParam(name = "category", required = false) categoryName: String?
+    ) = ProductListResponse(
+            productService.getAllProducts(categoryName).map { ProductSimpleResponse(it) }
+        )
 
-    @GetMapping("/{product_id}")
-    fun getProduct(@PathVariable("product_id") id: Long): ProductDetailResponse =
+    @GetMapping("/{productId}")
+    fun getProduct(@PathVariable("productId") id: Long) =
         ProductDetailResponse(productService.getProduct(id))
 
     /**
