@@ -1,8 +1,6 @@
 package hntech.hntechserver.domain.admin
 
 import hntech.hntechserver.config.*
-import hntech.hntechserver.domain.file.File
-import hntech.hntechserver.domain.file.FileRepository
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import hntech.hntechserver.utils.scheduler.EmailSchedulingConfigurer
@@ -79,15 +77,6 @@ class AdminService(
         return admin.introduce
     }
 
-    private fun updateImage(
-        newImage: MultipartFile,
-        serverFilename: String,
-    ): String {
-        val curImage = fileService.getFile(serverFilename)
-        val savedFile = fileService.updateFile(curImage, newImage, ADMIN_SAVE_PATH)
-        return savedFile.serverFilename
-    }
-
     // 배너 여러장 등록, 수정
     fun updateImages(form: AdminImagesRequest): Admin {
         val admin = getAdmin()
@@ -104,12 +93,14 @@ class AdminService(
         return admin
     }
 
+    private fun updateImage(newImage: MultipartFile, where: String) =
+        fileService.updateFile(where, newImage, FILE_TYPE_ADMIN).serverFilename
+
     // 로고 수정
     fun updateLogo(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        fileService.deleteFile(admin.logoImage)
         admin.update(
-            newLogoImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+            newLogoImage = updateImage(newImage, admin.logoImage)
         )
         return admin
     }
@@ -117,9 +108,8 @@ class AdminService(
     // 조직도 수정
     fun updateOrgChart(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        fileService.deleteFile(admin.orgChartImage)
         admin.update(
-            newOrgChartImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+            newOrgChartImage = updateImage(newImage, admin.orgChartImage)
         )
         return admin
     }
@@ -127,9 +117,8 @@ class AdminService(
     // CI 수정
     fun updateCI(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        fileService.deleteFile(admin.compInfoImage)
         admin.update(
-            newCompInfoImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+            newCompInfoImage = updateImage(newImage, admin.compInfoImage)
         )
         return admin
     }
@@ -137,9 +126,8 @@ class AdminService(
     // 연혁 수정
     fun updateCompanyHistory(newImage: MultipartFile): Admin {
         val admin = getAdmin()
-        fileService.deleteFile(admin.historyImage)
         admin.update(
-            newHistoryImage = fileService.saveFile(newImage, FILE_TYPE_ADMIN).serverFilename
+            newHistoryImage = updateImage(newImage, admin.historyImage)
         )
         return admin
     }
@@ -151,6 +139,7 @@ class AdminService(
      * - 메일 수신 계정
      * - 메일 발송 시각
      * - footer 회사 정보
+     * - 카다록, 자재승인서
      */
     // 관리자 비밀번호 변경
     fun updatePassword(form: UpdatePasswordForm): String {
@@ -189,4 +178,32 @@ class AdminService(
         admin.updatePanel(form)
         return admin
     }
+    
+    // 카다록, 자재승인서 수정
+    fun updateCatalogMaterial(form: UpdateCatalogMaterialForm): Admin {
+        val admin = getAdmin()
+
+        // Multipart 가 비어있으면 변경을 안 한다는 뜻이므로, 원래 저장되어 있던걸 다시 반환
+        val catalog: String = when (form.catalogFile.isEmpty) {
+            false -> fileService.updateFile(
+                oldFileServerFilename = admin.catalogFile,
+                newMultipartFile = form.catalogFile,
+                saveType = FILE_TYPE_ADMIN
+            ).serverFilename
+            else -> admin.catalogFile
+        }
+        
+        val material: String = when (form.materialFile.isEmpty) {
+            false -> fileService.updateFile(
+                oldFileServerFilename = admin.materialFile,
+                newMultipartFile = form.materialFile,
+                saveType = FILE_TYPE_ADMIN
+            ).serverFilename
+            else -> admin.materialFile
+        }
+        admin.update(newCatalogFile = catalog, newMaterialFile = material)
+        
+        return admin
+    }
+
 }

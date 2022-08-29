@@ -39,11 +39,6 @@ data class AdminImageRequest(
     var file: MultipartFile,
 )
 
-data class AdminImageResponse(
-    var where: String,
-    var updatedServerFilename: String,
-)
-
 data class AdminImagesResponse(
     var logoImage: FileResponse,
     var bannerImages: List<FileResponse> = listOf(),
@@ -88,21 +83,37 @@ data class UpdateAdminPanelForm(
     var fax: String = UNKNOWN,
 )
 
+data class UpdateCatalogMaterialForm(
+    var catalogFile: MultipartFile,
+    var materialFile: MultipartFile,
+)
+
 data class AdminPanelResponse(
     var adminPassword: String,
     var sendEmailAccount: String,
     var sendEmailPassword: String,
     var receiveEmailAccount: String,
     var emailSendingTime: String,
+    var catalogOriginalFilename: String,
+    var materialOriginalFilename: String,
     var footer: FooterDto
 ) {
-    constructor(a: Admin) : this(
+    constructor(a: Admin, catalog: String = "", material: String = "") : this(
         adminPassword = a.password,
         sendEmailAccount = a.sendEmailAccount,
         sendEmailPassword = a.sendEmailPassword,
         receiveEmailAccount = a.receiveEmailAccount,
         emailSendingTime = a.emailSendingTime,
+        catalogOriginalFilename = catalog,
+        materialOriginalFilename = material,
         footer = FooterDto(a)
     )
 }
+
+data class CatalogMaterialResponse(
+    var catalogOriginalFilename: String,
+    var catalogServerFilename: String,
+    var materialOriginalFilename: String,
+    var materialServerFilename: String,
+)
 

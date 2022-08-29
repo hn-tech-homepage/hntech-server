@@ -9,8 +9,8 @@ import hntech.hntechserver.domain.category.CreateCategoryForm
 import hntech.hntechserver.domain.comment.CommentService
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
-import hntech.hntechserver.domain.product.ProductCreateForm
-import hntech.hntechserver.domain.product.ProductService
+//import hntech.hntechserver.domain.product.ProductCreateForm
+//import hntech.hntechserver.domain.product.ProductService
 import hntech.hntechserver.domain.question.QuestionService
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -25,7 +25,7 @@ class InitDummyData(
     private val questionService: QuestionService,
     private val archiveService: ArchiveService,
     private val commentService: CommentService,
-    private val productService: ProductService,
+//    private val productService: ProductService,
 ) {
 
     @PostConstruct

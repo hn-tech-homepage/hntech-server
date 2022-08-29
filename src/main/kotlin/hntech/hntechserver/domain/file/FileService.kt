@@ -20,7 +20,7 @@ class FileService(private val fileRepository: FileRepository) {
     // 단일 파일 저장
     fun saveFile(
         file: MultipartFile,
-        saveType: String = FILE_TYPE_DEFAULT
+        saveType: String = FILE_TYPE_DEFAULT,
     ): File {
         if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
@@ -44,7 +44,8 @@ class FileService(private val fileRepository: FileRepository) {
                 File(
                     originalFilename = originalFilename,
                     serverFilename = serverFilename,
-                    savedPath = savedPath
+                    savedPath = savedPath,
+                    type = saveType
                 )
             )
         } catch (e: Exception) {
@@ -64,11 +65,7 @@ class FileService(private val fileRepository: FileRepository) {
         fileRepository.findById(fileId).orElseThrow { FileException("$FILE_NOT_FOUND / ID : $fileId") }
 
     fun getFile(serverFilename: String): File =
-        fileRepository.findByServerFilename(serverFilename) ?: throw FileException(FILE_NOT_FOUND)
-
-    fun getFiles(idList: List<Long>) = idList.map { getFile(it) }.toMutableList()
-
-    fun getSavedPath(serverFilename: String): String = baseFilePath + serverFilename
+        fileRepository.findByServerFilename(serverFilename) ?: throw FileException("[$serverFilename] $FILE_NOT_FOUND")
 
     fun getOriginalFilename(serverFilename: String): String = getFile(serverFilename).originalFilename
 
@@ -94,7 +91,6 @@ class FileService(private val fileRepository: FileRepository) {
 
     // 복수 파일 삭제
     fun deleteAllFiles(files: MutableList<File>) = files.forEach { deleteFile(it) }
-    fun deleteFiles(idList: List<Long>) = idList.forEach { deleteFile(it) }
 
     /**
      * 파일 수정 (업데이트 : 기존파일 삭제 후 새로운 파일 저장)
@@ -102,10 +98,19 @@ class FileService(private val fileRepository: FileRepository) {
     // 단일 파일 수정
     fun updateFile(
         oldFile: File,
-        newFile: MultipartFile,
+        newMultipartFile: MultipartFile,
         saveType: String = FILE_TYPE_DEFAULT,
     ): File {
-        deleteFile(oldFile)
-        return saveFile(newFile, saveType)
+        try { deleteFile(oldFile) } catch (_: Exception) {}
+        return saveFile(newMultipartFile, saveType)
+    }
+
+    fun updateFile(
+        oldFileServerFilename: String,
+        newMultipartFile: MultipartFile,
+        saveType: String = FILE_TYPE_DEFAULT,
+    ): File {
+        try { deleteFile(getFile(oldFileServerFilename)) } catch (_: Exception) {}
+        return saveFile(newMultipartFile, saveType)
     }
 }
