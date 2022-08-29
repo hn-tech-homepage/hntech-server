@@ -1,6 +1,7 @@
 package hntech.hntechserver.domain.admin
 
 import hntech.hntechserver.auth.Auth
+import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.exception.ValidationException
 import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.utils.logging.logger
@@ -12,7 +13,10 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/admin")
-class AdminController(private val adminService: AdminService) {
+class AdminController(
+    private val adminService: AdminService,
+    private val fileService: FileService
+) {
     val log = logger()
 
     /**
@@ -50,8 +54,10 @@ class AdminController(private val adminService: AdminService) {
     // 홈페이지 모든 이미지 조회
     @Auth
     @GetMapping("/images")
-    fun getAllImages(): AdminImagesResponse =
-        AdminImagesResponse(adminService.getAdmin())
+    fun getAllImages(): AdminImagesResponse {
+        val admin = adminService.getAdmin()
+        return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
+    }
 
     // 인사말 수정
     @Auth
@@ -66,14 +72,15 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @PostMapping("/image")
     fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImagesResponse {
-        if (form.file.isEmpty) return AdminImagesResponse(adminService.getAdmin())
+        val admin = adminService.getAdmin()
+        if (form.file.isEmpty) return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
         return AdminImagesResponse(
             when (form.where) {
                 LOGO -> adminService.updateLogo(form.file)
                 ORG_CHART -> adminService.updateOrgChart(form.file)
                 CI -> adminService.updateCI(form.file)
                 else -> adminService.updateCompanyHistory(form.file) // history
-            }
+            }, fileService.getFile(admin.logoImage)
         )
     }
 
@@ -81,7 +88,7 @@ class AdminController(private val adminService: AdminService) {
     @Auth
     @PostMapping("/banner")
     fun updateBanners(@ModelAttribute form: AdminImagesRequest): AdminImagesResponse =
-        AdminImagesResponse(adminService.updateImages(form))
+        AdminImagesResponse(adminService.updateImages(form), fileService.getFile(adminService.getAdmin().logoImage))
 
     // 관리자 패널 정보 조회
     @Auth

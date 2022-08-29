@@ -1,6 +1,8 @@
 package hntech.hntechserver.domain.admin
 
 import hntech.hntechserver.config.UNKNOWN
+import hntech.hntechserver.domain.file.File
+import hntech.hntechserver.domain.file.FileResponse
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.Email
 
@@ -43,15 +45,15 @@ data class AdminImageResponse(
 )
 
 data class AdminImagesResponse(
-    var logoImage: String = "",
-    var bannerImages: List<String> = listOf(),
+    var logoImage: FileResponse,
+    var bannerImages: List<FileResponse> = listOf(),
     var orgChartImage: String = "",
     var compInfoImage: String = "",
     var historyImage: String = "",
 ) {
-    constructor(admin: Admin): this(
-        logoImage = admin.logoImage,
-        bannerImages = admin.bannerImages.map { it.serverFilename },
+    constructor(admin: Admin, logoFile: File): this(
+        logoImage = FileResponse(logoFile),
+        bannerImages = admin.bannerImages.map { FileResponse(it) },
         orgChartImage = admin.orgChartImage,
         compInfoImage = admin.compInfoImage,
         historyImage = admin.historyImage
