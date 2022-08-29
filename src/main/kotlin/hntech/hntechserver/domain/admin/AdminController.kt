@@ -52,7 +52,6 @@ class AdminController(
     }
 
     // 홈페이지 모든 이미지 조회
-    @Auth
     @GetMapping("/images")
     fun getAllImages(): AdminImagesResponse {
         val admin = adminService.getAdmin()
@@ -87,8 +86,10 @@ class AdminController(
     // 배너 등록, 수정
     @Auth
     @PostMapping("/banner")
-    fun updateBanners(@ModelAttribute form: AdminImagesRequest): AdminImagesResponse =
-        AdminImagesResponse(adminService.updateImages(form), fileService.getFile(adminService.getAdmin().logoImage))
+    fun updateBanners(@ModelAttribute form: AdminImagesRequest): AdminImagesResponse {
+        val admin = adminService.updateImages(form)
+        return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
+    }
 
     // 관리자 패널 정보 조회
     @Auth

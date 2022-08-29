@@ -32,8 +32,9 @@ class ProductController(
      */
     @Auth
     @PostMapping
-    fun createProduct(@Valid @RequestBody form: ProductCreateForm,
-                      br: BindingResult
+    fun createProduct(
+        @Valid @RequestBody form: ProductCreateForm,
+        br: BindingResult
     ): ProductDetailResponse {
         if (br.hasErrors()) {
             form.files?.let { fileService.deleteFiles(it.getFileIds()) }
