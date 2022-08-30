@@ -1,145 +1,135 @@
-//package hntech.hntechserver.domain.product
-//
-//import hntech.hntechserver.domain.category.CategoryService
-//import hntech.hntechserver.config.PRODUCT_IMAGE
-//import hntech.hntechserver.config.REPRESENTATIVE_IMAGE
-//import hntech.hntechserver.config.STANDARD_IMAGE
-//import hntech.hntechserver.domain.file.FileService
-//import hntech.hntechserver.utils.logging.logger
-//import org.springframework.data.domain.Sort
-//import org.springframework.stereotype.Service
-//import org.springframework.transaction.annotation.Transactional
-//
-//@Service
-//@Transactional
-//class ProductService(
-//    private val productRepository: ProductRepository,
-//    private val categoryService: CategoryService,
-//    private val fileService: FileService
-//) {
-//    val log = logger()
-//
-//    // 제품명 중복체크
-//    private fun checkProductName(name: String) {
-//        if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
-//    }
-//
-//    // 미리 업로드된 파일들의 type 지정(대표, 제품, 규격, 문서)
-//    private fun setFileTypes(files: UploadedFiles, product: Product) {
-//        fileService.getFile(files.representativeImage).update(
-//            fileProduct = product,
-//            type = REPRESENTATIVE_IMAGE
-//        )
-//        files.productImages.forEach {
-//            fileService.getFile(it).update(
-//                fileProduct = product,
-//                type = PRODUCT_IMAGE
-//            )
-//        }
-//        files.standardImages.forEach {
-//            fileService.getFile(it).update(
-//                fileProduct = product,
-//                type = STANDARD_IMAGE
-//            )
-//        }
-//        files.docFiles?.forEach {
-//            fileService.getFile(it.fileId).update(
-//                fileProduct = product,
-//                type = it.filename
-//            )
-//        }
-//    }
-//
-//    // 마지막 순서의 제품 조회
-//    private fun getLastProduct(): Product? = productRepository.findFirstByOrderBySequenceDesc()
-//
-//    // 제품 생성
-//    fun createProduct(form: ProductCreateForm): Product {
-//        checkProductName(form.productName)
-//
-//        // 카테고리 가져오기
-//        val category = categoryService.getCategory(form.categoryName)
-//
-//        productRepository.adjustSequenceToRightAll()
-//
-//        // 제품 글 저장
-//        val product = productRepository.save(
-//            Product(
-//                productCategory = category,
-//                productName = form.productName,
-//                description = form.description
-//            )
-//        )
-//        category.products.add(product)
-//
-//        // 제품 파일 저장
-//        form.files?.let { setFileTypes(it, product) }
-//        product.update(files = form.files?.let { fileService.getFiles(it.getFileIds()) })
-//
-//        return product
-//    }
-//
-//    /**
-//     * 카테고리 이름?
-//     * 있으면 해당 카테고리의 제품 리스트를 반환, 없을 경우 전체 제품 리스트
-//     */
-//    @Transactional(readOnly = true)
-//    fun getAllProducts(categoryName: String? = null): List<Product> {
-//        categoryName?.let {
-//            return categoryService.getCategory(it).products.sortedBy { p -> p.sequence }
-//        } ?: run {
-//            return productRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"))
-//        }
-//    }
-//
-//    @Transactional(readOnly = true)
-//    fun getProduct(id: Long): Product =
-//        productRepository.findById(id).orElseThrow { throw ProductException(PRODUCT_NOT_FOUND) }
-//
-//    // 제품 수정
-//    fun updateProduct(id: Long, form: ProductUpdateForm): Product {
-//        val product = getProduct(id)
-//
-//        // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
-//        if (product.productName != form.productName) checkProductName(product.productName)
-//
-//        fileService.deleteAllFiles(product.files)
-//        setFileTypes(form.files, product)
-//
-//        product.update(
-//            productName = form.productName,
-//            description = form.description,
-//            files = fileService.getFiles(form.files.getFileIds())
-//        )
-//
-//        return product
-//    }
-//
-//    // 제품 순서 변경
-//    fun updateProductSequence(productId: Long, targetProductId: Long): List<Product> {
-//        val currentSequence: Int = getProduct(productId).sequence
-//        var targetSequence: Int = when(targetProductId) {
-//            0L -> getLastProduct()!!.sequence + 1
-//            else -> getProduct(targetProductId).sequence
-//        }
-//
-//        if (currentSequence > targetSequence)
-//            productRepository.adjustSequenceToRight(targetSequence, currentSequence)
-//        else
-//            productRepository.adjustSequenceToLeft(currentSequence, targetSequence)
-//
-//        if (targetProductId == 0L || currentSequence < targetSequence)
-//            targetSequence -= 1
-//
-//        getProduct(productId).update(sequence = targetSequence)
-//
-//        return getAllProducts()
-//    }
-//
-//    fun deleteProduct(id: Long) {
-//        val product = getProduct(id)
-//        fileService.deleteAllFiles(product.files)
-//        productRepository.adjustSequenceToLeftAll(product.sequence)
-//        productRepository.delete(product)
-//    }
-//}
+package hntech.hntechserver.domain.product
+
+import hntech.hntechserver.config.*
+import hntech.hntechserver.domain.category.CategoryService
+import hntech.hntechserver.domain.file.FileService
+import hntech.hntechserver.utils.logging.logger
+import org.springframework.data.domain.Sort
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
+
+@Service
+@Transactional
+class ProductService(
+    private val productRepository: ProductRepository,
+    private val categoryService: CategoryService,
+    private val fileService: FileService
+) {
+    val log = logger()
+
+    // 제품명 중복체크
+    private fun checkProductName(name: String) {
+        if (productRepository.existsByProductName(name)) throw ProductException(DUPLICATE_PRODUCT_NAME)
+    }
+
+    // 마지막 순서의 제품 조회
+    private fun getLastProduct(): Product? = productRepository.findFirstByOrderBySequenceDesc()
+
+    private fun saveAndAddProductFile(product: Product, file: MultipartFile, type: String) =
+        product.addFile(fileService.saveFile(file, saveType = FILE_TYPE_PRODUCT).update(fileProduct = product, type = type))
+
+    private fun saveProductFiles(product: Product, form: ProductRequestForm) {
+        form.representativeImage?.let { if (!it.isEmpty) saveAndAddProductFile(product, it, REPRESENTATIVE_IMAGE) }
+        form.productImages?.forEach { saveAndAddProductFile(product, it, PRODUCT_IMAGE) }
+        form.standardImages?.forEach { saveAndAddProductFile(product, it, STANDARD_IMAGE) }
+        form.docFiles?.forEach { saveAndAddProductFile(product, it, DOC_FILE) }
+    }
+
+    // 제품 생성
+    fun createProduct(form: ProductRequestForm): Product {
+        checkProductName(form.productName)
+
+        // 카테고리 가져오기
+        val category = categoryService.getCategory(form.categoryName)
+
+        productRepository.adjustSequenceToRightAll()
+
+        // 제품 글 저장
+        val product = productRepository.save(
+            Product(
+                productCategory = category,
+                productName = form.productName,
+                description = form.description
+            )
+        )
+
+        // 제품 파일 저장
+        saveProductFiles(product, form)
+
+        return product
+    }
+
+    /**
+     * 카테고리 이름?
+     * 있으면 해당 카테고리의 제품 리스트를 반환, 없을 경우 전체 제품 리스트
+     */
+    @Transactional(readOnly = true)
+    fun getAllProducts(categoryName: String? = null): List<Product> {
+        categoryName?.let {
+            return categoryService.getCategory(it).products.sortedBy { p -> p.sequence }
+        } ?: run {
+            return productRepository.findAll(Sort.by(Sort.Direction.ASC, "sequence"))
+        }
+    }
+
+    @Transactional(readOnly = true)
+    fun getProduct(id: Long): Product =
+        productRepository.findById(id).orElseThrow { throw ProductException(PRODUCT_NOT_FOUND) }
+
+    // 제품 문서 파일 이름 변경
+    fun updateProductDocFile(productId: Long, fileId: Long, form: ProductDocFileForm): Product {
+        fileService.getFile(fileId).update(type = form.filename)
+        return getProduct(productId)
+    }
+
+    // 제품 수정
+    fun updateProduct(id: Long, form: ProductRequestForm): Product {
+        val product = getProduct(id)
+
+        // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
+        if (product.productName != form.productName) checkProductName(form.productName)
+
+        product.update(
+            productCategory = categoryService.getCategory(form.categoryName),
+            productName = form.productName,
+            description = form.description
+        )
+
+        // 제품 파일 저장
+        saveProductFiles(product, form)
+
+        return product
+    }
+
+    // 제품 순서 변경
+    fun updateProductSequence(productId: Long, targetProductId: Long): List<Product> {
+        val currentSequence: Int = getProduct(productId).sequence
+        var targetSequence: Int = when(targetProductId) {
+            0L -> getLastProduct()!!.sequence + 1
+            else -> getProduct(targetProductId).sequence
+        }
+
+        if (currentSequence > targetSequence)
+            productRepository.adjustSequenceToRight(targetSequence, currentSequence)
+        else
+            productRepository.adjustSequenceToLeft(currentSequence, targetSequence)
+
+        if (targetProductId == 0L || currentSequence < targetSequence)
+            targetSequence -= 1
+
+        getProduct(productId).update(sequence = targetSequence)
+
+        return getAllProducts()
+    }
+
+    fun deleteProduct(id: Long): Boolean {
+        productRepository.deleteById(id)
+        return true
+    }
+
+    fun deleteAttachedFile(productId: Long, fileId: Long): Boolean {
+        fileService.deleteFile(fileService.getFile(fileId))
+        return true
+    }
+}

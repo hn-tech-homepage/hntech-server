@@ -56,8 +56,8 @@ internal class ProductServiceTest {
 
     fun getCategoryList(): List<Category> = categoryService.getAllCategories()
 
-    fun generateCreateForm(categoryIdx: Int, name: String, docNames: List<String>): ProductCreateForm {
-        return ProductCreateForm(
+    fun generateCreateForm(categoryIdx: Int, name: String, docNames: List<String>): ProductRequestForm {
+        return ProductRequestForm(
             categoryName = getCategoryList()[categoryIdx].categoryName,
             productName = name,
             description = "$name 의 설명 텍스트",

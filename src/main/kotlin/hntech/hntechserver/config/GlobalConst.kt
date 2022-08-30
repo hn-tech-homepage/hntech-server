@@ -22,10 +22,11 @@ const val UNKNOWN = "unknown"
 // 자료실
 const val MAX_NOTICE_NUM = 10
 
-// 이미지 구분
+// 제품 파일 구분
 const val REPRESENTATIVE_IMAGE = "대표"
 const val PRODUCT_IMAGE = "제품"
 const val STANDARD_IMAGE = "규격"
+const val DOC_FILE = "문서"
 
 // 관리자 인증 관련
 const val ADMIN = "admin" // 세션 키 용

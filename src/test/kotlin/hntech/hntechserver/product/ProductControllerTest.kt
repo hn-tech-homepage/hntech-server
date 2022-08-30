@@ -40,8 +40,8 @@ internal class ProductControllerTest {
 
     fun uploadFile(): File = fileService.saveFile(testFile)
 
-    fun generateCreateForm(categoryIdx: Int, name: String, docNames: List<String>): ProductCreateForm {
-        return ProductCreateForm(
+    fun generateCreateForm(categoryIdx: Int, name: String, docNames: List<String>): ProductRequestForm {
+        return ProductRequestForm(
             categoryName = categoryService.getAllCategories()[categoryIdx].categoryName,
             productName = name,
             description = "$name 의 설명 텍스트",
@@ -75,7 +75,7 @@ internal class ProductControllerTest {
             val testFile = initTestFile()
             categoryService.createCategory(CreateCategoryForm("카테고리"))
             repeat(3) {
-                productService.createProduct(ProductCreateForm(
+                productService.createProduct(ProductRequestForm(
                     categoryName = categoryService.getAllCategories()[0].categoryName,
                     productName = "제품$it",
                     description = "제품$it 의 설명 텍스트",
