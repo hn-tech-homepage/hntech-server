@@ -21,11 +21,9 @@ class AdminService(
 {
     val log = logger()
 
-    fun getAdmin(): Admin {
-        val adminResult = adminRepository.findAll()
-        if (adminRepository.findAll().isEmpty()) throw AdminException("관리자 계정 조회 실패")
-        else return adminResult[0]
-    }
+    fun getAdmin(): Admin =
+        adminRepository.findById(1).orElseThrow { AdminException("관리자 계정 조회 실패") }
+
 
     /**
      * 관리자 로그인, 로그아웃
@@ -93,14 +91,15 @@ class AdminService(
         return admin
     }
 
-    private fun updateImage(newImage: MultipartFile, where: String) =
-        fileService.updateFile(where, newImage, FILE_TYPE_ADMIN).serverFilename
+    private fun updateImage(newImage: MultipartFile, where: String, type: String) =
+        fileService.updateFile(where, newImage, FILE_TYPE_ADMIN)
+            .update(type = type).serverFilename
 
     // 로고 수정
     fun updateLogo(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
-            newLogoImage = updateImage(newImage, admin.logoImage)
+            newLogoImage = updateImage(newImage, admin.logoImage, "로고")
         )
         return admin
     }
@@ -109,7 +108,7 @@ class AdminService(
     fun updateOrgChart(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
-            newOrgChartImage = updateImage(newImage, admin.orgChartImage)
+            newOrgChartImage = updateImage(newImage, admin.orgChartImage, "조직도")
         )
         return admin
     }
@@ -118,7 +117,7 @@ class AdminService(
     fun updateCI(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
-            newCompInfoImage = updateImage(newImage, admin.compInfoImage)
+            newCompInfoImage = updateImage(newImage, admin.compInfoImage, "CI")
         )
         return admin
     }
@@ -127,7 +126,7 @@ class AdminService(
     fun updateCompanyHistory(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
-            newHistoryImage = updateImage(newImage, admin.historyImage)
+            newHistoryImage = updateImage(newImage, admin.historyImage, "연혁")
         )
         return admin
     }
@@ -176,6 +175,10 @@ class AdminService(
         // 어드민 업데이트
         val admin = getAdmin()
         admin.updatePanel(form)
+
+        // 이메일 발송 시각 변경
+        emailSchedulingConfigurer.setCron(form.emailSendingTime)
+
         return admin
     }
     

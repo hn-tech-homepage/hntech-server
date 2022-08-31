@@ -8,12 +8,6 @@ import hntech.hntechserver.domain.file.FileResponse
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.NotBlank
 
-// 문서 파일(버튼 이름 포함)
-data class DocFile(
-    var filename: String,
-    var file: MultipartFile
-)
-
 data class ProductRequestForm(
     @field:NotBlank
     var categoryName: String,
