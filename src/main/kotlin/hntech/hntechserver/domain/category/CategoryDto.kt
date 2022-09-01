@@ -2,6 +2,7 @@ package hntech.hntechserver.domain.category
 
 import hntech.hntechserver.config.REG_BOOL
 import hntech.hntechserver.config.REG_BOOL_MSG
+import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.Positive
@@ -13,8 +14,7 @@ data class CreateCategoryForm(
     @field:Pattern(regexp = "^(archive|product)$", message = "archive 또는 product로 입력 가능합니다.")
     var type: String = "archive",
 
-    @field:Positive
-    var imageFileId: Long? = null,
+    var image: MultipartFile? = null,
 
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var showInMain: String = "false"
@@ -24,7 +24,7 @@ data class UpdateCategoryForm(
     @field:NotBlank
     var categoryName: String,
 
-    var imageServerFilename: String?,
+    var image: MultipartFile? = null,
 
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var showInMain: String = "false",

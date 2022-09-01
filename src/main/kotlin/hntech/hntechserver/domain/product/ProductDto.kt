@@ -16,7 +16,7 @@ data class ProductRequestForm(
     var productName: String,
     var description: String,
 
-    var representativeImage: MultipartFile?,
+    var representativeImage: MultipartFile? = null,
     var productImages: List<MultipartFile>?,
     var standardImages: List<MultipartFile>?,
     var docFiles: List<MultipartFile>?

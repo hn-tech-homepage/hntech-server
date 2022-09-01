@@ -129,7 +129,7 @@ class ProductService(
     }
 
     fun deleteAttachedFile(productId: Long, fileId: Long): Boolean {
-        fileService.deleteFile(fileService.getFile(fileId))
+        fileService.deleteFile(fileId)
         return true
     }
 }

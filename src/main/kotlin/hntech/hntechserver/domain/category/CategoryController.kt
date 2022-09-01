@@ -12,10 +12,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/category")
-class CategoryController(
-    private val categoryService: CategoryService,
-    private val fileService: FileService
-) {
+class CategoryController(private val categoryService: CategoryService) {
     /**
      * 사용자 모드
      */
@@ -53,14 +50,10 @@ class CategoryController(
     @Auth
     @PostMapping
     fun createCategory(
-        @Valid @RequestBody form: CreateCategoryForm,
+        @Valid @ModelAttribute form: CreateCategoryForm,
         br: BindingResult
     ): ProductCategoryResponse {
-        if (br.hasErrors()) {
-            // 검증 실패 시 미리 업로드된 파일 삭제
-            form.imageFileId?.let { fileService.deleteFile(it) }
-            throw ValidationException(br)
-        }
+        if (br.hasErrors()) throw ValidationException(br)
         return ProductCategoryResponse(categoryService.createCategory(form))
     }
 
@@ -69,13 +62,10 @@ class CategoryController(
     @PutMapping("/{categoryId}")
     fun updateCategory(
         @PathVariable("categoryId") id: Long,
-        @Valid @RequestBody form: UpdateCategoryForm,
+        @Valid @ModelAttribute form: UpdateCategoryForm,
         br: BindingResult
     ): ProductCategoryListResponse {
-        if (br.hasErrors()) {
-            fileService.deleteFileOnly(form.imageServerFilename!!)
-            throw ValidationException(br)
-        }
+        if (br.hasErrors()) throw ValidationException(br)
         return ProductCategoryListResponse(
             categoryService.updateCategory(id, form).map { ProductCategoryResponse(it) }
         )
@@ -97,4 +87,10 @@ class CategoryController(
     fun deleteCategory(
         @PathVariable("categoryId") id: Long
     ) = BoolResponse(categoryService.deleteCategory(id))
+
+    @Auth
+    @DeleteMapping("/{categoryId}/file/{fileId}")
+    fun deleteAttachedFile(@PathVariable("categoryId") categoryId: Long,
+                           @PathVariable("fileId") fileId: Long
+    ) = BoolResponse(categoryService.deleteAttachedFile(categoryId, fileId))
 }
