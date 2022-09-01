@@ -1,6 +1,7 @@
 package hntech.hntechserver.domain.category
 
 import hntech.hntechserver.config.ARCHIVE
+import hntech.hntechserver.config.FILE_TYPE_CATEGORY
 import hntech.hntechserver.config.MAX_MAIN_CATEGORY_COUNT
 import hntech.hntechserver.config.PRODUCT
 import hntech.hntechserver.domain.file.FileService
@@ -40,7 +41,7 @@ class CategoryService(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                file = form.imageFileId?.let { fileService.getFile(it) },
+                file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) },
                 type = form.type,
                 showInMain = form.showInMain
             )
@@ -49,8 +50,9 @@ class CategoryService(
 
     /**
      * 카테고리 조회
+     * 모든 조회는 sequence 기준 정렬
      */
-    // 카테고리 전체 조회
+    // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
     fun getAllCategories(): List<Category> {
         var result: MutableList<Category> = mutableListOf()
         result.addAll(getAllByType(ARCHIVE))
@@ -60,14 +62,6 @@ class CategoryService(
 
     // 타입으로 카테고리 전체 조회
     fun getAllByType(type: String): List<Category> = categoryRepository.findAllByType(type)
-
-    // 카테고리 이름 전체 조회 (셀렉트 박스용)
-    fun getAllNames(): List<String> =
-        categoryRepository.findAllByType(PRODUCT)
-            .union(categoryRepository.findAllByType(ARCHIVE))
-            .map { it.categoryName }
-            .toList()
-
 
     // 메인에 표시될 카테고리만 조회
     fun getMainCategories(): List<Category> = categoryRepository.findAllByShowInMain()
@@ -86,23 +80,19 @@ class CategoryService(
     // 카테고리 수정
     @Transactional
     fun updateCategory(categoryId: Long, form: UpdateCategoryForm): List<Category> {
-        checkMainCategoryCount()
+        if (form.showInMain == "true") checkMainCategoryCount()
 
         val category: Category = getCategory(categoryId)
 
         // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
         if (category.categoryName != form.categoryName) checkCategoryName(form.categoryName)
 
-        category.file?.let {
-            fileService.deleteFile(category.file!!)
-            category.file = null
-        }
-
         category.update(
             categoryName = form.categoryName,
             showInMain = form.showInMain,
-            file = form.imageServerFilename?.let { fileService.getFile(form.imageServerFilename!!) }
+            file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
         )
+
         return getAllCategories()
     }
     
@@ -139,17 +129,21 @@ class CategoryService(
     // 카테고리 삭제
     @Transactional
     fun deleteCategory(categoryId: Long): Boolean {
-        val findCategory = getCategory(categoryId)
-        
-        // 카테고리에 물려있는 파일들 삭제
-        findCategory.file?.let { fileService.deleteFile(it) }
+        // 카테고리에 물려있는 파일들 삭제(File의 PreRemove로 해결)
+//        findCategory.file?.let { fileService.deleteFile(it) }
 //        findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
-        findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
+//        findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
 
         // 카테고리 순서 조정
-        categoryRepository.adjustSequenceToLeftAll(findCategory.sequence)
+        categoryRepository.adjustSequenceToLeftAll(getCategory(categoryId).sequence)
 
         categoryRepository.deleteById(categoryId)
+        return true
+    }
+
+    @Transactional
+    fun deleteAttachedFile(categoryId: Long, fileId: Long): Boolean {
+        fileService.deleteFile(fileId)
         return true
     }
 }

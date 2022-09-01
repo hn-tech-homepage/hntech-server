@@ -39,9 +39,9 @@ class InitDummyData(
         }
 
         // 카테고리 세팅
-        categoryService.createCategory(CreateCategoryForm("스프링클러", type=PRODUCT))
+        categoryService.createCategory(CreateCategoryForm(categoryName = "스프링클러", type = PRODUCT))
         categoryService.createCategory(CreateCategoryForm("일반자료"))
-        categoryService.createCategory(CreateCategoryForm("신축배관", type=PRODUCT))
+        categoryService.createCategory(CreateCategoryForm(categoryName = "신축배관", type = PRODUCT))
         categoryService.createCategory(CreateCategoryForm("제품승인서"))
 
 
