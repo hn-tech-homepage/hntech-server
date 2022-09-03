@@ -31,7 +31,7 @@ data class PasswordResponse(
 )
 
 data class AdminImagesRequest(
-    var files: List<MultipartFile>
+    var files: List<MultipartFile>?
 )
 
 data class AdminImageRequest(

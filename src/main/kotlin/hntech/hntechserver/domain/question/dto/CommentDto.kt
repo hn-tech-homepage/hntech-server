@@ -1,4 +1,4 @@
-package hntech.hntechserver.domain.question.comment
+package hntech.hntechserver.domain.question.dto
 
 import hntech.hntechserver.config.MAX_COMMENT_LENGTH
 import hntech.hntechserver.config.MAX_COMMENT_LENGTH_MSG

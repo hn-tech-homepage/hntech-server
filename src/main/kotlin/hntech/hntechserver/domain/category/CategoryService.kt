@@ -41,9 +41,9 @@ class CategoryService(
             Category(
                 categoryName = form.categoryName,
                 sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) },
                 type = form.type,
-                showInMain = form.showInMain
+                showInMain = form.showInMain,
+                file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
             )
         )
     }

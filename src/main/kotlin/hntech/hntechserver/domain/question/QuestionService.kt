@@ -1,8 +1,8 @@
 package hntech.hntechserver.domain.question
 
 import hntech.hntechserver.domain.question.model.Comment
-import hntech.hntechserver.domain.question.comment.CreateCommentForm
-import hntech.hntechserver.domain.question.comment.UpdateCommentForm
+import hntech.hntechserver.domain.question.dto.CreateCommentForm
+import hntech.hntechserver.domain.question.dto.UpdateCommentForm
 import hntech.hntechserver.domain.question.dto.CreateQuestionForm
 import hntech.hntechserver.domain.question.dto.UpdateAdminQuestionForm
 import hntech.hntechserver.domain.question.dto.UpdateClientQuestionForm
