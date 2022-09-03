@@ -79,14 +79,8 @@ class AdminService(
     fun updateImages(form: AdminImagesRequest): Admin {
         val admin = getAdmin()
 
-        if (form.files[0].isEmpty) return admin
-
-        admin.bannerImages.forEach { fileService.deleteFile(it) }
-        admin.updateBanner(
-            form.files.map {
-                fileService.saveFile(it, FILE_TYPE_ADMIN).update(fileAdmin = admin)
-            }.toMutableList()
-        )
+        // TODO 배너 등록, 수정 로직 변경중
+        admin.update()
 
         return admin
     }

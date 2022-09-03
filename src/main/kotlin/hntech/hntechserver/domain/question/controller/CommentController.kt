@@ -1,10 +1,10 @@
 package hntech.hntechserver.domain.question.controller
 
 import hntech.hntechserver.domain.question.QuestionService
-import hntech.hntechserver.domain.question.comment.CommentListResponse
-import hntech.hntechserver.domain.question.comment.CommentResponse
-import hntech.hntechserver.domain.question.comment.CreateCommentForm
-import hntech.hntechserver.domain.question.comment.UpdateCommentForm
+import hntech.hntechserver.domain.question.dto.CommentListResponse
+import hntech.hntechserver.domain.question.dto.CommentResponse
+import hntech.hntechserver.domain.question.dto.CreateCommentForm
+import hntech.hntechserver.domain.question.dto.UpdateCommentForm
 import hntech.hntechserver.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
