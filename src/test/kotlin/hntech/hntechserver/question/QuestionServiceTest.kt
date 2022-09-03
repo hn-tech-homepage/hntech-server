@@ -3,6 +3,7 @@ package hntech.hntechserver.question
 
 import hntech.hntechserver.domain.question.*
 import hntech.hntechserver.domain.question.dto.CreateQuestionForm
+import hntech.hntechserver.domain.question.model.Question
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe

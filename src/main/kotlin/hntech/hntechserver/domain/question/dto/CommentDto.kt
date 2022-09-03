@@ -1,7 +1,8 @@
-package hntech.hntechserver.domain.comment
+package hntech.hntechserver.domain.question.comment
 
 import hntech.hntechserver.config.MAX_COMMENT_LENGTH
 import hntech.hntechserver.config.MAX_COMMENT_LENGTH_MSG
+import hntech.hntechserver.domain.question.model.Comment
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 

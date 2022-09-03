@@ -1,7 +1,7 @@
 package hntech.hntechserver.domain.question.dto
 
 import hntech.hntechserver.config.*
-import hntech.hntechserver.domain.question.Question
+import hntech.hntechserver.domain.question.model.Question
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
 import javax.validation.constraints.PositiveOrZero
@@ -43,12 +43,6 @@ data class UpdateAdminQuestionForm(
 
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var FAQ: String = "false"
-)
-
-
-data class UpdateQuestionStatusForm(
-    @field:Pattern(regexp = "^(대기중|처리중|완료)$", message = "대기중, 처리중, 완료 중 하나만 입력 가능합니다.")
-    var status: String
 )
 
 data class GetQuestionForm(

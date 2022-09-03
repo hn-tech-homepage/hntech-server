@@ -1,5 +1,10 @@
-package hntech.hntechserver.domain.comment
+package hntech.hntechserver.domain.question.controller
 
+import hntech.hntechserver.domain.question.QuestionService
+import hntech.hntechserver.domain.question.comment.CommentListResponse
+import hntech.hntechserver.domain.question.comment.CommentResponse
+import hntech.hntechserver.domain.question.comment.CreateCommentForm
+import hntech.hntechserver.domain.question.comment.UpdateCommentForm
 import hntech.hntechserver.exception.ValidationException
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
@@ -7,7 +12,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/question/{questionId}/comment")
-class CommentController(private val commentService: CommentService) {
+class CommentController(private val questionService: QuestionService) {
 
     @PostMapping
     fun createComment(
@@ -17,7 +22,7 @@ class CommentController(private val commentService: CommentService) {
     ): CommentListResponse {
         if (br.hasErrors()) throw ValidationException(br)
         return CommentListResponse(
-            commentService.createComment(questionId, form).map { CommentResponse(it) }
+            questionService.createComment(questionId, form).map { CommentResponse(it) }
         )
     }
 
@@ -30,7 +35,7 @@ class CommentController(private val commentService: CommentService) {
     ): CommentListResponse {
         if (br.hasErrors()) throw ValidationException(br)
         return CommentListResponse(
-            commentService.updateComment(questionId, commentId, form).map { CommentResponse(it) }
+            questionService.updateComment(questionId, commentId, form).map { CommentResponse(it) }
         )
     }
 
@@ -39,6 +44,6 @@ class CommentController(private val commentService: CommentService) {
         @PathVariable("questionId") questionId: Long,
         @PathVariable("commentId") commentId: Long
     ) = CommentListResponse(
-        commentService.deleteComment(questionId, commentId).map { CommentResponse(it) }
+        questionService.deleteComment(questionId, commentId).map { CommentResponse(it) }
     )
 }

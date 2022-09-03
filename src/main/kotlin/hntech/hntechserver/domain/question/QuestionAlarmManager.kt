@@ -1,6 +1,7 @@
 package hntech.hntechserver.domain.question
 
 import hntech.hntechserver.domain.question.dto.QuestionSimpleResponse
+import hntech.hntechserver.domain.question.model.Question
 import org.springframework.stereotype.Component
 
 @Component

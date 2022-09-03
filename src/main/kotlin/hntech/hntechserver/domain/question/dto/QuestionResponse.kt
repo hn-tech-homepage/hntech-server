@@ -1,7 +1,7 @@
 package hntech.hntechserver.domain.question.dto
 
-import hntech.hntechserver.domain.comment.CommentResponse
-import hntech.hntechserver.domain.question.Question
+import hntech.hntechserver.domain.question.comment.CommentResponse
+import hntech.hntechserver.domain.question.model.Question
 import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page
 

@@ -1,6 +1,5 @@
-package hntech.hntechserver.domain.question
+package hntech.hntechserver.domain.question.model
 
-import hntech.hntechserver.domain.comment.Comment
 import hntech.hntechserver.utils.BaseTimeEntity
 import javax.persistence.*
 
@@ -15,7 +14,7 @@ class Question(
     var FAQ: String = "",
     var status: String = "대기중", // 대기중, 처리중, 답변완료
 
-    @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: MutableList<Comment> = mutableListOf(),
 
     var title: String = "",

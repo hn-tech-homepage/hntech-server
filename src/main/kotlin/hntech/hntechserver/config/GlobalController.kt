@@ -1,4 +1,4 @@
-package hntech.hntechserver.exception
+package hntech.hntechserver.config
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
