@@ -32,10 +32,8 @@ class ProductController(private val productService: ProductService) {
     @PostMapping
     fun createProduct(@Valid @ModelAttribute form: ProductRequestForm,
                       br: BindingResult
-    ): ProductDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return ProductDetailResponse(productService.createProduct(form))
-    }
+    ) = ProductDetailResponse(productService.createProduct(form))
+
 
     @ApiOperation(
         value = "제품에 등록된 문서 파일의 버튼명 수정",
@@ -45,33 +43,32 @@ class ProductController(private val productService: ProductService) {
     )
     @Auth
     @PutMapping("/{productId}/file/{fileId}")
-    fun updateProductDocFiles(@PathVariable("productId") productId: Long,
-                              @PathVariable("fileId") fileId: Long,
-                              @RequestBody form: ProductDocFileForm,
-    ): ProductDetailResponse =
-        ProductDetailResponse(productService.updateProductDocFile(productId, fileId, form))
+    fun updateProductDocFiles(
+        @PathVariable("productId") productId: Long,
+        @PathVariable("fileId") fileId: Long,
+        @RequestBody form: ProductDocFileForm,
+    ) = ProductDetailResponse(productService.updateProductDocFile(productId, fileId, form))
 
     @Auth
     @PutMapping("/{productId}")
-    fun updateProduct(@PathVariable("productId") id: Long,
-                      @Valid @ModelAttribute form: ProductRequestForm,
-                      br: BindingResult
-    ): ProductDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return ProductDetailResponse(productService.updateProduct(id, form))
-    }
+    fun updateProduct(
+        @PathVariable("productId") id: Long,
+        @Valid @ModelAttribute form: ProductRequestForm,
+        br: BindingResult
+    ) = ProductDetailResponse(productService.updateProduct(id, form))
+
 
     // 제품 순서 변경
     // 맨 뒤로 옮길 때에는 targetProductId를 0으로 요청
     @Auth
     @PatchMapping
-    fun updateCategorySequence(@RequestParam("productId") productId: Long,
-                               @RequestParam("targetProductId") targetProductId: Long,
-    ): ProductListResponse {
-        return ProductListResponse(
+    fun updateCategorySequence(
+        @RequestParam("productId") productId: Long,
+        @RequestParam("targetProductId") targetProductId: Long,
+    ) = ProductListResponse(
             productService.updateProductSequence(productId, targetProductId).map { ProductSimpleResponse(it) }
         )
-    }
+
 
     @Auth
     @DeleteMapping("/{productId}")
@@ -84,7 +81,8 @@ class ProductController(private val productService: ProductService) {
     )
     @Auth
     @DeleteMapping("/{productId}/file/{fileId}")
-    fun deleteAttachedFile(@PathVariable("productId") productId: Long,
-                           @PathVariable("fileId") fileId: Long
+    fun deleteAttachedFile(
+        @PathVariable("productId") productId: Long,
+        @PathVariable("fileId") fileId: Long
     ) = BoolResponse(productService.deleteAttachedFile(productId, fileId))
 }

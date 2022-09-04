@@ -134,10 +134,8 @@ class AdminController(
     fun updatePanelInfo(
         @Valid @RequestBody form: UpdateAdminPanelForm,
         br: BindingResult
-    ): AdminPanelResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return AdminPanelResponse(adminService.updatePanel(form))
-    }
+    ) = AdminPanelResponse(adminService.updatePanel(form))
+
     
     // 카다록, 자재승인서 수정
     @Auth

@@ -54,7 +54,7 @@ class CategoryService(
      */
     // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
     fun getAllCategories(): List<Category> {
-        var result: MutableList<Category> = mutableListOf()
+        val result: MutableList<Category> = mutableListOf()
         result.addAll(getAllByType(ARCHIVE))
         result.addAll(getAllByType(PRODUCT))
         return result

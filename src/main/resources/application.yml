@@ -6,7 +6,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-        #format_sql: true
+#        format_sql: true
 
   # mail yml 파일 저장 경로, 배포 시 경로 수정 필요
   config:
