@@ -34,8 +34,7 @@ class ArchiveController(
         @PageableDefault(sort = ["id"], size = 15, direction = Sort.Direction.DESC) pageable: Pageable,
         @RequestParam(name = "category", required = false) categoryName: String?,
         @RequestParam(name = "keyword", required = false) keyword: String?
-    ) =
-        ArchivePagedResponse(archiveService.getArchives(pageable, categoryName, keyword))
+    ) = ArchivePagedResponse(archiveService.getArchives(pageable, categoryName, keyword))
 
 
     // 공지사항 조회
@@ -54,34 +53,19 @@ class ArchiveController(
     fun createArchive(
         @Valid @ModelAttribute form: ArchiveForm,
         br: BindingResult
-    ): ArchiveDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return ArchiveDetailResponse(archiveService.createArchive(form))
-    }
+    ) = ArchiveDetailResponse(archiveService.createArchive(form))
+
 
 
     // 자료글 수정
-//    @Auth
-//    @PutMapping("/{archiveId}")
-//    fun updateArchive(
-//        @PathVariable("archiveId") id: Long,
-//        @Valid @RequestBody form: ArchiveForm,
-//        br: BindingResult
-//    ): ArchiveDetailResponse {
-//        if (br.hasErrors()) throw ValidationException(br)
-//        return ArchiveDetailResponse(archiveService.updateArchive(id, form))
-//    }
-
     @Auth
     @PutMapping("/{archiveId}")
     fun updateArchive(
         @PathVariable("archiveId") id: Long,
         @Valid @ModelAttribute form: ArchiveForm,
         br: BindingResult
-    ): ArchiveDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return ArchiveDetailResponse(archiveService.updateArchive(id, form))
-    }
+    ) = ArchiveDetailResponse(archiveService.updateArchive(id, form))
+
 
     // 자료글 삭제
     @Auth

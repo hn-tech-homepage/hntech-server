@@ -1,5 +1,6 @@
 package hntech.hntechserver.domain.archive
 
+import hntech.hntechserver.config.FILE_TYPE_ARCHIVE
 import hntech.hntechserver.config.MAX_NOTICE_NUM
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.file.FileService
@@ -21,13 +22,13 @@ class ArchiveService(
 
     private fun checkNoticeable() {
         if (archiveRepository.countNotice() > MAX_NOTICE_NUM)
-            throw ArchiveException(OVER_NOTICE_MAX_NUM)
+            throw ArchiveException(OVER_MAX_NOTICE_NUM)
     }
 
     private fun setNewFiles(form: ArchiveForm, archive: Archive) {
         form.files?.let {
             val newSavedFiles = it.map { newFile ->
-                val newSavedFileEntity = fileService.saveFile(newFile)
+                val newSavedFileEntity = fileService.saveFile(newFile, FILE_TYPE_ARCHIVE)
                 newSavedFileEntity.fileArchive = archive
                 newSavedFileEntity // return
             }.toMutableList()
@@ -77,37 +78,6 @@ class ArchiveService(
     /**
      * 자료 수정
      */
-//    @Transactional
-//    fun updateArchive(id: Long, form: ArchiveForm): Archive {
-//
-//        val archive = getArchive(id)
-//
-//        // 카테고리 가져오기
-//        val category = categoryService.getCategory(form.categoryName)
-//
-//        // 공지사항 최대 개수 체크
-//        if (form.notice == "true") checkNoticeable()
-//
-//        // 파일 업데이트
-//        fileService.deleteAllFiles(archive.files)
-//        archive.files.clear()
-//        val files = form.files.map {
-//            val newFile = fileService.getFile(it)
-//            newFile.fileArchive = archive
-//            newFile
-//        }.toMutableList()
-//
-//        archive.update(
-//            notice = form.notice,
-//            title = form.title,
-//            content = form.content,
-//            category = category,
-//            files = files
-//        )
-//
-//        return archive
-//    }
-
     @Transactional
     fun updateArchive(id: Long, form: ArchiveForm): Archive {
         // 자료실 가져오기
@@ -132,8 +102,6 @@ class ArchiveService(
         return archive
     }
 
-
-
     /**
      * 자료 삭제
      */
@@ -144,10 +112,6 @@ class ArchiveService(
     }
 
     @Transactional
-    fun deleteAttachedFile(archiveId: Long, fileId: Long): Boolean {
-        val targetFile = fileService.getFile(fileId)
-        getArchive(archiveId).files.remove(targetFile)
-        fileService.deleteFile(targetFile)
-        return true
-    }
+    fun deleteAttachedFile(archiveId: Long, fileId: Long): Boolean =
+        getArchive(archiveId).files.remove(fileService.getFile(fileId))
 }

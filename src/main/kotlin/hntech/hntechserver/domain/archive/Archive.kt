@@ -17,7 +17,7 @@ class Archive(
     @JoinColumn(name = "category_id")
     var category: Category? = null,
 
-    @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "fileArchive", cascade = [CascadeType.ALL], orphanRemoval = true)
     var files: MutableList<File> = mutableListOf(),
 
     var title: String = "",

@@ -52,10 +52,8 @@ class CategoryController(private val categoryService: CategoryService) {
     fun createCategory(
         @Valid @ModelAttribute form: CreateCategoryForm,
         br: BindingResult
-    ): ProductCategoryResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return ProductCategoryResponse(categoryService.createCategory(form))
-    }
+    ) = ProductCategoryResponse(categoryService.createCategory(form))
+
 
     // 카테고리 수정
     @Auth
@@ -64,12 +62,10 @@ class CategoryController(private val categoryService: CategoryService) {
         @PathVariable("categoryId") id: Long,
         @Valid @ModelAttribute form: UpdateCategoryForm,
         br: BindingResult
-    ): ProductCategoryListResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return ProductCategoryListResponse(
+    ) = ProductCategoryListResponse(
             categoryService.updateCategory(id, form).map { ProductCategoryResponse(it) }
         )
-    }
+
 
     // 카테고리 순서 변경
     // 맨 뒤로 옮길 때에는 targetCategoryId를 0으로 요청
@@ -90,7 +86,8 @@ class CategoryController(private val categoryService: CategoryService) {
 
     @Auth
     @DeleteMapping("/{categoryId}/file/{fileId}")
-    fun deleteAttachedFile(@PathVariable("categoryId") categoryId: Long,
-                           @PathVariable("fileId") fileId: Long
+    fun deleteAttachedFile(
+        @PathVariable("categoryId") categoryId: Long,
+        @PathVariable("fileId") fileId: Long
     ) = BoolResponse(categoryService.deleteAttachedFile(categoryId, fileId))
 }

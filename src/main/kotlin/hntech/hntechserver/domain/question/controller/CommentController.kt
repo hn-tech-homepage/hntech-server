@@ -19,12 +19,10 @@ class CommentController(private val questionService: QuestionService) {
         @PathVariable("questionId") questionId: Long,
         @Valid @RequestBody form: CreateCommentForm,
         br: BindingResult
-    ): CommentListResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return CommentListResponse(
+    ) = CommentListResponse(
             questionService.createComment(questionId, form).map { CommentResponse(it) }
         )
-    }
+
 
     @PutMapping("/{commentId}")
     fun updateComment(
@@ -32,12 +30,10 @@ class CommentController(private val questionService: QuestionService) {
         @PathVariable("commentId") commentId: Long,
         @Valid @RequestBody form: UpdateCommentForm,
         br: BindingResult
-    ): CommentListResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return CommentListResponse(
+    ) = CommentListResponse(
             questionService.updateComment(questionId, commentId, form).map { CommentResponse(it) }
         )
-    }
+
 
     @DeleteMapping("/{commentId}")
     fun deleteComment(

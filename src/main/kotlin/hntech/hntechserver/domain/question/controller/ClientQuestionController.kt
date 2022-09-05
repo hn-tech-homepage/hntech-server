@@ -23,10 +23,8 @@ class ClientQuestionController(private val questionService: QuestionService) {
     fun createQuestion(
         @Valid @RequestBody form: CreateQuestionForm,
         br: BindingResult
-    ): QuestionDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return QuestionDetailResponse(questionService.createQuestion(form))
-    }
+    ) = QuestionDetailResponse(questionService.createQuestion(form))
+
 
     // 문의사항 리스트 페이징해서 조회
     @GetMapping
@@ -47,12 +45,9 @@ class ClientQuestionController(private val questionService: QuestionService) {
         @PathVariable("questionId") id: Long,
         @Valid @RequestBody form: GetQuestionForm,
         br: BindingResult
-    ): QuestionDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return QuestionDetailResponse(
+    ) = QuestionDetailResponse(
             questionService.findQuestionByIdAndPassword(id, form.password)
         )
-    }
 
     // FAQ 로 설정된 문의사항 상세 조회
     @GetMapping("/faq/{questionId}")
@@ -65,10 +60,8 @@ class ClientQuestionController(private val questionService: QuestionService) {
         @PathVariable("questionId") id: Long,
         @Valid @RequestBody form: UpdateClientQuestionForm,
         br: BindingResult
-    ): QuestionDetailResponse {
-        if (br.hasErrors()) throw ValidationException(br)
-        return QuestionDetailResponse(questionService.updateClientQuestion(id, form))
-    }
+    ) = QuestionDetailResponse(questionService.updateClientQuestion(id, form))
+
 
     // 문의사항 삭제
     @DeleteMapping("/{questionId}")
