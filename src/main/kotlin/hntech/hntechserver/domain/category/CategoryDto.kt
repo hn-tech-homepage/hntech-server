@@ -54,10 +54,12 @@ data class ProductCategoryResponse(
 data class ArchiveCategoryResponse(
     var id: Long,
     var categoryName: String,
+    var showInMain: String,
 ) {
     constructor(category: Category): this(
         id = category.id!!,
-        categoryName = category.categoryName
+        categoryName = category.categoryName,
+        showInMain = category.showInMain
     )
 }
 

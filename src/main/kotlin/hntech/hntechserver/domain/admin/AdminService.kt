@@ -16,9 +16,8 @@ import javax.servlet.http.HttpServletRequest
 class AdminService(
     private val adminRepository: AdminRepository,
     private val fileService: FileService,
-    private val emailSchedulingConfigurer: EmailSchedulingConfigurer,
-    )
-{
+    private val emailSchedulingConfigurer: EmailSchedulingConfigurer
+) {
     val log = logger()
 
     fun getAdmin(): Admin =
@@ -79,8 +78,11 @@ class AdminService(
     fun updateImages(form: AdminImagesRequest): Admin {
         val admin = getAdmin()
 
-        // TODO 배너 등록, 수정 로직 변경중
-        admin.update()
+        form.files?.forEach {
+            admin.updateBanner(
+                fileService.saveFile(it, FILE_TYPE_ADMIN).update(fileAdmin = admin)
+            )
+        }
 
         return admin
     }
@@ -202,5 +204,4 @@ class AdminService(
         
         return admin
     }
-
 }

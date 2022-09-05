@@ -75,7 +75,7 @@ class Admin(
         newMaterialFile?.let { this.materialFile = it }
     }
 
-    fun updateBanner(newBanners: MutableList<File>) { this.bannerImages = newBanners }
+    fun updateBanner(bannerFile: File) { this.bannerImages.add(bannerFile) }
 
     fun updatePanel(form: UpdateAdminPanelForm) {
         this.sendEmailAccount = form.sendEmailAccount
