@@ -1,5 +1,7 @@
 package hntech.hntechserver.domain.admin
 
+import hntech.hntechserver.common.ADMIN
+import hntech.hntechserver.common.LOGIN_FAIL
 import hntech.hntechserver.config.*
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
@@ -137,7 +139,7 @@ class AdminService(
      * - 카다록, 자재승인서
      */
     // 관리자 비밀번호 변경
-    fun updatePassword(form: UpdatePasswordForm): String {
+    fun updatePassword(form: UpdatePasswordForm): PasswordResponse {
         // 비밀번호 검증
         if (form.newPassword != form.newPasswordCheck)
             throw AdminException(ADMIN_PASSWORD_CHECK_FAIL)
@@ -146,11 +148,11 @@ class AdminService(
 
         val admin = getAdmin()
         getAdmin().update(newPassword = form.newPassword)
-        return admin.password
+        return PasswordResponse(admin.password)
     }
 
     // 패널 정보 수정 (비번, 메일 송신 계정+비번, 수신 계정, 시각, footer)
-    fun updatePanel(form: UpdateAdminPanelForm): Admin {
+    fun updatePanel(form: UpdateAdminPanelForm): AdminPanelResponse {
         // 메일 전송 계정 yml 수정
         val yml = PrintWriter(YAML_FILE_PATH)
         yml.print(""); yml.write(
@@ -175,11 +177,11 @@ class AdminService(
         // 이메일 발송 시각 변경
         emailSchedulingConfigurer.setCron(form.emailSendingTime)
 
-        return admin
+        return AdminPanelResponse(admin)
     }
     
     // 카다록, 자재승인서 수정
-    fun updateCatalogMaterial(form: UpdateCatalogMaterialForm): Admin {
+    fun updateCatalogMaterial(form: UpdateCatalogMaterialForm): AdminPanelResponse {
         val admin = getAdmin()
 
         // Multipart 가 비어있으면 변경을 안 한다는 뜻이므로, 원래 저장되어 있던걸 다시 반환
@@ -201,7 +203,11 @@ class AdminService(
             else -> admin.materialFile
         }
         admin.update(newCatalogFile = catalog, newMaterialFile = material)
-        
-        return admin
+
+        return AdminPanelResponse(
+            admin,
+            catalog = fileService.getFile(admin.catalogFile).originalFilename,
+            material = fileService.getFile(admin.materialFile).originalFilename
+        )
     }
 }

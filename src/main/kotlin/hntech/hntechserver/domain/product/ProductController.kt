@@ -1,10 +1,8 @@
 package hntech.hntechserver.domain.product
 
 import hntech.hntechserver.auth.Auth
-import hntech.hntechserver.exception.ValidationException
-import hntech.hntechserver.utils.BoolResponse
+import hntech.hntechserver.common.BoolResponse
 import io.swagger.annotations.ApiOperation
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -30,8 +28,8 @@ class ProductController(private val productService: ProductService) {
      */
     @Auth
     @PostMapping
-    fun createProduct(@Valid @ModelAttribute form: ProductRequestForm,
-                      br: BindingResult
+    fun createProduct(
+        @Valid @ModelAttribute form: ProductRequestForm
     ) = ProductDetailResponse(productService.createProduct(form))
 
 
@@ -53,8 +51,7 @@ class ProductController(private val productService: ProductService) {
     @PutMapping("/{productId}")
     fun updateProduct(
         @PathVariable("productId") id: Long,
-        @Valid @ModelAttribute form: ProductRequestForm,
-        br: BindingResult
+        @Valid @ModelAttribute form: ProductRequestForm
     ) = ProductDetailResponse(productService.updateProduct(id, form))
 
 

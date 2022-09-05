@@ -1,5 +1,9 @@
 package hntech.hntechserver.domain.product
 
+import hntech.hntechserver.common.DOC_FILE
+import hntech.hntechserver.common.PRODUCT_IMAGE
+import hntech.hntechserver.common.REPRESENTATIVE_IMAGE
+import hntech.hntechserver.common.STANDARD_IMAGE
 import hntech.hntechserver.config.*
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.file.FileService

@@ -1,4 +1,4 @@
-package hntech.hntechserver.config
+package hntech.hntechserver.common
 
 /**
  * 유효성 검증

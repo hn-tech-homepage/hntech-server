@@ -5,8 +5,6 @@ import hntech.hntechserver.domain.question.dto.CommentListResponse
 import hntech.hntechserver.domain.question.dto.CommentResponse
 import hntech.hntechserver.domain.question.dto.CreateCommentForm
 import hntech.hntechserver.domain.question.dto.UpdateCommentForm
-import hntech.hntechserver.exception.ValidationException
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -17,8 +15,7 @@ class CommentController(private val questionService: QuestionService) {
     @PostMapping
     fun createComment(
         @PathVariable("questionId") questionId: Long,
-        @Valid @RequestBody form: CreateCommentForm,
-        br: BindingResult
+        @Valid @RequestBody form: CreateCommentForm
     ) = CommentListResponse(
             questionService.createComment(questionId, form).map { CommentResponse(it) }
         )
@@ -28,8 +25,7 @@ class CommentController(private val questionService: QuestionService) {
     fun updateComment(
         @PathVariable("questionId") questionId: Long,
         @PathVariable("commentId") commentId: Long,
-        @Valid @RequestBody form: UpdateCommentForm,
-        br: BindingResult
+        @Valid @RequestBody form: UpdateCommentForm
     ) = CommentListResponse(
             questionService.updateComment(questionId, commentId, form).map { CommentResponse(it) }
         )

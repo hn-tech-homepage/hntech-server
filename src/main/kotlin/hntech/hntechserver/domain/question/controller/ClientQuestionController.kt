@@ -2,12 +2,10 @@ package hntech.hntechserver.domain.question.controller
 
 import hntech.hntechserver.domain.question.QuestionService
 import hntech.hntechserver.domain.question.dto.*
-import hntech.hntechserver.utils.BoolResponse
-import hntech.hntechserver.exception.ValidationException
+import hntech.hntechserver.common.BoolResponse
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -21,8 +19,7 @@ class ClientQuestionController(private val questionService: QuestionService) {
     // 문의사항 생성
     @PostMapping
     fun createQuestion(
-        @Valid @RequestBody form: CreateQuestionForm,
-        br: BindingResult
+        @Valid @RequestBody form: CreateQuestionForm
     ) = QuestionDetailResponse(questionService.createQuestion(form))
 
 
@@ -43,11 +40,8 @@ class ClientQuestionController(private val questionService: QuestionService) {
     @PostMapping("/{questionId}")
     fun getQuestion(
         @PathVariable("questionId") id: Long,
-        @Valid @RequestBody form: GetQuestionForm,
-        br: BindingResult
-    ) = QuestionDetailResponse(
-            questionService.findQuestionByIdAndPassword(id, form.password)
-        )
+        @Valid @RequestBody form: GetQuestionForm
+    ) = QuestionDetailResponse(questionService.findQuestionByIdAndPassword(id, form.password))
 
     // FAQ 로 설정된 문의사항 상세 조회
     @GetMapping("/faq/{questionId}")
@@ -58,8 +52,7 @@ class ClientQuestionController(private val questionService: QuestionService) {
     @PutMapping("/{questionId}")
     fun updateQuestionForm(
         @PathVariable("questionId") id: Long,
-        @Valid @RequestBody form: UpdateClientQuestionForm,
-        br: BindingResult
+        @Valid @RequestBody form: UpdateClientQuestionForm
     ) = QuestionDetailResponse(questionService.updateClientQuestion(id, form))
 
 

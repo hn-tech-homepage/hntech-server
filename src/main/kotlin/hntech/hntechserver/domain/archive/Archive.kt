@@ -2,7 +2,7 @@ package hntech.hntechserver.domain.archive
 
 import hntech.hntechserver.domain.category.Category
 import hntech.hntechserver.domain.file.File
-import hntech.hntechserver.utils.BaseTimeEntity
+import hntech.hntechserver.common.BaseTimeEntity
 import javax.persistence.*
 
 @Entity

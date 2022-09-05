@@ -1,7 +1,6 @@
 package hntech.hntechserver.domain.question.model
 
-import hntech.hntechserver.domain.question.model.Question
-import hntech.hntechserver.utils.BaseTimeEntity
+import hntech.hntechserver.common.BaseTimeEntity
 import javax.persistence.*
 
 @Entity

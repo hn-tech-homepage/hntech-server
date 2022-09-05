@@ -1,11 +1,10 @@
 package hntech.hntechserver.domain.category
 
-import hntech.hntechserver.config.REG_BOOL
-import hntech.hntechserver.config.REG_BOOL_MSG
+import hntech.hntechserver.common.REG_BOOL
+import hntech.hntechserver.common.REG_BOOL_MSG
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern
-import javax.validation.constraints.Positive
 
 data class CreateCategoryForm(
     @field:NotBlank

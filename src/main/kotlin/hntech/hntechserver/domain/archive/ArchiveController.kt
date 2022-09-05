@@ -1,14 +1,11 @@
 package hntech.hntechserver.domain.archive
 
 import hntech.hntechserver.auth.Auth
-import hntech.hntechserver.exception.ValidationException
-import hntech.hntechserver.utils.BoolResponse
+import hntech.hntechserver.common.BoolResponse
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.data.web.PageableDefault
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -52,7 +49,6 @@ class ArchiveController(
     @PostMapping
     fun createArchive(
         @Valid @ModelAttribute form: ArchiveForm,
-        br: BindingResult
     ) = ArchiveDetailResponse(archiveService.createArchive(form))
 
 
@@ -62,8 +58,7 @@ class ArchiveController(
     @PutMapping("/{archiveId}")
     fun updateArchive(
         @PathVariable("archiveId") id: Long,
-        @Valid @ModelAttribute form: ArchiveForm,
-        br: BindingResult
+        @Valid @ModelAttribute form: ArchiveForm
     ) = ArchiveDetailResponse(archiveService.updateArchive(id, form))
 
 

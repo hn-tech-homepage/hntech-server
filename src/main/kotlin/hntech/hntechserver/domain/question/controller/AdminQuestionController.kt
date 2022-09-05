@@ -1,13 +1,10 @@
 package hntech.hntechserver.domain.question.controller
 
+import hntech.hntechserver.auth.Auth
 import hntech.hntechserver.domain.question.QuestionService
 import hntech.hntechserver.domain.question.dto.QuestionDetailResponse
-import hntech.hntechserver.domain.question.dto.QuestionSimpleResponse
 import hntech.hntechserver.domain.question.dto.UpdateAdminQuestionForm
-import hntech.hntechserver.utils.BoolResponse
-import hntech.hntechserver.auth.Auth
-import hntech.hntechserver.exception.ValidationException
-import org.springframework.validation.BindingResult
+import hntech.hntechserver.common.BoolResponse
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -29,8 +26,7 @@ class AdminQuestionController(private val questionService: QuestionService) {
     @PutMapping("/{questionId}")
     fun updateQuestionByAdmin(
         @PathVariable("questionId") id: Long,
-        @Valid @RequestBody form: UpdateAdminQuestionForm,
-        br: BindingResult
+        @Valid @RequestBody form: UpdateAdminQuestionForm
     ) = QuestionDetailResponse(questionService.updateAdminQuestion(id, form))
 
 

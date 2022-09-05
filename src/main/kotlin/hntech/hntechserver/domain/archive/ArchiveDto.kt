@@ -1,6 +1,6 @@
 package hntech.hntechserver.domain.archive
 
-import hntech.hntechserver.config.*
+import hntech.hntechserver.common.*
 import hntech.hntechserver.domain.file.FileResponse
 import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page

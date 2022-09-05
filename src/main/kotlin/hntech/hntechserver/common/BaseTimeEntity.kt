@@ -1,4 +1,4 @@
-package hntech.hntechserver.utils
+package hntech.hntechserver.common
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime

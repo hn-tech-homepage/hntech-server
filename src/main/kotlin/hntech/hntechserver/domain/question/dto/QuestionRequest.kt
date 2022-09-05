@@ -1,6 +1,6 @@
 package hntech.hntechserver.domain.question.dto
 
-import hntech.hntechserver.config.*
+import hntech.hntechserver.common.*
 import hntech.hntechserver.domain.question.model.Question
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Pattern

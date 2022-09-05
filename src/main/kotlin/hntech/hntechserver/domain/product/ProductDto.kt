@@ -1,8 +1,8 @@
 package hntech.hntechserver.domain.product
 
-import hntech.hntechserver.config.PRODUCT_IMAGE
-import hntech.hntechserver.config.REPRESENTATIVE_IMAGE
-import hntech.hntechserver.config.STANDARD_IMAGE
+import hntech.hntechserver.common.PRODUCT_IMAGE
+import hntech.hntechserver.common.REPRESENTATIVE_IMAGE
+import hntech.hntechserver.common.STANDARD_IMAGE
 import hntech.hntechserver.domain.file.FileDetailResponse
 import hntech.hntechserver.domain.file.FileResponse
 import org.springframework.web.multipart.MultipartFile

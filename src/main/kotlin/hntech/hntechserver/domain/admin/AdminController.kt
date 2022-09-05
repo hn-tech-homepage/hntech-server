@@ -2,13 +2,10 @@ package hntech.hntechserver.domain.admin
 
 import hntech.hntechserver.auth.Auth
 import hntech.hntechserver.domain.file.FileService
-import hntech.hntechserver.exception.ValidationException
-import hntech.hntechserver.utils.BoolResponse
+import hntech.hntechserver.common.BoolResponse
 import hntech.hntechserver.utils.logging.logger
 import io.swagger.annotations.ApiOperation
-import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.multipart.MultipartFile
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -125,30 +122,22 @@ class AdminController(
     // 관리자 비밀번호 변경
     @Auth
     @PutMapping("/password")
-    fun updatePassword(@RequestBody form: UpdatePasswordForm) =
-        PasswordResponse(adminService.updatePassword(form))
+    fun updatePassword(
+        @RequestBody form: UpdatePasswordForm
+    ): PasswordResponse = adminService.updatePassword(form)
 
     // 관리자 패널 정보 수정
     @Auth
     @PutMapping("/panel")
     fun updatePanelInfo(
-        @Valid @RequestBody form: UpdateAdminPanelForm,
-        br: BindingResult
-    ) = AdminPanelResponse(adminService.updatePanel(form))
+        @Valid @RequestBody form: UpdateAdminPanelForm
+    ): AdminPanelResponse = adminService.updatePanel(form)
 
     
     // 카다록, 자재승인서 수정
     @Auth
     @PostMapping("/catalog-material")
-    fun updateCatalogMaterial(@ModelAttribute form: UpdateCatalogMaterialForm): AdminPanelResponse {
-        val admin = adminService.updateCatalogMaterial(form)
-
-        return AdminPanelResponse(
-            admin,
-            catalog = fileService.getFile(admin.catalogFile).originalFilename,
-            material = fileService.getFile(admin.materialFile).originalFilename
-        )
-    }
-
-    
+    fun updateCatalogMaterial(
+        @ModelAttribute form: UpdateCatalogMaterialForm
+    ): AdminPanelResponse = adminService.updateCatalogMaterial(form)
 }

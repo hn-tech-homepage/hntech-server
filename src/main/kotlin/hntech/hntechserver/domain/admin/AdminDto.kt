@@ -1,6 +1,6 @@
 package hntech.hntechserver.domain.admin
 
-import hntech.hntechserver.config.UNKNOWN
+import hntech.hntechserver.common.UNKNOWN
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileResponse
 import org.springframework.web.multipart.MultipartFile

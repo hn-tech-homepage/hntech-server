@@ -1,8 +1,7 @@
 package hntech.hntechserver
 
-import hntech.hntechserver.config.PRODUCT
+import hntech.hntechserver.common.PRODUCT
 import hntech.hntechserver.domain.admin.AdminService
-import hntech.hntechserver.domain.archive.ArchiveForm
 import hntech.hntechserver.domain.archive.ArchiveService
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm

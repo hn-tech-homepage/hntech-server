@@ -1,7 +1,7 @@
 package hntech.hntechserver.auth
 
-import hntech.hntechserver.config.ADMIN
-import hntech.hntechserver.config.AUTH_DENIED
+import hntech.hntechserver.common.ADMIN
+import hntech.hntechserver.common.AUTH_DENIED
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.springframework.stereotype.Component

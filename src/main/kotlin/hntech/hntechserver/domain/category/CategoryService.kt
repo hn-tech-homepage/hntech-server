@@ -1,9 +1,9 @@
 package hntech.hntechserver.domain.category
 
-import hntech.hntechserver.config.ARCHIVE
+import hntech.hntechserver.common.ARCHIVE
 import hntech.hntechserver.config.FILE_TYPE_CATEGORY
-import hntech.hntechserver.config.MAX_MAIN_CATEGORY_COUNT
-import hntech.hntechserver.config.PRODUCT
+import hntech.hntechserver.common.MAX_MAIN_CATEGORY_COUNT
+import hntech.hntechserver.common.PRODUCT
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service

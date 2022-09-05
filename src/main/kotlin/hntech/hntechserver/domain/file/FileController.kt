@@ -1,6 +1,6 @@
 package hntech.hntechserver.domain.file
 
-import hntech.hntechserver.utils.BoolResponse
+import hntech.hntechserver.common.BoolResponse
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation

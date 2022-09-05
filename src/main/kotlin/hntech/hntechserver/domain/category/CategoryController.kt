@@ -1,12 +1,9 @@
 package hntech.hntechserver.domain.category
 
-import hntech.hntechserver.utils.BoolResponse
 import hntech.hntechserver.auth.Auth
-import hntech.hntechserver.config.ARCHIVE
-import hntech.hntechserver.config.PRODUCT
-import hntech.hntechserver.domain.file.FileService
-import hntech.hntechserver.exception.ValidationException
-import org.springframework.validation.BindingResult
+import hntech.hntechserver.common.ARCHIVE
+import hntech.hntechserver.common.PRODUCT
+import hntech.hntechserver.common.BoolResponse
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
@@ -50,8 +47,7 @@ class CategoryController(private val categoryService: CategoryService) {
     @Auth
     @PostMapping
     fun createCategory(
-        @Valid @ModelAttribute form: CreateCategoryForm,
-        br: BindingResult
+        @Valid @ModelAttribute form: CreateCategoryForm
     ) = ProductCategoryResponse(categoryService.createCategory(form))
 
 
@@ -60,8 +56,7 @@ class CategoryController(private val categoryService: CategoryService) {
     @PutMapping("/{categoryId}")
     fun updateCategory(
         @PathVariable("categoryId") id: Long,
-        @Valid @ModelAttribute form: UpdateCategoryForm,
-        br: BindingResult
+        @Valid @ModelAttribute form: UpdateCategoryForm
     ) = ProductCategoryListResponse(
             categoryService.updateCategory(id, form).map { ProductCategoryResponse(it) }
         )
