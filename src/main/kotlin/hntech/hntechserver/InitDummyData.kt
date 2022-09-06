@@ -2,15 +2,20 @@ package hntech.hntechserver
 
 import hntech.hntechserver.common.PRODUCT
 import hntech.hntechserver.domain.admin.AdminService
+import hntech.hntechserver.domain.archive.ArchiveForm
 import hntech.hntechserver.domain.archive.ArchiveService
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm
 //import hntech.hntechserver.domain.comment.CommentService
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
+import hntech.hntechserver.domain.product.ProductRequestForm
+import hntech.hntechserver.domain.product.ProductService
 //import hntech.hntechserver.domain.product.ProductCreateForm
 //import hntech.hntechserver.domain.product.ProductService
 import hntech.hntechserver.domain.question.QuestionService
+import hntech.hntechserver.domain.question.dto.CreateQuestionForm
+import hntech.hntechserver.domain.question.dto.UpdateAdminQuestionForm
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import javax.annotation.PostConstruct
@@ -23,7 +28,7 @@ class InitDummyData(
     private val categoryService: CategoryService,
     private val questionService: QuestionService,
     private val archiveService: ArchiveService,
-//    private val productService: ProductService,
+    private val productService: ProductService,
 ) {
 
     @PostConstruct
@@ -43,41 +48,44 @@ class InitDummyData(
         categoryService.createCategory(CreateCategoryForm("제품승인서"))
 
 
-//        // 문의사항 세팅
-//        repeat(30) {
-//            questionService.createQuestion(
-//                CreateQuestionForm(
-//                    writer = "user$it",
-//                    password = "1234",
-//                    title = "user$it 의 문의사항",
-//                    content = "문의사항 내용.."
-//                )
-//            )
-//        }
-//        // FAQ 세팅
-//        repeat(10) {
-//            questionService.updateAdminQuestion((it + 1).toLong(), UpdateAdminQuestionForm("제목", "내용", "true"))
-//        }
-//
+        // 문의사항 세팅
+        repeat(5) {
+            questionService.createQuestion(
+                CreateQuestionForm(
+                    writer = "사용자$it",
+                    password = "1234",
+                    title = "사용자${it}의 문의사항 제목",
+                    content = "사용자${it}의 문의사항 내용"
+                )
+            )
+        }
+        // FAQ 세팅
+        repeat(2) {
+            questionService.updateAdminQuestion((it + 1).toLong(), UpdateAdminQuestionForm("제목", "내용", "true"))
+        }
+
         // 자료실 세팅
-//        val files = listOf("test0.jpg", "test1.jpg", "test2.jpg")
-//        val form = ArchiveForm("테스트", "스프링클러", "false", "내용", files)
-//        archiveService.createArchive(form)
-    //        repeat(30) {
-//            archiveService.createArchive(form)
-//        }
-//        val form2 = ArchiveForm("공지사항", "일반자료", "true", "전예진", files)
-//        repeat(10) {
-//            archiveService.createArchive(form2)
-//        }
+        repeat(5) {
+            archiveService.createArchive(ArchiveForm("자료실 제목$it", "스프링클러", "false", "내용$it", null))
+        }
+        repeat(2) {
+            archiveService.createArchive(ArchiveForm("공지사항$it", "일반자료", "true", "공지사항 내용$it", null))
+        }
 
 
         // 제품 세팅
-//        repeat(10) {
-//            productService.createProduct(
-//                ProductCreateForm("스프링클러", "스프링죠아$it", "이것은 스프링$it")
-//            )
-//        }
+        repeat(5) {
+            productService.createProduct(
+                ProductRequestForm(
+                    "스프링클러",
+                    "코틀린$it",
+                    "코틀린이 너무 좋다$it",
+                    null,
+                    null,
+                    null,
+                    null)
+            )
+        }
 
 
 

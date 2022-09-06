@@ -1,7 +1,7 @@
 package hntech.hntechserver.domain.archive
 
-import hntech.hntechserver.config.FILE_TYPE_ARCHIVE
 import hntech.hntechserver.common.MAX_NOTICE_NUM
+import hntech.hntechserver.config.FILE_TYPE_ARCHIVE
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
@@ -21,7 +21,7 @@ class ArchiveService(
     val log = logger()
 
     private fun checkNoticeable() {
-        if (archiveRepository.countNotice() > MAX_NOTICE_NUM)
+        if (archiveRepository.countNotice() >= MAX_NOTICE_NUM)
             throw ArchiveException(OVER_MAX_NOTICE_NUM)
     }
 
