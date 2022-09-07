@@ -1,8 +1,10 @@
 package hntech.hntechserver.domain.admin
 
 import hntech.hntechserver.common.ADMIN
+import hntech.hntechserver.common.BoolResponse
 import hntech.hntechserver.common.LOGIN_FAIL
-import hntech.hntechserver.config.*
+import hntech.hntechserver.config.FILE_TYPE_ADMIN
+import hntech.hntechserver.config.YAML_FILE_PATH
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import hntech.hntechserver.utils.scheduler.EmailSchedulingConfigurer
@@ -22,26 +24,58 @@ class AdminService(
 ) {
     val log = logger()
 
+    /**
+     * 관리자 정보 조회
+     */
+    @Transactional(readOnly = true)
     fun getAdmin(): Admin =
         adminRepository.findById(1).orElseThrow { AdminException("관리자 계정 조회 실패") }
 
+    @Transactional(readOnly = true)
+    fun getIntroduce() = IntroduceDto(getAdmin().introduce)
+
+    @Transactional(readOnly = true)
+    fun getFooter() = FooterDto(getAdmin())
+
+    // 카다록, 제품승인서 조회
+    @Transactional(readOnly = true)
+    fun getCatalogMaterial(): CatalogMaterialResponse {
+        val admin = getAdmin()
+        val catalogServerFilename = admin.catalogFile
+        val materialServerFilename = admin.materialFile
+        return CatalogMaterialResponse(
+            catalogOriginalFilename = fileService.getOriginalFilename(catalogServerFilename),
+            catalogServerFilename = catalogServerFilename,
+            materialOriginalFilename = fileService.getOriginalFilename(materialServerFilename),
+            materialServerFilename = materialServerFilename
+        )
+    }
+
+    // 회사소개 모든 사진 조회
+    @Transactional(readOnly = true)
+    fun getAllImages(): AdminImagesResponse {
+        val admin = getAdmin()
+        return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
+    }
 
     /**
      * 관리자 로그인, 로그아웃
      */
-    fun login(password: String, request: HttpServletRequest): Boolean {
+    fun login(password: String, request: HttpServletRequest): BoolResponse {
         val admin = getAdmin()
         if (password == admin.password) {
             val session = request.getSession(true)
             session.setAttribute(ADMIN, admin)
-            return true
+            log.info("admin logout")
+            return BoolResponse(true)
         }
         throw LoginException(LOGIN_FAIL)
     }
 
-    fun logout(request: HttpServletRequest): Boolean {
+    fun logout(request: HttpServletRequest): BoolResponse {
         request.session.invalidate()
-        return true
+        log.info("admin login")
+        return BoolResponse(true)
     }
 
     /**
@@ -70,14 +104,14 @@ class AdminService(
      * 관리자 정보 수정
      */
     // 인사말 수정
-    fun updateIntroduce(newIntroduce: String): String {
+    fun updateIntroduce(newIntroduce: String): IntroduceDto {
         val admin = getAdmin()
         admin.update(newIntroduce = newIntroduce)
-        return admin.introduce
+        return IntroduceDto(admin.introduce)
     }
 
     // 배너 여러장 등록, 수정
-    fun updateImages(form: AdminImagesRequest): Admin {
+    fun updateBanner(form: AdminImagesRequest): AdminImagesResponse {
         val admin = getAdmin()
 
         form.files?.forEach {
@@ -86,7 +120,7 @@ class AdminService(
             )
         }
 
-        return admin
+        return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
     }
 
     private fun updateImage(newImage: MultipartFile, where: String, type: String) =
@@ -94,7 +128,7 @@ class AdminService(
             .update(type = type).serverFilename
 
     // 로고 수정
-    fun updateLogo(newImage: MultipartFile): Admin {
+    private fun updateLogo(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
             newLogoImage = updateImage(newImage, admin.logoImage, "로고")
@@ -103,7 +137,7 @@ class AdminService(
     }
 
     // 조직도 수정
-    fun updateOrgChart(newImage: MultipartFile): Admin {
+    private fun updateOrgChart(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
             newOrgChartImage = updateImage(newImage, admin.orgChartImage, "조직도")
@@ -112,7 +146,7 @@ class AdminService(
     }
 
     // CI 수정
-    fun updateCI(newImage: MultipartFile): Admin {
+    private fun updateCI(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
             newCompInfoImage = updateImage(newImage, admin.compInfoImage, "CI")
@@ -121,12 +155,29 @@ class AdminService(
     }
 
     // 연혁 수정
-    fun updateCompanyHistory(newImage: MultipartFile): Admin {
+    private fun updateCompanyHistory(newImage: MultipartFile): Admin {
         val admin = getAdmin()
         admin.update(
             newHistoryImage = updateImage(newImage, admin.historyImage, "연혁")
         )
         return admin
+    }
+
+    // 로고, 조직도, CI, 연혁 등록, 수정
+    fun updateOthers(form: AdminImageRequest): AdminImagesResponse {
+        val admin = getAdmin()
+        val image = fileService.getFile(admin.logoImage)
+        return if (form.file.isEmpty)
+            AdminImagesResponse(admin, image)
+        else
+            AdminImagesResponse(
+                when (form.where) {
+                    LOGO -> updateLogo(form.file)
+                    ORG_CHART -> updateOrgChart(form.file)
+                    CI -> updateCI(form.file)
+                    else -> updateCompanyHistory(form.file) // history
+                }, image
+            )
     }
 
     /**
@@ -138,6 +189,12 @@ class AdminService(
      * - footer 회사 정보
      * - 카다록, 자재승인서
      */
+    // 관리자 패널 정보 조회
+    fun getPanelInfo(): AdminPanelResponse {
+        val admin = getAdmin()
+        return AdminPanelResponse(admin, admin.catalogFile, admin.materialFile)
+    }
+
     // 관리자 비밀번호 변경
     fun updatePassword(form: UpdatePasswordForm): PasswordResponse {
         // 비밀번호 검증

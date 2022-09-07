@@ -1,5 +1,6 @@
 package hntech.hntechserver.domain.file
 
+import hntech.hntechserver.auth.Auth
 import hntech.hntechserver.common.BoolResponse
 import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
@@ -61,6 +62,14 @@ class FileController(private val fileService: FileService) {
     @DeleteMapping("/{fileId}")
     fun deleteById(@PathVariable("fileId") id: Long): BoolResponse {
         fileService.deleteFile(id)
-        return BoolResponse()
+        return BoolResponse(true)
+    }
+
+    // 로고, 배너 사진 x 버튼 누르면 삭제
+    @Auth
+    @DeleteMapping("/image/{serverFilename}")
+    fun deleteBanner(@PathVariable("serverFilename") filename: String): BoolResponse {
+        fileService.deleteFile(filename)
+        return BoolResponse(true)
     }
 }

@@ -12,31 +12,23 @@ const val ORG_CHART = "orgChart"
 const val HISTORY = "companyHistory"
 const val INTRODUCE = "introduce"
 
-data class LoginForm(
-    var password: String,
-)
+data class LoginForm(var password: String)
 
-data class IntroduceDto(
-    var newIntroduce: String,
-)
+data class IntroduceDto(var newIntroduce: String)
 
 data class UpdatePasswordForm(
     var curPassword: String,
     var newPassword: String,
-    var newPasswordCheck: String,
+    var newPasswordCheck: String
 )
 
-data class PasswordResponse(
-    var newPassword: String,
-)
+data class PasswordResponse(var newPassword: String)
 
-data class AdminImagesRequest(
-    var files: List<MultipartFile>?
-)
+data class AdminImagesRequest(var files: List<MultipartFile>?)
 
 data class AdminImageRequest(
     var where: String,
-    var file: MultipartFile,
+    var file: MultipartFile
 )
 
 data class AdminImagesResponse(
@@ -44,7 +36,7 @@ data class AdminImagesResponse(
     var bannerImages: List<FileResponse> = listOf(),
     var orgChartImage: String = "",
     var compInfoImage: String = "",
-    var historyImage: String = "",
+    var historyImage: String = ""
 ) {
     constructor(admin: Admin, logoFile: File): this(
         logoImage = FileResponse(logoFile),
@@ -59,7 +51,7 @@ data class FooterDto(
     var address: String,
     var afterService: String,
     var phone: String,
-    var fax: String,
+    var fax: String
 ) {
     constructor(a: Admin) : this(a.address, a.afterService, a.phone, a.fax)
 }
@@ -80,12 +72,12 @@ data class UpdateAdminPanelForm(
     var address: String = UNKNOWN,
     var afterService: String = UNKNOWN,
     var phone: String = UNKNOWN,
-    var fax: String = UNKNOWN,
+    var fax: String = UNKNOWN
 )
 
 data class UpdateCatalogMaterialForm(
     var catalogFile: MultipartFile,
-    var materialFile: MultipartFile,
+    var materialFile: MultipartFile
 )
 
 data class AdminPanelResponse(
@@ -114,6 +106,6 @@ data class CatalogMaterialResponse(
     var catalogOriginalFilename: String,
     var catalogServerFilename: String,
     var materialOriginalFilename: String,
-    var materialServerFilename: String,
+    var materialServerFilename: String
 )
 
