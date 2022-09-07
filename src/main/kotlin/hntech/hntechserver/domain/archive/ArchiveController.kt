@@ -2,7 +2,6 @@ package hntech.hntechserver.domain.archive
 
 import hntech.hntechserver.auth.Auth
 import hntech.hntechserver.common.BoolResponse
-import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -12,34 +11,27 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/archive")
-class ArchiveController(
-    private val archiveService: ArchiveService,
-) {
-    var log = logger()
-
+class ArchiveController(private val archiveService: ArchiveService) {
     /**
      * 사용자 모드
      */
     // 하나 조회
     @GetMapping("/{archiveId}")
-    fun getArchive(@PathVariable("archiveId") id: Long) =
-        ArchiveDetailResponse(archiveService.getArchive(id))
+    fun getArchive(@PathVariable("archiveId") id: Long): ArchiveDetailResponse =
+        archiveService.getArchive(id)
 
     // 목록 조회 + 검색
     @GetMapping
     fun getArchives(
-        @PageableDefault(sort = ["id"], size = 15, direction = Sort.Direction.DESC) pageable: Pageable,
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable,
         @RequestParam(name = "category", required = false) categoryName: String?,
         @RequestParam(name = "keyword", required = false) keyword: String?
-    ) = ArchivePagedResponse(archiveService.getArchives(pageable, categoryName, keyword))
+    ) = archiveService.getArchives(pageable, categoryName, keyword)
 
 
     // 공지사항 조회
     @GetMapping("/notice")
-    fun getAllNotice() =
-        ArchiveNoticeResponse(
-            archiveService.getAllNotice().map { ArchiveSimpleResponse(it) }
-        )
+    fun getAllNotice(): ArchiveNoticeResponse = archiveService.getAllNotice()
 
     /**
      * 관리자 모드
@@ -47,11 +39,8 @@ class ArchiveController(
     // 자료글 생성
     @Auth
     @PostMapping
-    fun createArchive(
-        @Valid @ModelAttribute form: ArchiveForm,
-    ) = ArchiveDetailResponse(archiveService.createArchive(form))
-
-
+    fun createArchive(@Valid @ModelAttribute form: ArchiveForm) =
+        archiveService.createArchive(form)
 
     // 자료글 수정
     @Auth
@@ -59,21 +48,19 @@ class ArchiveController(
     fun updateArchive(
         @PathVariable("archiveId") id: Long,
         @Valid @ModelAttribute form: ArchiveForm
-    ) = ArchiveDetailResponse(archiveService.updateArchive(id, form))
-
+    ):ArchiveDetailResponse = archiveService.updateArchive(id, form)
 
     // 자료글 삭제
     @Auth
     @DeleteMapping("/{archiveId}")
-    fun deleteArchive(@PathVariable("archiveId") id: Long) =
-        BoolResponse(archiveService.deleteArchive(id))
+    fun deleteArchive(@PathVariable("archiveId") id: Long): BoolResponse =
+        archiveService.deleteArchive(id)
 
     // 자료글에 첨부되어있는 파일 삭제
     @Auth
     @DeleteMapping("/{archiveId}/file/{fileId}")
     fun deleteAttachedFile(
         @PathVariable("archiveId") archiveId: Long,
-        @PathVariable("fileId") fileId: Long,
-    ) = BoolResponse(archiveService.deleteAttachedFile(archiveId, fileId))
-
+        @PathVariable("fileId") fileId: Long
+    ) = archiveService.deleteAttachedFile(archiveId, fileId)
 }
