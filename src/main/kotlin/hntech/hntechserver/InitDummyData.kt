@@ -1,18 +1,17 @@
 package hntech.hntechserver
 
 import hntech.hntechserver.common.PRODUCT
+import hntech.hntechserver.domain.admin.Admin
+import hntech.hntechserver.domain.admin.AdminException
 import hntech.hntechserver.domain.admin.AdminService
 import hntech.hntechserver.domain.archive.ArchiveForm
 import hntech.hntechserver.domain.archive.ArchiveService
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.category.CreateCategoryForm
-//import hntech.hntechserver.domain.comment.CommentService
 import hntech.hntechserver.domain.file.File
 import hntech.hntechserver.domain.file.FileRepository
 import hntech.hntechserver.domain.product.ProductRequestForm
 import hntech.hntechserver.domain.product.ProductService
-//import hntech.hntechserver.domain.product.ProductCreateForm
-//import hntech.hntechserver.domain.product.ProductService
 import hntech.hntechserver.domain.question.QuestionService
 import hntech.hntechserver.domain.question.dto.CreateQuestionForm
 import hntech.hntechserver.domain.question.dto.UpdateAdminQuestionForm
@@ -33,21 +32,36 @@ class InitDummyData(
 
     @PostConstruct
     fun initDummyData() {
-        // 어드민 세팅
-        adminService.createAdmin("1234")
-
         // 파일 세팅
         repeat(3) {
             fileRepository.save(File(originalFilename = "test$it", serverFilename = "test$it.jpg"))
         }
+
+        // 어드민 세팅
+        val admin = Admin(
+            password = "1234",
+            logoImage = "test0.png",
+
+            emailSendingTime = "12",
+            sendEmailAccount = "eodrmfdl1004@naver.com",
+            sendEmailPassword = "Bh920506!!",
+            receiveEmailAccount = "mopil1102@naver.com",
+
+            address = "주소주소주소",
+            afterService = "000-000-0000",
+            phone = "031-337-4005",
+            fax = "031-337-4006"
+        )
+        try {
+            adminService.createAdmin(admin)
+        } catch (_: AdminException) {}
 
         // 카테고리 세팅
         categoryService.createCategory(CreateCategoryForm(categoryName = "스프링클러", type = PRODUCT))
         categoryService.createCategory(CreateCategoryForm("일반자료"))
         categoryService.createCategory(CreateCategoryForm(categoryName = "신축배관", type = PRODUCT))
         categoryService.createCategory(CreateCategoryForm("제품승인서"))
-
-
+        
         // 문의사항 세팅
         repeat(5) {
             questionService.createQuestion(
@@ -78,8 +92,8 @@ class InitDummyData(
             productService.createProduct(
                 ProductRequestForm(
                     "스프링클러",
-                    "코틀린$it",
-                    "코틀린이 너무 좋다$it",
+                    "스프링클러 신상$it",
+                    "스프링클러 신상입니다$it",
                     null,
                     null,
                     null,

@@ -24,9 +24,9 @@ class EmailManager(
 
     fun sendMail() {
         // 설정 파일로부터 송신 이메일 찾기
-        val sendEmail = propertiesManager.getConfiguration()?.let {
-            it.getString("spring.mail.username")
-        } ?: run { throw EmailException(EMAIL_NOT_FOUND) }
+        val sendEmail = propertiesManager.getConfiguration()?.getString("spring.mail.username")
+            ?: throw EmailException(EMAIL_NOT_FOUND)
+
         // DB 에서 수신 이메일 찾기
         val receiveEmail = adminRepository.findAll()[0].receiveEmailAccount
         log.info("송신 이메일 주소 : {}", sendEmail)

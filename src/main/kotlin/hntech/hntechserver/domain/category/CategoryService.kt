@@ -1,11 +1,11 @@
 package hntech.hntechserver.domain.category
 
 import hntech.hntechserver.common.ARCHIVE
-import hntech.hntechserver.config.FILE_TYPE_CATEGORY
+import hntech.hntechserver.common.BoolResponse
 import hntech.hntechserver.common.MAX_MAIN_CATEGORY_COUNT
 import hntech.hntechserver.common.PRODUCT
+import hntech.hntechserver.config.FILE_TYPE_CATEGORY
 import hntech.hntechserver.domain.file.FileService
-import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,37 +15,44 @@ class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val fileService: FileService
 ) {
-    val log = logger()
-
     // 카테고리명 중복 체크
     private fun checkCategoryName(name: String) {
-        if (categoryRepository.existsByCategoryName(name)) throw CategoryException(DUPLICATE_CATEGORY_NAME)
+        if (categoryRepository.existsByCategoryName(name))
+            throw CategoryException(DUPLICATE_CATEGORY_NAME)
     }
 
     // 메인에 등록된 카테고리 개수 체크
     private fun checkMainCategoryCount() {
-        if (categoryRepository.countMainCategories() >= MAX_MAIN_CATEGORY_COUNT)
+        if (categoryRepository.countMainCategories() > MAX_MAIN_CATEGORY_COUNT)
             throw CategoryException(MAXIMUM_NUMBER_OF_CATEGORIES)
     }
     
     // 마지막 순서의 카테고리 조회
-    private fun getLastCategory(): Category? = categoryRepository.findFirstByOrderBySequenceDesc()
+    private fun getLastCategory(): Category? =
+        categoryRepository.findFirstByOrderBySequenceDesc()
 
-    // 카테고리 생성
+    private fun toListResponse() = ProductCategoryListResponse(
+            getAllCategories().map { ProductCategoryResponse(it) }
+        )
+
+
+    /**
+     * 카테고리 생성
+     */
     @Transactional
-    fun createCategory(form: CreateCategoryForm): Category {
+    fun createCategory(form: CreateCategoryForm): ProductCategoryResponse {
         checkCategoryName(form.categoryName)
         if (form.showInMain == "true") checkMainCategoryCount()
 
-        return categoryRepository.save(
-            Category(
-                categoryName = form.categoryName,
-                sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
-                type = form.type,
-                showInMain = form.showInMain,
-                file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
-            )
+        val category = Category(
+            categoryName = form.categoryName,
+            sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
+            type = form.type,
+            showInMain = form.showInMain,
+            file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
         )
+
+        return ProductCategoryResponse(categoryRepository.save(category))
     }
 
     /**
@@ -53,39 +60,63 @@ class CategoryService(
      * 모든 조회는 sequence 기준 정렬
      */
     // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
-    fun getAllCategories(): List<Category> {
-        val result: MutableList<Category> = mutableListOf()
-        result.addAll(getAllByType(ARCHIVE))
-        result.addAll(getAllByType(PRODUCT))
-        return result
-    }
+    private fun getAllCategories(): List<Category> =
+        getAllByType(ARCHIVE).union(getAllByType(PRODUCT)).toList()
+
+    // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
+    fun getAllCategoriesToDto() = AllCategoryListResponse(
+        getAllCategories().map { ArchiveCategoryResponse(it) }
+    )
 
     // 타입으로 카테고리 전체 조회
-    fun getAllByType(type: String): List<Category> = categoryRepository.findAllByType(type)
+    private fun getAllByType(type: String): List<Category> =
+        categoryRepository.findAllByType(type)
+
+    // 제품 카테고리 전체 조회
+    fun getAllProductCategories() =
+        ProductCategoryListResponse(
+            getAllByType(PRODUCT).map { ProductCategoryResponse(it) }
+        )
+
+    // 자료실 카테고리 전체 조회
+    fun getAllArchiveCategories() =
+        ArchiveCategoryListResponse(
+            getAllByType(ARCHIVE).map { ArchiveCategoryResponse(it) }
+        )
 
     // 메인에 표시될 카테고리만 조회
-    fun getMainCategories(): List<Category> = categoryRepository.findAllByShowInMain()
+    fun getMainCategories() =
+        ProductCategoryListResponse(
+            categoryRepository.findAllByShowInMain()
+                .map { ProductCategoryResponse(it) }
+        )
     
     // 카테고리 ID로 조회
     fun getCategory(id: Long): Category =
-        categoryRepository.findById(id).orElseThrow { throw CategoryException(CATEGORY_NOT_FOUND) }
+        categoryRepository.findById(id).orElseThrow {
+            throw CategoryException(CATEGORY_NOT_FOUND)
+        }
     
     // 카테고리 이름으로 조회
     fun getCategory(categoryName: String): Category =
-        categoryRepository.findByCategoryName(categoryName) ?: throw CategoryException(CATEGORY_NOT_FOUND)
+        categoryRepository.findByCategoryName(categoryName) ?:
+            throw CategoryException(CATEGORY_NOT_FOUND)
 
     /**
      * 카테고리 수정
      */
-    // 카테고리 수정
     @Transactional
-    fun updateCategory(categoryId: Long, form: UpdateCategoryForm): List<Category> {
+    fun updateCategory(
+        categoryId: Long,
+        form: UpdateCategoryForm
+    ): ProductCategoryListResponse {
         if (form.showInMain == "true") checkMainCategoryCount()
 
         val category: Category = getCategory(categoryId)
 
         // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
-        if (category.categoryName != form.categoryName) checkCategoryName(form.categoryName)
+        if (category.categoryName != form.categoryName)
+            checkCategoryName(form.categoryName)
 
         category.update(
             categoryName = form.categoryName,
@@ -93,7 +124,7 @@ class CategoryService(
             file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
         )
 
-        return getAllCategories()
+        return toListResponse()
     }
     
     /**
@@ -101,7 +132,7 @@ class CategoryService(
      * 바꿀 카테고리를 목표 카테고리의 앞에 위치시킨다.
      */
     @Transactional
-    fun updateCategorySequence(form: UpdateCategorySequenceForm): List<Category> {
+    fun updateCategorySequence(form: UpdateCategorySequenceForm): ProductCategoryListResponse {
         val currentSequence: Int = getCategory(form.currentCategoryId).sequence
         var targetSequence: Int = when(form.targetCategoryId) {
             // 타겟 id가 0이면 맨 뒤로 보냄
@@ -123,27 +154,17 @@ class CategoryService(
         // 바꿀 카테고리의 sequence를 기존 targetCategory의 sequence로 변경
         getCategory(form.currentCategoryId).update(sequence = targetSequence)
 
-        return getAllCategories()
+        return toListResponse()
     }
 
-    // 카테고리 삭제
+    /**
+     * 카테고리 삭제
+     */
     @Transactional
-    fun deleteCategory(categoryId: Long): Boolean {
-        // 카테고리에 물려있는 파일들 삭제(File의 PreRemove로 해결)
-//        findCategory.file?.let { fileService.deleteFile(it) }
-//        findCategory.archives.forEach { fileService.deleteAllFiles(it.files) }
-//        findCategory.products.forEach { fileService.deleteAllFiles(it.files) }
-
+    fun deleteCategory(categoryId: Long): BoolResponse {
         // 카테고리 순서 조정
         categoryRepository.adjustSequenceToLeftAll(getCategory(categoryId).sequence)
-
         categoryRepository.deleteById(categoryId)
-        return true
-    }
-
-    @Transactional
-    fun deleteAttachedFile(categoryId: Long, fileId: Long): Boolean {
-        fileService.deleteFile(fileId)
-        return true
+        return BoolResponse(true)
     }
 }

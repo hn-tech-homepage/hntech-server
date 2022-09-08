@@ -81,23 +81,10 @@ class AdminService(
     /**
      * 관리자 생성
      */
-    fun createAdmin(password: String): Admin {
+    fun createAdmin(admin: Admin): Admin {
         if (adminRepository.findAll().isNotEmpty())
             throw AdminException("기존 관리자 존재. 중복 관리자 생성 불가능.")
-        adminRepository.save(Admin(password = password, logoImage = "test0.jpg"))
-        val initForm = UpdateAdminPanelForm(
-            emailSendingTime = "12",
-            sendEmailAccount = "ahdwjdtprtm@naver.com",
-            sendEmailPassword = "wnrduqjflsek1",
-            receiveEmailAccount = "ahdwjdtprtm@naver.com",
-
-            address = "주소주소주소",
-            afterService = "000-000-0000",
-            phone = "031-337-4005",
-            fax = "031-337-4006"
-        )
-        getAdmin().updatePanel(initForm)
-        return getAdmin()
+        return adminRepository.save(admin)
     }
 
     /**

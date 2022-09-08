@@ -12,8 +12,6 @@ import java.util.*
 class FileService(private val fileRepository: FileRepository) {
     val log = logger()
 
-    val baseFilePath = FILE_SAVE_PATH
-
     /**
      * 파일 생성(저장)
      */
@@ -78,17 +76,6 @@ class FileService(private val fileRepository: FileRepository) {
     fun deleteFile(serverFilename: String) =
         fileRepository.findByServerFilename(serverFilename)?.let { fileRepository.delete(it) }
 
-    // 스토리지의 파일 삭제 (디비는 안건드림)
-    fun deleteFileOnly(serverFilename: String): Boolean {
-        val targetFile = java.io.File(baseFilePath + serverFilename)
-        return try {
-            if (targetFile.exists()) targetFile.delete()
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     // 복수 파일 삭제
     fun deleteAllFiles(files: MutableList<File>) = files.forEach { deleteFile(it) }
 
@@ -96,15 +83,6 @@ class FileService(private val fileRepository: FileRepository) {
      * 파일 수정 (업데이트 : 기존파일 삭제 후 새로운 파일 저장)
      */
     // 단일 파일 수정
-    fun updateFile(
-        oldFile: File,
-        newMultipartFile: MultipartFile,
-        saveType: String = FILE_TYPE_DEFAULT,
-    ): File {
-        try { deleteFile(oldFile) } catch (_: Exception) {}
-        return saveFile(newMultipartFile, saveType)
-    }
-
     fun updateFile(
         oldFileServerFilename: String,
         newMultipartFile: MultipartFile,

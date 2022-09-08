@@ -10,7 +10,7 @@ import javax.validation.Valid
 
 
 @RestController
-@RequestMapping("/archive")
+@RequestMapping("/api/archive")
 class ArchiveController(private val archiveService: ArchiveService) {
     /**
      * 사용자 모드

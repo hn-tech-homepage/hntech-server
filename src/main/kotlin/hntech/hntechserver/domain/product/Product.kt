@@ -17,7 +17,7 @@ class Product(
     var productName: String = "",
     var description: String = "",
 
-    @OneToMany(mappedBy = "fileProduct", cascade = [CascadeType.ALL])
+    @OneToMany(mappedBy = "fileProduct", cascade = [CascadeType.ALL], orphanRemoval = true)
     var files: MutableList<File> = mutableListOf(),
 
     var sequence: Int = 1

@@ -73,7 +73,3 @@ data class ArchiveCategoryListResponse(
 data class AllCategoryListResponse(
     var categories: List<ArchiveCategoryResponse>
 )
-
-fun convertDto(categories: List<Category>): ProductCategoryListResponse {
-    return ProductCategoryListResponse(categories.map { ProductCategoryResponse(it) })
-}

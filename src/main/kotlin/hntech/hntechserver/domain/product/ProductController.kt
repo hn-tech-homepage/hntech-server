@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 class ProductController(private val productService: ProductService) {
     /**
      * 사용자 모드
@@ -15,13 +15,12 @@ class ProductController(private val productService: ProductService) {
     @GetMapping
     fun getAllProducts(
         @RequestParam(name = "category", required = false) categoryName: String?
-    ) = ProductListResponse(
-            productService.getAllProducts(categoryName).map { ProductSimpleResponse(it) }
-        )
+    ): ProductListResponse = productService.getAllProducts(categoryName)
+
 
     @GetMapping("/{productId}")
-    fun getProduct(@PathVariable("productId") id: Long) =
-        ProductDetailResponse(productService.getProduct(id))
+    fun getProduct(@PathVariable("productId") id: Long): ProductDetailResponse =
+        productService.getProductToDto(id)
 
     /**
      * 관리자 모드
@@ -30,7 +29,7 @@ class ProductController(private val productService: ProductService) {
     @PostMapping
     fun createProduct(
         @Valid @ModelAttribute form: ProductRequestForm
-    ) = ProductDetailResponse(productService.createProduct(form))
+    ): ProductDetailResponse = productService.createProduct(form)
 
 
     @ApiOperation(
@@ -52,7 +51,7 @@ class ProductController(private val productService: ProductService) {
     fun updateProduct(
         @PathVariable("productId") id: Long,
         @Valid @ModelAttribute form: ProductRequestForm
-    ) = ProductDetailResponse(productService.updateProduct(id, form))
+    ): ProductDetailResponse = productService.updateProduct(id, form)
 
 
     // 제품 순서 변경
@@ -62,15 +61,14 @@ class ProductController(private val productService: ProductService) {
     fun updateCategorySequence(
         @RequestParam("productId") productId: Long,
         @RequestParam("targetProductId") targetProductId: Long,
-    ) = ProductListResponse(
-            productService.updateProductSequence(productId, targetProductId).map { ProductSimpleResponse(it) }
-        )
+    ): ProductListResponse =
+        productService.updateProductSequence(productId, targetProductId)
 
 
     @Auth
     @DeleteMapping("/{productId}")
-    fun deleteProduct(@PathVariable("productId") id: Long) =
-        BoolResponse(productService.deleteProduct(id))
+    fun deleteProduct(@PathVariable("productId") id: Long): BoolResponse =
+        productService.deleteProduct(id)
 
     @ApiOperation(
         value = "제품 수정 시 기존 등록된 첨부 파일 삭제",
@@ -81,5 +79,5 @@ class ProductController(private val productService: ProductService) {
     fun deleteAttachedFile(
         @PathVariable("productId") productId: Long,
         @PathVariable("fileId") fileId: Long
-    ) = BoolResponse(productService.deleteAttachedFile(productId, fileId))
+    ): BoolResponse = productService.deleteAttachedFile(productId, fileId)
 }

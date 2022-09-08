@@ -18,8 +18,6 @@ interface CategoryRepository : JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c WHERE c.showInMain LIKE 'true' ORDER BY c.sequence")
     fun findAllByShowInMain(): List<Category>
 
-    fun findAllByOrderBySequence(): List<Category>
-
     @Query("SELECT c FROM Category c WHERE c.type = :type ORDER BY c.sequence")
     fun findAllByType(@Param("type") type: String): List<Category>
 

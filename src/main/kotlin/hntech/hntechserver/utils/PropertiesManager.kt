@@ -36,19 +36,6 @@ class PropertiesManager {
                     File(YAML_FILE_PATH)
                 )
             )
-
-        /**
-         * CONFIGURATION_REQUEST
-         * builder.getConfiguration 호출을 감지하는 이벤트 리스너
-         * onEvent 메소드를 오버라이딩하여 이벤트 발생 시 실행할 로직 작성
-         */
-//        builder.addEventListener(ConfigurationBuilderEvent.CONFIGURATION_REQUEST) {
-//            @Override
-//            fun onEvent(event: Event) {
-//                // 실행할 로직
-//            }
-//        }
-
         /**
          * Reload 기간을 설정하는 트리거
          * TimeUnit 을 통해 reload 감지 시간을 설정 가능

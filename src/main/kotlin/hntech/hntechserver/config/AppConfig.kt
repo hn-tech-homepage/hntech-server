@@ -23,10 +23,10 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
     // CORS 설정
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://127.0.0.1:5173") // vite 쓰는 리액트에서 오리진 요청을 열어줘야함 (포트 주의)
+//            .allowedOrigins("*") // vite 쓰는 리액트에서 오리진 요청을 열어줘야함 (포트 주의)
             .allowedMethods("*") // http 모든 메소드 요청 허용
             .allowedHeaders("*") // 헤더 정보 모두 허용
-            .allowCredentials(true) // 쿠키, 세션 정보도 허용
+//            .allowCredentials(true) // 쿠키, 세션 정보도 허용
     }
 
     // 정적 파일 단순 조회 (윈도우는 file: 만 리눅스는 file:// 까지 붙혀야함)
