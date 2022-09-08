@@ -40,7 +40,7 @@ class InitDummyData(
         // 어드민 세팅
         val admin = Admin(
             password = "1234",
-            logoImage = "test0.png",
+            logoImage = "test0.jpg",
 
             emailSendingTime = "12",
             sendEmailAccount = "eodrmfdl1004@naver.com",

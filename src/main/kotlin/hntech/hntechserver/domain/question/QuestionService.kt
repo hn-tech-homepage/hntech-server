@@ -7,12 +7,14 @@ import hntech.hntechserver.domain.question.model.Question
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.persistence.EntityManager
 
 @Service
 @Transactional
 class QuestionService(
     private val questionRepository: QuestionRepository,
-    private val questionAlarmManager: QuestionAlarmManager
+    private val questionAlarmManager: QuestionAlarmManager,
+    private val em: EntityManager
 ) {
 
     @Transactional(readOnly = true)
@@ -84,6 +86,7 @@ class QuestionService(
     private fun toListResponse(comments: List<Comment>) =
         CommentListResponse(comments.map { CommentResponse(it) })
 
+
     fun createComment(questionId: Long, form: CreateCommentForm): CommentListResponse {
         val question = getQuestion(questionId)
 
@@ -102,6 +105,8 @@ class QuestionService(
         else // 관리자가 답글 작성시 문의사항 진행도 변경
             question.update(status = "처리중")
 
+        em.flush()
+
         return toListResponse(question.comments)
     }
 
@@ -114,7 +119,7 @@ class QuestionService(
         question.comments
             .find { it.id == commentId }
             ?.update(form.content) ?: throw CommentException(COMMENT_NOT_FOUND)
-
+        em.flush()
         return toListResponse(question.comments)
     }
 
@@ -123,7 +128,7 @@ class QuestionService(
         question.comments
             .find { it.id == commentId }
             .let { question.comments.remove(it) }
-
+        em.flush()
         return toListResponse(question.comments)
     }
 }
