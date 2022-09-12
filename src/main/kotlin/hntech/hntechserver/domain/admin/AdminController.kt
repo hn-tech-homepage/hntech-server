@@ -5,6 +5,7 @@ import hntech.hntechserver.common.BoolResponse
 import io.swagger.annotations.ApiOperation
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 @RestController
@@ -37,7 +38,7 @@ class AdminController(private val adminService: AdminService) {
 
     // 관리자 로그아웃
     @GetMapping("/logout")
-    fun logout(request: HttpServletRequest): BoolResponse = adminService.logout(request)
+    fun logout(request: HttpServletRequest, response: HttpServletResponse): BoolResponse = adminService.logout(request, response)
 
     // 회사소개 모든 사진 조회
     @GetMapping("/images")
