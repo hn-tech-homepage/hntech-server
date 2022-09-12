@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.PrintWriter
 import javax.security.auth.login.LoginException
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 @Service
 @Transactional
@@ -66,15 +67,22 @@ class AdminService(
         if (password == admin.password) {
             val session = request.getSession(true)
             session.setAttribute(ADMIN, admin)
-            log.info("admin logout")
+            log.info("admin login")
             return BoolResponse(true)
         }
         throw LoginException(LOGIN_FAIL)
     }
 
-    fun logout(request: HttpServletRequest): BoolResponse {
+    fun logout(request: HttpServletRequest, response: HttpServletResponse): BoolResponse {
         request.session.invalidate()
-        log.info("admin login")
+        request.cookies
+            .find { it.name == "JSESSIONID" }
+            ?.let {
+//                println("Delete Cookie [ ${it.name} ${it.value} ]")
+                it.maxAge = 0; it.path = "/"
+                response.addCookie(it)
+            }
+        log.info("admin logout")
         return BoolResponse(true)
     }
 
