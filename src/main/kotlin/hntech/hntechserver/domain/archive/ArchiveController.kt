@@ -10,8 +10,8 @@ import javax.validation.Valid
 
 
 @RestController
-//@RequestMapping("/api/archive")
-@RequestMapping("/archive")
+@RequestMapping("/api/archive")
+//@RequestMapping("/archive")
 class ArchiveController(private val archiveService: ArchiveService) {
     /**
      * 사용자 모드

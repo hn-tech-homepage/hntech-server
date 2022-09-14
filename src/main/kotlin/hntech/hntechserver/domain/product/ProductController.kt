@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/product")
-@RequestMapping("/product")
+@RequestMapping("/api/product")
+//@RequestMapping("/product")
 class ProductController(private val productService: ProductService) {
     /**
      * 사용자 모드

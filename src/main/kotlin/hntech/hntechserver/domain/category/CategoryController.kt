@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/category")
-@RequestMapping("/category")
+@RequestMapping("/api/category")
+//@RequestMapping("/category")
 class CategoryController(private val categoryService: CategoryService) {
     /**
      * 사용자 모드

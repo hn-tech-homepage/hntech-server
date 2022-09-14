@@ -17,8 +17,8 @@ import java.nio.charset.Charset
 
 
 @RestController
-//@RequestMapping("/api/file")
-@RequestMapping("/file")
+@RequestMapping("/api/file")
+//@RequestMapping("/file")
 class FileController(private val fileService: FileService) {
 
     @ApiOperation(
