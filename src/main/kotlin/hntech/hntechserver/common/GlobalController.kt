@@ -2,6 +2,7 @@ package hntech.hntechserver.common
 
 import hntech.hntechserver.utils.scheduler.EmailManager
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
@@ -9,8 +10,8 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 class GlobalController(private val emailManager: EmailManager) {
 
-    @GetMapping("/")
-    fun hello() = "hello"
+//    @GetMapping("/")
+//    fun hello() = "hello"
 
     @GetMapping("/mail-test")
     fun sendMailTest() {
@@ -26,25 +27,25 @@ class GlobalController(private val emailManager: EmailManager) {
         else BoolResponse(false)
 }
 
-//@Controller
-//class WevController {
-//    @GetMapping(value = [
-//        "",
-//        "/company",
-//    "/product",
-//    "/product-detail",
-//    "/product-form",
-//    "/product-modify",
-//    "/productCategory-form",
-//    "/productCategory-modify",
-//    "/data",
-//    "/question",
-//    "/question-form",
-//    "/question-modify",
-//    "/question-detail",
-//    "/archive-form",
-//    "/archive-detail",
-//    "/archive-modify"
-//    ])
-//    fun redirect() = "forward:/index.html"
-//}
+@Controller
+class WevController {
+    @GetMapping(value = [
+        "",
+        "/company",
+    "/product",
+    "/product-detail",
+    "/product-form",
+    "/product-modify",
+    "/productCategory-form",
+    "/productCategory-modify",
+    "/data",
+    "/question",
+    "/question-form",
+    "/question-modify",
+    "/question-detail",
+    "/archive-form",
+    "/archive-detail",
+    "/archive-modify"
+    ])
+    fun redirect() = "forward:/index.html"
+}

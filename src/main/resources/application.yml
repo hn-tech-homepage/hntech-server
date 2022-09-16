@@ -31,7 +31,7 @@ spring:
       max-file-size: 20MB
       max-request-size: 50MB
   session:
-    timeout: 600 # 15분
+    timeout: 900 # 15분
 
   # 페이징 기본값 설정
   data:

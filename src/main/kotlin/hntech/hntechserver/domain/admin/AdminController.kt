@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/admin")
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
+//@RequestMapping("/admin")
 class AdminController(private val adminService: AdminService) {
     /**
      * 사용자 모드
@@ -59,7 +59,6 @@ class AdminController(private val adminService: AdminService) {
     @PostMapping("/image")
     fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImagesResponse =
         adminService.updateOthers(form)
-
 
     // 배너 등록, 수정
     @Auth

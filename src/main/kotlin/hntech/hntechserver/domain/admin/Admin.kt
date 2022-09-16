@@ -47,6 +47,10 @@ class Admin(
     var phone: String = "", // TEL
     var fax: String = "", // FAX
 
+    // 패밀리 사이트맵 들
+    @OneToMany(mappedBy = "admin", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var sites: MutableList<SiteMap> = mutableListOf(), // 사이트맵들
+
     /**
      * 알림 메일 관련
      */
@@ -88,6 +92,22 @@ class Admin(
         this.afterService = form.afterService
         this.phone = form.phone
         this.fax = form.fax
+        this.sites.addAll(
+            form.sites.map { SiteMap(null, this, it.buttonName, it.link) }
+        )
     }
 
 }
+
+@Entity
+class SiteMap(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    var admin: Admin,
+
+    var buttonName: String = "",
+    var link: String = "",
+)

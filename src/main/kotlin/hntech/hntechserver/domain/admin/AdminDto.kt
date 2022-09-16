@@ -51,10 +51,22 @@ data class FooterDto(
     var address: String,
     var afterService: String,
     var phone: String,
-    var fax: String
+    var fax: String,
+    var sites: List<SiteMapDto> = mutableListOf(),
 ) {
-    constructor(a: Admin) : this(a.address, a.afterService, a.phone, a.fax)
+    constructor(a: Admin) : this(
+        a.address,
+        a.afterService,
+        a.phone,
+        a.fax,
+        a.sites.map { SiteMapDto(it) }
+        )
 }
+
+data class SiteMapDto(
+    var buttonName: String,
+    var link: String,
+) { constructor(f: SiteMap) : this(f.buttonName, f.link) }
 
 data class UpdateAdminPanelForm(
     // 메일 전송 계정 변경
@@ -72,7 +84,8 @@ data class UpdateAdminPanelForm(
     var address: String = UNKNOWN,
     var afterService: String = UNKNOWN,
     var phone: String = UNKNOWN,
-    var fax: String = UNKNOWN
+    var fax: String = UNKNOWN,
+    var sites: List<SiteMapDto> = mutableListOf(),
 )
 
 data class UpdateCatalogMaterialForm(
