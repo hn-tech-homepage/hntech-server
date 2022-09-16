@@ -73,8 +73,7 @@ class ArchiveService(
      * 자료 조회
      */
     // id 로 자료실 하나 조회
-    fun getArchive(id: Long): ArchiveDetailResponse =
-        ArchiveDetailResponse(
+    fun getArchive(id: Long) = ArchiveDetailResponse(
             archiveRepository.findById(id).orElseThrow { ArchiveException(ARCHIVE_NOT_FOUND) }
         )
 
@@ -83,12 +82,14 @@ class ArchiveService(
         pageable: Pageable, 
         categoryName: String? = null, 
         keyword: String? = null
-    ): ArchivePagedResponse = 
-        ArchivePagedResponse(archiveRepository.searchArchive(pageable, categoryName, keyword))
+    ) = ArchivePagedResponse(
+        archiveRepository.searchArchive(pageable, categoryName, keyword)
+    )
     
     // 공지사항 모두 조회 (페이징)
-    fun getAllNotice(): ArchiveNoticeResponse =
-        ArchiveNoticeResponse(archiveRepository.findAllNotice().map { ArchiveSimpleResponse(it) })
+    fun getAllNotice() = ArchiveNoticeResponse(
+        archiveRepository.findAllNotice().map { ArchiveSimpleResponse(it) }
+    )
 
     /**
      * 자료 수정
@@ -128,8 +129,7 @@ class ArchiveService(
 
     // 첨부 파일 삭제
     @Transactional
-    fun deleteAttachedFile(archiveId: Long, fileId: Long): BoolResponse =
-        BoolResponse(
+    fun deleteAttachedFile(archiveId: Long, fileId: Long) = BoolResponse(
             getArchiveById(archiveId).files
             .remove(fileService.getFile(fileId))
         )
