@@ -24,12 +24,12 @@ data class UpdatePasswordForm(
 
 data class PasswordResponse(var newPassword: String)
 
-data class AdminImagesRequest(var files: List<MultipartFile>?)
-
 data class AdminImageRequest(
     var where: String,
     var file: MultipartFile
 )
+
+data class AdminImagesRequest(var files: List<MultipartFile>?)
 
 data class AdminImagesResponse(
     var logoImage: FileResponse,
@@ -55,18 +55,33 @@ data class FooterDto(
     var sites: List<SiteMapDto> = mutableListOf(),
 ) {
     constructor(a: Admin) : this(
-        a.address,
-        a.afterService,
-        a.phone,
-        a.fax,
-        a.sites.map { SiteMapDto(it) }
-        )
+        address = a.address,
+        afterService = a.afterService,
+        phone = a.phone,
+        fax = a.fax,
+        sites = a.sites.map { SiteMapDto(it) }
+    )
 }
 
 data class SiteMapDto(
     var buttonName: String,
     var link: String,
-) { constructor(f: SiteMap) : this(f.buttonName, f.link) }
+) { constructor(sm: SiteMap) : this(sm.buttonName, sm.link) }
+
+data class UpdateCatalogMaterialForm(
+    var catalogFile: MultipartFile,
+    var materialFile: MultipartFile,
+    var taxFile: MultipartFile
+)
+
+data class CatalogMaterialResponse(
+    var catalogOriginalFilename: String,
+    var catalogServerFilename: String,
+    var materialOriginalFilename: String,
+    var materialServerFilename: String,
+    var taxOriginalFilename: String,
+    var taxServerFilename: String
+)
 
 data class UpdateAdminPanelForm(
     // 메일 전송 계정 변경
@@ -85,12 +100,7 @@ data class UpdateAdminPanelForm(
     var afterService: String = UNKNOWN,
     var phone: String = UNKNOWN,
     var fax: String = UNKNOWN,
-    var sites: List<SiteMapDto> = mutableListOf(),
-)
-
-data class UpdateCatalogMaterialForm(
-    var catalogFile: MultipartFile,
-    var materialFile: MultipartFile
+    var sites: List<SiteMapDto> = mutableListOf()
 )
 
 data class AdminPanelResponse(
@@ -101,9 +111,10 @@ data class AdminPanelResponse(
     var emailSendingTime: String,
     var catalogOriginalFilename: String,
     var materialOriginalFilename: String,
+    var taxOriginalFilename: String,
     var footer: FooterDto
 ) {
-    constructor(a: Admin, catalog: String = "", material: String = "") : this(
+    constructor(a: Admin, catalog: String = "", material: String = "", tax: String = "") : this(
         adminPassword = a.password,
         sendEmailAccount = a.sendEmailAccount,
         sendEmailPassword = a.sendEmailPassword,
@@ -111,14 +122,10 @@ data class AdminPanelResponse(
         emailSendingTime = a.emailSendingTime,
         catalogOriginalFilename = catalog,
         materialOriginalFilename = material,
+        taxOriginalFilename = tax,
         footer = FooterDto(a)
     )
 }
 
-data class CatalogMaterialResponse(
-    var catalogOriginalFilename: String,
-    var catalogServerFilename: String,
-    var materialOriginalFilename: String,
-    var materialServerFilename: String
-)
+
 

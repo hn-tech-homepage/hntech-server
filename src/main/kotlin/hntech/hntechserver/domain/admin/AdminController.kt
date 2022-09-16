@@ -23,7 +23,7 @@ class AdminController(private val adminService: AdminService) {
     @GetMapping("/footer")
     fun getFooter(): FooterDto = adminService.getFooter()
 
-    // 카다록, 제품승인서 서버 파일 이름 조회
+    // 카다록, 제품승인서, 시국세 서버 파일 이름 조회
     @GetMapping("/catalog-material")
     fun getCatalogMaterial(): CatalogMaterialResponse =
         adminService.getCatalogMaterial()
@@ -85,7 +85,7 @@ class AdminController(private val adminService: AdminService) {
         @Valid @RequestBody form: UpdateAdminPanelForm
     ): AdminPanelResponse = adminService.updatePanel(form)
     
-    // 카다록, 자재승인서 수정
+    // 카다록, 자재승인서, 시국세 수정
     @Auth
     @PostMapping("/catalog-material")
     fun updateCatalogMaterial(

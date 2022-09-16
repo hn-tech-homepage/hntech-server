@@ -44,11 +44,14 @@ class AdminService(
         val admin = getAdmin()
         val catalogServerFilename = admin.catalogFile
         val materialServerFilename = admin.materialFile
+        val taxServerFilename = admin.taxFile
         return CatalogMaterialResponse(
             catalogOriginalFilename = fileService.getOriginalFilename(catalogServerFilename),
             catalogServerFilename = catalogServerFilename,
             materialOriginalFilename = fileService.getOriginalFilename(materialServerFilename),
-            materialServerFilename = materialServerFilename
+            materialServerFilename = materialServerFilename,
+            taxOriginalFilename = fileService.getOriginalFilename(taxServerFilename),
+            taxServerFilename = taxServerFilename
         )
     }
 
@@ -78,7 +81,6 @@ class AdminService(
         request.cookies
             .find { it.name == "JSESSIONID" }
             ?.let {
-//                println("Delete Cookie [ ${it.name} ${it.value} ]")
                 it.maxAge = 0; it.path = "/"
                 response.addCookie(it)
             }
@@ -182,7 +184,7 @@ class AdminService(
      * - 메일 수신 계정
      * - 메일 발송 시각
      * - footer 회사 정보
-     * - 카다록, 자재승인서
+     * - 카다록, 자재승인서, 시국세
      */
     // 관리자 패널 정보 조회
     fun getPanelInfo(): AdminPanelResponse {
@@ -254,12 +256,27 @@ class AdminService(
             ).serverFilename
             else -> admin.materialFile
         }
-        admin.update(newCatalogFile = catalog, newMaterialFile = material)
+
+        val tax: String = when (form.taxFile.isEmpty) {
+            false -> fileService.updateFile(
+                oldFileServerFilename = admin.taxFile,
+                newMultipartFile = form.taxFile,
+                saveType = FILE_TYPE_ADMIN
+            ).serverFilename
+            else -> admin.taxFile
+        }
+
+        admin.update(
+            newCatalogFile = catalog,
+            newMaterialFile = material,
+            newTaxFile = tax
+        )
 
         return AdminPanelResponse(
             admin,
             catalog = fileService.getFile(admin.catalogFile).originalFilename,
-            material = fileService.getFile(admin.materialFile).originalFilename
+            material = fileService.getFile(admin.materialFile).originalFilename,
+            tax = fileService.getFile(admin.materialFile).originalFilename,
         )
     }
 }

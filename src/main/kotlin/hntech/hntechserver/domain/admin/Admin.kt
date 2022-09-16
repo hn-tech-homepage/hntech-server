@@ -39,6 +39,9 @@ class Admin(
     // 자재승인서 파일 서버 저장 이름
     var materialFile: String = "",
 
+    // 시국세 파일 서버 저장 이름
+    var taxFile: String = "",
+
     /**
      * 하단 (footer) 정보
      */
@@ -49,7 +52,7 @@ class Admin(
 
     // 패밀리 사이트맵 들
     @OneToMany(mappedBy = "admin", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var sites: MutableList<SiteMap> = mutableListOf(), // 사이트맵들
+    var sites: MutableList<SiteMap> = mutableListOf(),
 
     /**
      * 알림 메일 관련
@@ -67,7 +70,8 @@ class Admin(
         newCompInfoImage: String? = null,
         newHistoryImage: String? = null,
         newCatalogFile: String? = null,
-        newMaterialFile: String? = null
+        newMaterialFile: String? = null,
+        newTaxFile: String? = null,
     ) {
         newPassword?.let { this.password = it }
         newIntroduce?.let { this.introduce = it }
@@ -77,6 +81,7 @@ class Admin(
         newHistoryImage?.let { this.historyImage = it }
         newCatalogFile?.let { this.catalogFile = it }
         newMaterialFile?.let { this.materialFile = it }
+        newTaxFile?.let { this.taxFile = it }
     }
 
     fun updateBanner(bannerFile: File) { this.bannerImages.add(bannerFile) }
