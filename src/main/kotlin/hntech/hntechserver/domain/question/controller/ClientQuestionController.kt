@@ -1,6 +1,7 @@
 package hntech.hntechserver.domain.question.controller
 
 import hntech.hntechserver.common.BoolResponse
+import hntech.hntechserver.common.PAGE_SIZE
 import hntech.hntechserver.domain.question.QuestionService
 import hntech.hntechserver.domain.question.dto.*
 import org.springframework.data.domain.Pageable
@@ -10,8 +11,8 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/api/question")
-//@RequestMapping("/question")
+//@RequestMapping("/api/question")
+@RequestMapping("/question")
 class ClientQuestionController(private val questionService: QuestionService) {
 
     /**
@@ -27,14 +28,14 @@ class ClientQuestionController(private val questionService: QuestionService) {
     // 문의사항 리스트 페이징해서 조회
     @GetMapping
     fun getQuestionsByPaging(
-        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = PAGE_SIZE) pageable: Pageable
     ): QuestionPagedResponse = questionService.findAllQuestions(pageable)
 
     
     // 자주 묻는 질문 조회
     @GetMapping("/faq")
     fun getAllFAQ(
-        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = PAGE_SIZE) pageable: Pageable
     ): QuestionPagedResponse = questionService.findFAQ(pageable)
 
     // 비밀번호로 문의사항 상세 조회

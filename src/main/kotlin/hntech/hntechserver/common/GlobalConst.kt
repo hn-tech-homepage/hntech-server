@@ -13,6 +13,9 @@ const val MAX_COMMENT_LENGTH_MSG = "최대 글자수는 (공백 포함) 50자 �
 const val REG_BOOL = "^(true|false)$"
 const val REG_BOOL_MSG = "true 또는 false 값만 입력 가능합니다."
 
+// 페이지당 데이터 사이즈
+const val PAGE_SIZE = 15
+
 // 카테고리
 const val MAX_MAIN_CATEGORY_COUNT = 8
 const val ARCHIVE = "archive"

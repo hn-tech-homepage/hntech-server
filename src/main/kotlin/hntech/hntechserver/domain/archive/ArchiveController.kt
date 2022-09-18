@@ -2,6 +2,7 @@ package hntech.hntechserver.domain.archive
 
 import hntech.hntechserver.auth.Auth
 import hntech.hntechserver.common.BoolResponse
+import hntech.hntechserver.common.PAGE_SIZE
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -10,8 +11,8 @@ import javax.validation.Valid
 
 
 @RestController
-@RequestMapping("/api/archive")
-//@RequestMapping("/archive")
+//@RequestMapping("/api/archive")
+@RequestMapping("/archive")
 class ArchiveController(private val archiveService: ArchiveService) {
     /**
      * 사용자 모드
@@ -24,7 +25,7 @@ class ArchiveController(private val archiveService: ArchiveService) {
     // 목록 조회 + 검색
     @GetMapping
     fun getArchives(
-        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable,
+        @PageableDefault(sort = ["id"], direction = Sort.Direction.DESC, size = PAGE_SIZE) pageable: Pageable,
         @RequestParam(name = "category", required = false) categoryName: String?,
         @RequestParam(name = "keyword", required = false) keyword: String?
     ) = archiveService.getArchives(pageable, categoryName, keyword)
