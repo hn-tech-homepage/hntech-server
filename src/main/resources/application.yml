@@ -2,7 +2,7 @@ spring:
   # DB 설정
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -38,7 +38,7 @@ spring:
     web:
       pageable:
         # 페이지 사이즈 조절 적용이 안됨..
-#        default-page-size: 15
+        default-page-size: 15
         # 이거 쓰면 첫 페이지 인수 1부터 시작
 #        one-indexed-parameters: true
   

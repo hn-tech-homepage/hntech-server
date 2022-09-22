@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component
 @Component
 @EnableScheduling
 @EnableAsync
-class EmailSchedulingConfigurer(
-    private val emailManager: EmailManager
-): SchedulingConfigurer {
+class EmailSchedulingConfigurer(private val emailManager: EmailManager): SchedulingConfigurer {
+
     private val log = logger()
 
     // cron 정규 표현식, 초기값 : 매일 낮 12시

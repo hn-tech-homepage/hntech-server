@@ -82,7 +82,7 @@ class EmailManager(
             questionAlarmManager.clearQuestionList()
         } catch (e: Exception) {
             log.warn(e.message)
-            throw EmailException(EMAIL_SEND_ERROR)
+            throw EmailException(e.message ?: EMAIL_SEND_ERROR)
         }
     }
 }

@@ -27,25 +27,26 @@ class GlobalController(private val emailManager: EmailManager) {
         else BoolResponse(false)
 }
 
-//@Controller
-//class WevController {
-//    @GetMapping(value = [
-//        "",
-//        "/company",
-//    "/product",
-//    "/product-detail",
-//    "/product-form",
-//    "/product-modify",
-//    "/productCategory-form",
-//    "/productCategory-modify",
-//    "/data",
-//    "/question",
-//    "/question-form",
-//    "/question-modify",
-//    "/question-detail",
-//    "/archive-form",
-//    "/archive-detail",
-//    "/archive-modify"
-//    ])
-//    fun redirect() = "forward:/index.html"
-//}
+@Controller
+class WevController {
+    @GetMapping(value = [
+        "",
+        "/company",
+    "/client-product",
+    "/product-detail",
+    "/product-form",
+    "/product-modify",
+    "/productCategory-form",
+    "/productCategory-modify",
+    "/document",
+    "/client-question",
+    "/question-form",
+    "/question-modify",
+    "/question-detail",
+    "/client-archive",
+    "/archive-form",
+    "/archive-detail",
+    "/archive-modify"
+    ])
+    fun redirect() = "forward:/index.html"
+}
