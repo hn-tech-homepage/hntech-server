@@ -97,6 +97,7 @@ class Admin(
         this.afterService = form.afterService
         this.phone = form.phone
         this.fax = form.fax
+        this.sites.clear()
         this.sites.addAll(
             form.sites.map { SiteMap(null, this, it.buttonName, it.link) }
         )
