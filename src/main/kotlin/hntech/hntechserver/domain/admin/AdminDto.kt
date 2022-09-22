@@ -52,21 +52,33 @@ data class FooterDto(
     var afterService: String,
     var phone: String,
     var fax: String,
-    var sites: List<SiteMapDto> = mutableListOf(),
+    var sites: List<SiteMapResponse> = mutableListOf(),
 ) {
     constructor(a: Admin) : this(
         address = a.address,
         afterService = a.afterService,
         phone = a.phone,
         fax = a.fax,
-        sites = a.sites.map { SiteMapDto(it) }
+        sites = a.sites.map { SiteMapResponse(it) }
     )
 }
 
-data class SiteMapDto(
+data class SiteMapForm(
+    var buttonName: String,
+    var link: String
+)
+
+data class SiteMapResponse(
+    var id: Long,
     var buttonName: String,
     var link: String,
-) { constructor(sm: SiteMap) : this(sm.buttonName, sm.link) }
+) {
+    constructor(sm: SiteMap): this(
+        id = sm.id!!,
+        buttonName = sm.buttonName,
+        link = sm.link
+    )
+}
 
 data class UpdateCatalogMaterialForm(
     var catalogFile: MultipartFile,
@@ -100,7 +112,7 @@ data class UpdateAdminPanelForm(
     var afterService: String = UNKNOWN,
     var phone: String = UNKNOWN,
     var fax: String = UNKNOWN,
-    var sites: List<SiteMapDto> = mutableListOf()
+    var sites: List<SiteMapForm> = mutableListOf()
 )
 
 data class AdminPanelResponse(

@@ -18,10 +18,10 @@ class EmailSchedulingConfigurer(private val emailManager: EmailManager): Schedul
     private val log = logger()
 
     // cron 정규 표현식, 초기값 : 매일 낮 12시
-    private var cron: String = "0 0 12 * * ?"
+    private var cron: String = "0 0 12 * * MON-FRI"
     
     fun setCron(time: String) {
-        this.cron = "0 0 $time * * ?"
+        this.cron = "0 0 $time * * MON-FRI"
         log.info("Updated cron: {}", this.cron)
     }
 
