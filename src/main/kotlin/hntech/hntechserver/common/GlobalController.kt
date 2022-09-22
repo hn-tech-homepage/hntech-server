@@ -1,6 +1,5 @@
 package hntech.hntechserver.common
 
-import hntech.hntechserver.utils.scheduler.EmailManager
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -8,15 +7,10 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class GlobalController(private val emailManager: EmailManager) {
+class GlobalController() {
 
 //    @GetMapping("/")
 //    fun hello() = "hello"
-
-    @GetMapping("/mail-test")
-    fun sendMailTest() {
-        emailManager.sendMail()
-    }
 
     @GetMapping("/error")
     fun error() = ResponseEntity.notFound()
@@ -28,25 +22,25 @@ class GlobalController(private val emailManager: EmailManager) {
 }
 
 @Controller
-class WevController {
+class ReactClientRedirector {
     @GetMapping(value = [
         "",
         "/company",
-    "/client-product",
-    "/product-detail",
-    "/product-form",
-    "/product-modify",
-    "/productCategory-form",
-    "/productCategory-modify",
-    "/document",
-    "/client-question",
-    "/question-form",
-    "/question-modify",
-    "/question-detail",
-    "/client-archive",
-    "/archive-form",
-    "/archive-detail",
-    "/archive-modify"
+        "/client-product",
+        "/product-detail",
+        "/product-form",
+        "/product-modify",
+        "/productCategory-form",
+        "/productCategory-modify",
+        "/document",
+        "/client-question",
+        "/question-form",
+        "/question-modify",
+        "/question-detail",
+        "/client-archive",
+        "/archive-form",
+        "/archive-detail",
+        "/archive-modify"
     ])
     fun redirect() = "forward:/index.html"
 }

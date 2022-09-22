@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/question/{questionId}/comment")
 @RequestMapping("/question/{questionId}/comment")
 class CommentController(private val questionService: QuestionService) {
 

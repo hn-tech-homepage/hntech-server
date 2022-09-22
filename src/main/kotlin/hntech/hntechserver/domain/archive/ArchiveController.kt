@@ -11,7 +11,6 @@ import javax.validation.Valid
 
 
 @RestController
-//@RequestMapping("/api/archive")
 @RequestMapping("/archive")
 class ArchiveController(private val archiveService: ArchiveService) {
     /**

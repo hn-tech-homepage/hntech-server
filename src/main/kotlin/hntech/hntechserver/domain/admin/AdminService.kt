@@ -227,6 +227,7 @@ class AdminService(
         // 어드민 업데이트
         val admin = getAdmin()
         admin.updatePanel(form)
+        adminRepository.flush()
 
         // 이메일 발송 시각 변경
         emailSchedulingConfigurer.setCron(form.emailSendingTime)

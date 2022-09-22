@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/admin")
 @RequestMapping("/admin")
 class AdminController(private val adminService: AdminService) {
     /**

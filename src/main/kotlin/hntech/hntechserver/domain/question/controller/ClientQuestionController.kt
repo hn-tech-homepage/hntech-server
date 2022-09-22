@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/question")
 @RequestMapping("/question")
 class ClientQuestionController(private val questionService: QuestionService) {
 

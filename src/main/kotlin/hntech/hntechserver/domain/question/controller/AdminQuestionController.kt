@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-//@RequestMapping("/api/admin/question")
 @RequestMapping("/admin/question")
 class AdminQuestionController(private val questionService: QuestionService) {
 
