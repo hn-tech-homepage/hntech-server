@@ -105,7 +105,7 @@ data class UpdateAdminPanelForm(
     var receiveEmailAccount: String = "init@email.com",
 
     // 메일 발송 시각 변경
-    var emailSendingTime: String = "12",
+    var emailSendingTime: String = "3",
 
     // footer
     var address: String = UNKNOWN,
@@ -131,7 +131,7 @@ data class AdminPanelResponse(
         sendEmailAccount = a.sendEmailAccount,
         sendEmailPassword = a.sendEmailPassword,
         receiveEmailAccount = a.receiveEmailAccount,
-        emailSendingTime = a.emailSendingTime,
+        emailSendingTime = (a.emailSendingTime.toInt()+9).toString(),
         catalogOriginalFilename = catalog,
         materialOriginalFilename = material,
         taxOriginalFilename = tax,
