@@ -50,7 +50,7 @@ class CategoryController(private val categoryService: CategoryService) {
     ): ProductCategoryListResponse = categoryService.updateCategory(id, form)
 
     // 카테고리 순서 변경
-    // 맨 뒤로 옮길 때에는 targetCategoryId를 0으로 요청
+    // 맨 앞으로 옮길 때에는 targetCategoryId를 0으로 요청
     @Auth
     @PutMapping("/sequence")
     fun updateCategorySequence(

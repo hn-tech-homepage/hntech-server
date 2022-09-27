@@ -26,6 +26,11 @@ data class ProductDocFileForm(
     var filename: String
 )
 
+data class UpdateProductSequenceForm(
+    var currentProductId: Long,
+    var targetProductId: Long,
+)
+
 data class ProductSimpleResponse(
     var id: Long?,
     var productName: String,

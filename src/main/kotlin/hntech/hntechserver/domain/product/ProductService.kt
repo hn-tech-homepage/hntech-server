@@ -118,22 +118,21 @@ class ProductService(
     }
 
     // 제품 순서 변경
-    fun updateProductSequence(productId: Long, targetProductId: Long): ProductListResponse {
-        val currentSequence: Int = getProduct(productId).sequence
-        var targetSequence: Int = when(targetProductId) {
-            0L -> getLastProduct()!!.sequence + 1
-            else -> getProduct(targetProductId).sequence
+    fun updateProductSequence(form: UpdateProductSequenceForm): ProductListResponse {
+        val currentSequence: Int = getProduct(form.currentProductId).sequence
+        var targetSequence: Int = when(form.targetProductId) {
+            0L -> 0
+            else -> getProduct(form.targetProductId).sequence
         }
 
-        if (currentSequence > targetSequence)
-            productRepository.adjustSequenceToRight(targetSequence, currentSequence)
-        else
+        if (currentSequence < targetSequence) {
             productRepository.adjustSequenceToLeft(currentSequence, targetSequence)
-
-        if (targetProductId == 0L || currentSequence < targetSequence)
-            targetSequence -= 1
-
-        getProduct(productId).update(sequence = targetSequence)
+            getProduct(form.currentProductId).update(sequence = targetSequence)
+        } else {
+            productRepository.adjustSequenceToRight(targetSequence, currentSequence)
+            getProduct(form.currentProductId).update(sequence = targetSequence + 1)
+        }
+        productRepository.flush()
 
         return getAllProducts()
     }
