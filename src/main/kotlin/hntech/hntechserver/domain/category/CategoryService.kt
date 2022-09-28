@@ -32,7 +32,9 @@ class CategoryService(
         categoryRepository.findFirstByOrderBySequenceDesc()
 
     private fun toListResponse() = ProductCategoryListResponse(
-            getAllCategories().map { ProductCategoryResponse(it) }
+            getAllCategories()
+                .sortedBy { it.sequence }
+                .map { ProductCategoryResponse(it) }
         )
 
 
@@ -44,9 +46,9 @@ class CategoryService(
         checkCategoryName(form.categoryName)
         if (form.showInMain == "true") checkMainCategoryCount()
 
+        categoryRepository.adjustSequenceToRightAll()
         val category = Category(
             categoryName = form.categoryName,
-            sequence = getLastCategory()?.let { it.sequence + 1 } ?: run { 1 },
             type = form.type,
             showInMain = form.showInMain,
             file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
@@ -75,7 +77,8 @@ class CategoryService(
     // 제품 카테고리 전체 조회
     fun getAllProductCategories() =
         ProductCategoryListResponse(
-            getAllByType(PRODUCT).map { ProductCategoryResponse(it) }
+            getAllByType(PRODUCT)
+                .map { ProductCategoryResponse(it) }
         )
 
     // 자료실 카테고리 전체 조회
@@ -129,30 +132,24 @@ class CategoryService(
     
     /**
      * 카테고리 순서 변경
-     * 바꿀 카테고리를 목표 카테고리의 앞에 위치시킨다.
+     * 바꿀 카테고리를 목표 카테고리의 뒤에 위치시킨다.
      */
     @Transactional
     fun updateCategorySequence(form: UpdateCategorySequenceForm): ProductCategoryListResponse {
-        val currentSequence: Int = getCategory(form.currentCategoryId).sequence
-        var targetSequence: Int = when(form.targetCategoryId) {
-            // 타겟 id가 0이면 맨 뒤로 보냄
-            0L -> getLastCategory()!!.sequence + 1
+        val currentSequence = getCategory(form.currentCategoryId).sequence
+        val targetSequence: Int = when(form.targetCategoryId) {
+            0L -> 0 // 타겟 id가 0이면 맨 앞으로
             else -> getCategory(form.targetCategoryId).sequence
         }
-        /**
-         * 순서 변경 전 sequence 조정
-         * 좌측으로 바꿀 경우 target의 우측 카테고리들의 sequence + 1
-         * 우측으로 바꿀 경우 target의 좌측 카테고리들의 sequence - 1
-         */
-        if (currentSequence > targetSequence)
-            categoryRepository.adjustSequenceToRight(targetSequence, currentSequence)
-        else
+        // 순서 변경 전 sequence 조정(왼쪽->오른쪽 / 오른쪽->왼쪽)
+        if (currentSequence < targetSequence) {
             categoryRepository.adjustSequenceToLeft(currentSequence, targetSequence)
-
-        if (form.targetCategoryId == 0L || currentSequence < targetSequence)
-            targetSequence -= 1
-        // 바꿀 카테고리의 sequence를 기존 targetCategory의 sequence로 변경
-        getCategory(form.currentCategoryId).update(sequence = targetSequence)
+            getCategory(form.currentCategoryId).update(sequence = targetSequence)
+        } else {
+            categoryRepository.adjustSequenceToRight(targetSequence, currentSequence)
+            getCategory(form.currentCategoryId).update(sequence = targetSequence + 1)
+        }
+        categoryRepository.flush()
 
         return toListResponse()
     }

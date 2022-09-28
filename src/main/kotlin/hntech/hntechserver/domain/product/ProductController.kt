@@ -57,12 +57,9 @@ class ProductController(private val productService: ProductService) {
     // 제품 순서 변경
     // 맨 뒤로 옮길 때에는 targetProductId를 0으로 요청
     @Auth
-    @PatchMapping
-    fun updateCategorySequence(
-        @RequestParam("productId") productId: Long,
-        @RequestParam("targetProductId") targetProductId: Long,
-    ): ProductListResponse =
-        productService.updateProductSequence(productId, targetProductId)
+    @PutMapping("/sequence")
+    fun updateCategorySequence(@RequestBody form: UpdateProductSequenceForm): ProductListResponse =
+        productService.updateProductSequence(form)
 
 
     @Auth
