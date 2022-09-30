@@ -15,13 +15,12 @@ class JsonLoggingInterceptor(
     val log = logger()
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        log.info("{}", request.getHeadersAsString())
-
         log.info(
-            "-------------> [REQUEST] {} {} {}",
+            "-------------> [REQUEST] {} {} {} {}",
             request.remoteAddr,
             request.method,
             request.requestURL,
+            request.getHeadersAsString(),
         )
 
         if (request.contentType != null &&
@@ -30,7 +29,7 @@ class JsonLoggingInterceptor(
             request.method.startsWith("PUT")) &&
             request is MultiAccessRequestWrapper){
             val body = converter.convert(request.getContents())
-            println("BODY\n$body")
+            log.info("BODY\n$body")
         }
 
         return super.preHandle(request, response, handler)
@@ -42,15 +41,13 @@ class JsonLoggingInterceptor(
         handler: Any,
         ex: Exception?
     ) {
-        log.info("{}", response.getHeadersAsString())
-
-        log.info("<------------ [RESPONSE] {}", response.status)
+        log.info("<------------ [RESPONSE] {} response {}", response.status, response.getHeadersAsString())
 
         if (response.contentType != null &&
             response.contentType.startsWith("application/json") &&
             response is ContentCachingResponseWrapper) {
             val body = converter.convert(response.contentAsByteArray)
-            println("BODY\n$body")
+            log.info("BODY\n$body")
         }
 
         super.afterCompletion(request, response, handler, ex)

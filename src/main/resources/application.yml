@@ -13,6 +13,9 @@ spring:
 #    import: file:C:\application-mail.yml
     import: file:///home/ubuntu/spring/application-mail.yml
 
+  profiles:
+    active: db, mail
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -33,33 +36,16 @@ spring:
   session:
     timeout: 900 # 15분
 
-  # 페이징 기본값 설정
-  data:
-    web:
-      pageable:
-        # 페이지 사이즈 조절 적용이 안됨..
-        default-page-size: 15
-        # 이거 쓰면 첫 페이지 인수 1부터 시작
-#        one-indexed-parameters: true
-  
-  profiles:
-    active: db, mail
 
 # 에러 응답 설정
 server:
   error:
     include-stacktrace: on_param
     include-exception: true
-  servlet:
-    session:
-      tracking-modes: cookie
-      # CORS 이슈때문에 일단 풀어놔야함.. 근데 보안상 이슈가 없는지는 모르겠음... 로컬 포스트맨으로 테스트 하고 싶으면 아래 주석해야함
-#      cookie:
-#        same-site: None
-#        secure: true
 
 # 로깅 레벨 설정
 logging:
+  config: classpath:logback-spring.xml
   level:
-    org.hibernate.SQL: debug
+    root: info
 

@@ -94,3 +94,8 @@ tasks.withType<Test> {
 tasks.withType<Test>().configureEach {
 	useJUnitPlatform()
 }
+
+// jar 파일 이름 변경
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+	archiveFileName.set("hnt.jar")
+}
