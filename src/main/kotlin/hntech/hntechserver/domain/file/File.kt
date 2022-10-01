@@ -3,6 +3,7 @@ package hntech.hntechserver.domain.file
 import hntech.hntechserver.domain.admin.Admin
 import hntech.hntechserver.domain.archive.Archive
 import hntech.hntechserver.domain.product.Product
+import hntech.hntechserver.domain.question.model.Question
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import javax.persistence.*
 
@@ -29,6 +30,10 @@ class File(
     var fileProduct: Product? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    var fileQuestion: Question? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     var fileAdmin: Admin? = null,
 
@@ -44,6 +49,7 @@ class File(
         fileArchive: Archive? = null,
         fileProduct: Product? = null,
         fileAdmin: Admin? = null,
+        fileQuestion: Question? = null,
         type: String? = null,
         savedPath: String? = null,
     ): File {
@@ -52,6 +58,7 @@ class File(
         fileArchive?.let { this.fileArchive = it }
         fileProduct?.let { this.fileProduct = it }
         fileAdmin?.let { this.fileAdmin = it }
+        fileQuestion?.let { this.fileQuestion = it }
         type?.let { this.type = it }
         savedPath?.let { this.savedPath = it }
         return this
@@ -62,5 +69,4 @@ class File(
     fun deleteSavedRealFile() {
         java.io.File(savedPath).delete()
     }
-    
 }

@@ -30,6 +30,7 @@ class FileService(private val fileRepository: FileRepository) {
                 FILE_TYPE_CATEGORY -> CATEGORY_SAVE_PATH
                 FILE_TYPE_PRODUCT -> PRODUCT_SAVE_PATH
                 FILE_TYPE_ARCHIVE -> ARCHIVE_SAVE_PATH
+                FILE_TYPE_QUESTION -> QUESTION_SAVE_PATH
                 else -> FILE_SAVE_PATH
             } + serverFilename
 

@@ -1,3 +1,4 @@
+/*
 package hntech.hntechserver.question
 
 
@@ -107,4 +108,4 @@ class QuestionServiceTest {
             questionService.findQuestionByIdAndPassword(testQuestion.id!!, testQuestion.password)
         }.message shouldBe QUESTION_NOT_FOUND
     }
-}
+}*/
