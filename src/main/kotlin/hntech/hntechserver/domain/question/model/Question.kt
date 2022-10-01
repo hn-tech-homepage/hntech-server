@@ -1,6 +1,7 @@
 package hntech.hntechserver.domain.question.model
 
 import hntech.hntechserver.common.BaseTimeEntity
+import hntech.hntechserver.domain.file.File
 import javax.persistence.*
 
 @Entity
@@ -13,6 +14,9 @@ class Question(
     var password: String = "",
     var FAQ: String = "",
     var status: String = "대기중", // 대기중, 처리중, 답변완료
+
+    @OneToMany(mappedBy = "fileQuestion", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var files: MutableList<File> = mutableListOf(),
 
     @OneToMany(mappedBy = "question", cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: MutableList<Comment> = mutableListOf(),
@@ -37,6 +41,7 @@ class Question(
     }
 
     fun addComment(comment: Comment) { this.comments.add(comment) }
+    fun addFile(file: File) { this.files.add(file) }
 }
 
 

@@ -26,7 +26,7 @@ class AdminQuestionController(private val questionService: QuestionService) {
     @PutMapping("/{questionId}")
     fun updateQuestionByAdmin(
         @PathVariable("questionId") id: Long,
-        @Valid @RequestBody form: UpdateAdminQuestionForm
+        @Valid @ModelAttribute form: UpdateAdminQuestionForm
     ): QuestionDetailResponse =
         questionService.updateAdminQuestion(id, form)
 
