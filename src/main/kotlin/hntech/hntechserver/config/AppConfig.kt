@@ -49,6 +49,10 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
         // 자료실
         registry.addResourceHandler("/files/archive/**")
             .addResourceLocations("file:$ARCHIVE_SAVE_PATH")
+
+        // 문의사항
+        registry.addResourceHandler("/files/question/**")
+            .addResourceLocations("file:$QUESTION_SAVE_PATH")
     }
 }
 

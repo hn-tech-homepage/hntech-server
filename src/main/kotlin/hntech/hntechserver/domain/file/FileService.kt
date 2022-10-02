@@ -23,7 +23,7 @@ class FileService(private val fileRepository: FileRepository) {
         if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
             val originalFilename: String = file.originalFilename.toString()
-            val extensionType: String = originalFilename.split(".")[1] // 파일 확장자 추출하기
+            val extensionType: String = originalFilename.split(".").let { it[it.size - 1] } // 파일 확장자 추출하기
             val serverFilename: String = UUID.randomUUID().toString() + ".$extensionType"
             val savedPath = when(saveType) {
                 FILE_TYPE_ADMIN -> ADMIN_SAVE_PATH
