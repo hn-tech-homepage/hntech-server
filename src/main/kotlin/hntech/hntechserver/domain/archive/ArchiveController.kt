@@ -60,8 +60,8 @@ class ArchiveController(private val archiveService: ArchiveService) {
     // 자료글에 첨부되어있는 파일 삭제
     @Auth
     @DeleteMapping("/{archiveId}/file/{fileId}")
-    fun deleteAttachedFile(
+    fun deleteArchiveFile(
         @PathVariable("archiveId") archiveId: Long,
         @PathVariable("fileId") fileId: Long
-    ) = archiveService.deleteAttachedFile(archiveId, fileId)
+    ) = archiveService.deleteArchiveFile(archiveId, fileId)
 }

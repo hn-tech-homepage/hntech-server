@@ -1,8 +1,7 @@
 package hntech.hntechserver.domain.question
 
 import hntech.hntechserver.common.BoolResponse
-import hntech.hntechserver.config.FILE_TYPE_QUESTION
-import hntech.hntechserver.config.QUESTION_SAVE_PATH
+import hntech.hntechserver.config.FILE_TYPE_QUESTION_CONTENT_IMAGE
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.domain.question.dto.*
 import hntech.hntechserver.domain.question.model.Comment
@@ -37,7 +36,7 @@ class QuestionService(
     fun createQuestion(form: CreateQuestionForm): QuestionDetailResponse =
         questionRepository.save(convertEntity(form)).let { question ->
             form.files?.forEach { file ->
-                question.addFile(fileService.saveFile(file, FILE_TYPE_QUESTION).update(fileQuestion = question))
+                question.addFile(fileService.saveFile(file, FILE_TYPE_QUESTION_CONTENT_IMAGE).update(fileQuestion = question))
             }
             questionAlarmManager.addNewQuestion(question)
             QuestionDetailResponse(question)
@@ -60,7 +59,7 @@ class QuestionService(
     fun updateClientQuestion(id: Long, form: UpdateClientQuestionForm): QuestionDetailResponse =
         getQuestion(id).let { question ->
             form.files?.forEach { file ->
-                question.addFile(fileService.saveFile(file, FILE_TYPE_QUESTION).update(fileQuestion = question))
+                question.addFile(fileService.saveFile(file, FILE_TYPE_QUESTION_CONTENT_IMAGE).update(fileQuestion = question))
             }
             question.update(title = form.title, content = form.content)
             QuestionDetailResponse(question)
@@ -69,7 +68,7 @@ class QuestionService(
     fun updateAdminQuestion(id: Long, form: UpdateAdminQuestionForm): QuestionDetailResponse =
         getQuestion(id).let { question ->
             form.files?.forEach { file ->
-                question.addFile(fileService.saveFile(file, FILE_TYPE_QUESTION).update(fileQuestion = question))
+                question.addFile(fileService.saveFile(file, FILE_TYPE_QUESTION_CONTENT_IMAGE).update(fileQuestion = question))
             }
             question.update(title = form.title, content = form.content, FAQ = form.FAQ)
             QuestionDetailResponse(question)

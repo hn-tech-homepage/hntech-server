@@ -1,6 +1,8 @@
 package hntech.hntechserver.domain.archive
 
 import hntech.hntechserver.common.*
+import hntech.hntechserver.config.FILE_TYPE_ARCHIVE_ATTACHMENT
+import hntech.hntechserver.config.FILE_TYPE_ARCHIVE_CONTENT_IMAGE
 import hntech.hntechserver.domain.file.FileResponse
 import hntech.hntechserver.utils.function.isNewCheck
 import org.springframework.data.domain.Page
@@ -20,7 +22,10 @@ data class ArchiveForm(
 
     @field:Size(max = MAX_CONTENT_LENGTH, message = MAX_CONTENT_LENGTH_MSG)
     var content: String,
-    var files: List<MultipartFile>?, // serverFilename
+
+    var contentImageFiles: List<MultipartFile>?,
+
+    var attachedFiles: List<MultipartFile>?
 )
 
 data class ArchiveDetailResponse(
@@ -30,7 +35,8 @@ data class ArchiveDetailResponse(
     var title: String,
     var content: String,
     var createTime: String,
-    var files: List<FileResponse>
+    var contentImageFiles: List<FileResponse>,
+    var attachedFiles: List<FileResponse>
 ) {
     constructor(a: Archive) : this(
         id = a.id!!,
@@ -39,7 +45,12 @@ data class ArchiveDetailResponse(
         title = a.title,
         content = a.content,
         createTime = a.updateTime,
-        files = a.files.map { FileResponse(it) }
+        contentImageFiles = a.files
+            .filter { it.type == FILE_TYPE_ARCHIVE_CONTENT_IMAGE }
+            .map { FileResponse(it) },
+        attachedFiles = a.files
+            .filter { it.type == FILE_TYPE_ARCHIVE_ATTACHMENT }
+            .map { FileResponse(it) }
     )
 }
 

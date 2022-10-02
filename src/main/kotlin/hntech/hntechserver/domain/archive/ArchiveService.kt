@@ -2,13 +2,15 @@ package hntech.hntechserver.domain.archive
 
 import hntech.hntechserver.common.BoolResponse
 import hntech.hntechserver.common.MAX_NOTICE_NUM
-import hntech.hntechserver.config.FILE_TYPE_ARCHIVE
+import hntech.hntechserver.config.FILE_TYPE_ARCHIVE_ATTACHMENT
+import hntech.hntechserver.config.FILE_TYPE_ARCHIVE_CONTENT_IMAGE
 import hntech.hntechserver.domain.category.CategoryService
 import hntech.hntechserver.domain.file.FileService
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 @Transactional(readOnly = true)
@@ -32,11 +34,11 @@ class ArchiveService(
             throw ArchiveException(OVER_MAX_NOTICE_NUM)
     }
 
-    // 첨부 파일 저장
-    private fun setNewFiles(form: ArchiveForm, archive: Archive) {
-        form.files?.let {
+    // 자료실 내용 사진, 첨부 파일 저장
+    private fun setNewFiles(files: List<MultipartFile>?, archive: Archive, type: String) {
+        files?.let {
             val newSavedFiles = it.map { newFile ->
-                val newSavedFileEntity = fileService.saveFile(newFile, FILE_TYPE_ARCHIVE)
+                val newSavedFileEntity = fileService.saveFile(newFile, type)
                 newSavedFileEntity.fileArchive = archive
                 newSavedFileEntity // return
             }.toMutableList()
@@ -63,8 +65,11 @@ class ArchiveService(
             category = category
         ))
 
-        // 파일 저장 (파일이 없으면 수행 X)
-        setNewFiles(form, archive)
+        // 첨부 파일 저장 (파일이 없으면 수행 X)
+        setNewFiles(form.attachedFiles, archive, FILE_TYPE_ARCHIVE_ATTACHMENT)
+
+        // 내용 사진 저장 (파일이 없으면 수행 X)
+        setNewFiles(form.contentImageFiles, archive, FILE_TYPE_ARCHIVE_CONTENT_IMAGE)
 
         return ArchiveDetailResponse(archive)
     }
@@ -105,8 +110,11 @@ class ArchiveService(
         // 공지사항 최대 개수 체크
         if (form.notice == "true") checkNoticeable()
 
-        // 파일 변경
-        setNewFiles(form, archive)
+        // 첨부 파일 변경 (파일이 없으면 수행 X)
+        setNewFiles(form.attachedFiles, archive, FILE_TYPE_ARCHIVE_ATTACHMENT)
+
+        // 내용 사진 변경 (파일이 없으면 수행 X)
+        setNewFiles(form.contentImageFiles, archive, FILE_TYPE_ARCHIVE_CONTENT_IMAGE)
 
         archive.update(
             notice = form.notice,
@@ -127,9 +135,9 @@ class ArchiveService(
         return BoolResponse(true)
     }
 
-    // 첨부 파일 삭제
+    // 자료실 글에 올라가 있는 파일(내용 사진, 첨부 파일) 삭제
     @Transactional
-    fun deleteAttachedFile(archiveId: Long, fileId: Long) = BoolResponse(
+    fun deleteArchiveFile(archiveId: Long, fileId: Long) = BoolResponse(
             getArchiveById(archiveId).files
             .remove(fileService.getFile(fileId))
         )
