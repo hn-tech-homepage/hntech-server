@@ -16,6 +16,9 @@ const val REG_BOOL_MSG = "true 또는 false 값만 입력 가능합니다."
 // 페이지당 데이터 사이즈
 const val PAGE_SIZE = 15
 
+// 정적 리소스 캐싱 시간(분)
+const val CACHING_MINUTES = 5L
+
 // 카테고리
 const val MAX_MAIN_CATEGORY_COUNT = 8
 const val ARCHIVE = "archive"
