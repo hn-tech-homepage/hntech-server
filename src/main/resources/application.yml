@@ -10,8 +10,8 @@ spring:
 
   # mail yml 파일 저장 경로, 배포 시 경로 수정 필요
   config:
-    import: file:C:\application-mail.yml
-#    import: file:///home/ubuntu/spring/application-mail.yml
+#    import: file:C:\application-mail.yml
+    import: file:///home/ubuntu/spring/application-mail.yml
 
   profiles:
     active: db, mail
