@@ -1,13 +1,16 @@
 package hntech.hntechserver.config
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import hntech.hntechserver.common.CACHING_MINUTES
 import hntech.hntechserver.utils.logging.JsonLoggingInterceptor
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.CacheControl
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.util.concurrent.TimeUnit
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -33,26 +36,32 @@ class AppConfig(private val loggingInterceptor: JsonLoggingInterceptor) : WebMvc
         // 파일
         registry.addResourceHandler("/files/**")
             .addResourceLocations("file:$FILE_SAVE_PATH")
+            .setCacheControl(CacheControl.maxAge(CACHING_MINUTES, TimeUnit.MINUTES))
 
         // 관리자
         registry.addResourceHandler("/files/admin/**")
             .addResourceLocations("file:$ADMIN_SAVE_PATH")
+            .setCacheControl(CacheControl.maxAge(CACHING_MINUTES, TimeUnit.MINUTES))
 
         // 카테고리
         registry.addResourceHandler("/files/category/**")
             .addResourceLocations("file:$CATEGORY_SAVE_PATH")
+            .setCacheControl(CacheControl.maxAge(CACHING_MINUTES, TimeUnit.MINUTES))
 
         // 제품
         registry.addResourceHandler("/files/product/**")
             .addResourceLocations("file:$PRODUCT_SAVE_PATH")
+            .setCacheControl(CacheControl.maxAge(CACHING_MINUTES, TimeUnit.MINUTES))
 
         // 자료실
         registry.addResourceHandler("/files/archive/**")
             .addResourceLocations("file:$ARCHIVE_SAVE_PATH")
+            .setCacheControl(CacheControl.maxAge(CACHING_MINUTES, TimeUnit.MINUTES))
 
         // 문의사항
         registry.addResourceHandler("/files/question/**")
             .addResourceLocations("file:$QUESTION_SAVE_PATH")
+            .setCacheControl(CacheControl.maxAge(CACHING_MINUTES, TimeUnit.MINUTES))
     }
 }
 
