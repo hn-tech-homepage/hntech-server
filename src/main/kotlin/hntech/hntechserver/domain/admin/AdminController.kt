@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 class AdminController(private val adminService: AdminService) {
     /**
      * 사용자 모드
