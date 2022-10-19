@@ -3,10 +3,12 @@ package hntech.hntechserver.common
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletRequest
 
 @RestController
+@RequestMapping("/api")
 class GlobalController() {
 
 //    @GetMapping("/")
@@ -25,22 +27,13 @@ class GlobalController() {
 class ReactClientRedirector {
     @GetMapping(value = [
         "",
+        "/",
         "/company",
-        "/client-product",
-        "/product-detail",
-        "/product-form",
-        "/product-modify",
-        "/productCategory-form",
-        "/productCategory-modify",
+        "/product/**",
+        "/productCategory/**",
         "/document",
-        "/client-question",
-        "/question-form",
-        "/question-modify",
-        "/question-detail",
-        "/client-archive",
-        "/archive-form",
-        "/archive-detail",
-        "/archive-modify"
+        "/question/**",
+        "/archive/**"
     ])
     fun redirect() = "forward:/index.html"
 }
