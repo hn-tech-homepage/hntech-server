@@ -18,6 +18,13 @@ class Category (
     var sequence: Int = 1,
     var showInMain: String = "false",
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    var parent: Category? = null,
+
+    @OneToMany(mappedBy = "parent", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var children: MutableList<Category> = mutableListOf(),
+
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "file_id")
     var file: File? = null, // 제품 한정 카테고리 대표 이미지 경로 저장
@@ -39,5 +46,13 @@ class Category (
         showInMain?.let { this.showInMain = it }
         sequence?.let { this.sequence = it }
         file?.let { this.file = it }
+    }
+
+    fun addChild(category: Category) {
+        this.children.add(category);
+    }
+
+    fun mappingParent(category: Category) {
+        this.parent = category
     }
 }
