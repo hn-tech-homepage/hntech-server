@@ -18,6 +18,8 @@ class Category (
     var sequence: Int = 1,
     var showInMain: String = "false",
 
+    var role: String = "", // parent, child
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     var parent: Category? = null,

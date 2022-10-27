@@ -18,6 +18,8 @@ data class CreateCategoryForm(
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
     var showInMain: String = "false",
 
+    @field:Pattern(regexp = "^(parent|child)$", message = "parent 또는 child로 입력 가능합니다.")
+    var role: String = "parent",
     var parentName: String = ""
 )
 

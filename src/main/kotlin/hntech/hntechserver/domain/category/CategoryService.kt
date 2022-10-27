@@ -53,13 +53,14 @@ class CategoryService(
             categoryName = form.categoryName,
             type = form.type,
             showInMain = form.showInMain,
-            file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
+            file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) },
+            role = form.role
         ))
 
         if (form.parentName == form.categoryName) throw CategoryException(DUPLICATE_PARENT_CHILD)
 
         // 만약 중분류 카테고리로써, 부모 카테고리를 지정해야 한다면 수행
-        if (form.parentName != "") {
+        if (form.role == "child") {
             val parentCategory = getCategory(form.parentName)
             parentCategory.addChild(savedCategory)
             savedCategory.mappingParent(parentCategory)
