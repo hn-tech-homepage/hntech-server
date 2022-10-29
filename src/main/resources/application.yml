@@ -2,7 +2,7 @@ spring:
   # DB 설정
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -10,8 +10,8 @@ spring:
 
   # mail yml 파일 저장 경로, 배포 시 경로 수정 필요
   config:
-#    import: file:C:\application-mail.yml
-    import: file:///home/ubuntu/spring/application-mail.yml
+    import: file:C:\application-mail.yml
+#    import: file:///home/ubuntu/spring/application-mail.yml
 
   profiles:
     active: db, mail
@@ -20,13 +20,10 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  # JSON Lazy 로딩 오류 설정
   jackson:
     serialization:
       fail-on-empty-beans: false
-
-  output:
-    ansi:
-      enabled: always
 
   # 멀티파트 최대 사이즈 설정
   servlet:
@@ -48,4 +45,4 @@ logging:
   config: classpath:logback-spring.xml
   level:
     root: info
-
+#    org.apache.coyote.http11: debug # 톰캣 레벨에서 유저 http 요청을 로깅

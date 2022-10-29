@@ -40,4 +40,12 @@ interface CategoryRepository : JpaRepository<Category, Long> {
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Category c SET c.sequence = c.sequence - 1 WHERE c.sequence > :self")
     fun adjustSequenceToLeftAll(@Param("self") self: Int): Int
+
+    // 대분류 카테고리 조회 (parent == null)
+    @Query("SELECT c FROM Category c WHERE c.parent IS NULL")
+    fun findAllParents(): List<Category>
+
+    // 대분류로 중분류 카테고리 조회
+    @Query("SELECT c FROM Category c WHERE c.parent.categoryName = :parent")
+    fun findAllChildren(@Param("parent") parent: String): List<Category>
 }

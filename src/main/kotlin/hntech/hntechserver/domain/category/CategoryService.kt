@@ -43,18 +43,30 @@ class CategoryService(
      */
     @Transactional
     fun createCategory(form: CreateCategoryForm): ProductCategoryResponse {
+
         checkCategoryName(form.categoryName)
         if (form.showInMain == "true") checkMainCategoryCount()
 
         categoryRepository.adjustSequenceToRightAll()
-        val category = Category(
+
+        val savedCategory = categoryRepository.save(Category(
             categoryName = form.categoryName,
             type = form.type,
             showInMain = form.showInMain,
-            file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) }
-        )
+            file = form.image?.let { fileService.saveFile(it, FILE_TYPE_CATEGORY) },
+            role = form.role
+        ))
 
-        return ProductCategoryResponse(categoryRepository.save(category))
+        if (form.parentName == form.categoryName) throw CategoryException(DUPLICATE_PARENT_CHILD)
+
+        // 만약 중분류 카테고리로써, 부모 카테고리를 지정해야 한다면 수행
+        if (form.role == "child") {
+            val parentCategory = getCategory(form.parentName)
+            parentCategory.addChild(savedCategory)
+            savedCategory.mappingParent(parentCategory)
+        }
+
+        return ProductCategoryResponse(savedCategory)
     }
 
     /**
@@ -104,6 +116,18 @@ class CategoryService(
     fun getCategory(categoryName: String): Category =
         categoryRepository.findByCategoryName(categoryName) ?:
             throw CategoryException(CATEGORY_NOT_FOUND)
+    
+    // 대분류 카테고리 조회
+    fun getParentProductCategories() = ProductCategoryListResponse(
+        categoryRepository.findAllParents()
+            .map { ProductCategoryResponse(it) }
+    )
+
+    // 대분류로 중분류 카테고리 조회
+    fun getChildrenProductCategories(parent: String) = ProductCategoryListResponse(
+        categoryRepository.findAllChildren(parent)
+            .map { ProductCategoryResponse(it) }
+    )
 
     /**
      * 카테고리 수정
