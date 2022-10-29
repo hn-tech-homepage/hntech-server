@@ -1,10 +1,7 @@
 package hntech.hntechserver.utils.scheduler
 
 import hntech.hntechserver.domain.admin.AdminRepository
-import hntech.hntechserver.domain.question.EMAIL_NOT_FOUND
-import hntech.hntechserver.domain.question.EMAIL_SEND_ERROR
-import hntech.hntechserver.domain.question.EmailException
-import hntech.hntechserver.domain.question.QuestionAlarmManager
+import hntech.hntechserver.domain.question.*
 import hntech.hntechserver.utils.PropertiesManager
 import hntech.hntechserver.utils.logging.logger
 import org.springframework.mail.javamail.JavaMailSender
@@ -23,6 +20,11 @@ class EmailManager(
     private val log = logger()
 
     fun sendMail() {
+        // 금일 새로 등록된 문의사항 목록
+        val questions = questionAlarmManager.getQuestionListToSend()
+        if (questions.newQuestions.isEmpty() && questions.newCommentQuestions.isEmpty())
+            throw EmailException(NO_DATA_TO_SEND)
+
         // 설정 파일로부터 송신 이메일 찾기
         val sendEmail = propertiesManager.getConfiguration()?.getString("spring.mail.username")
             ?: throw EmailException(EMAIL_NOT_FOUND)
@@ -36,7 +38,6 @@ class EmailManager(
             val mail = mailSender.createMimeMessage()
             val mailHelper = MimeMessageHelper(mail, false, "UTF-8")
             val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-            val questions = questionAlarmManager.getQuestionListToSend()
             var text = ""
 
             mailHelper.setFrom(sendEmail, "HNTECH 웹페이지")
