@@ -16,7 +16,11 @@ data class CreateCategoryForm(
     var image: MultipartFile? = null,
 
     @field:Pattern(regexp = REG_BOOL, message = REG_BOOL_MSG)
-    var showInMain: String = "false"
+    var showInMain: String = "false",
+
+    @field:Pattern(regexp = "^(parent|child)$", message = "parent 또는 child로 입력 가능합니다.")
+    var role: String = "parent",
+    var parentName: String = ""
 )
 
 data class UpdateCategoryForm(
@@ -39,14 +43,18 @@ data class ProductCategoryResponse(
     var categoryName: String,
     var imageServerFilename: String? = "",
     var imageOriginalFilename: String? = "",
-    var showInMain: String = "false"
+    var showInMain: String = "false",
+    var parent: String? = null,
+    var children: List<String> = mutableListOf()
 ) {
     constructor(category: Category): this(
         id = category.id!!,
         categoryName = category.categoryName,
         imageOriginalFilename = category.file?.originalFilename,
         imageServerFilename = category.file?.serverFilename,
-        showInMain = category.showInMain
+        showInMain = category.showInMain,
+        parent = category.parent?.categoryName,
+        children = category.children.map { it.categoryName }
     )
 }
 

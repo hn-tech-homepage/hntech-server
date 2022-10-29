@@ -32,6 +32,14 @@ class JsonLoggingInterceptor(
             log.info("BODY\n$body")
         }
 
+        if (request.contentType != null &&
+                request.contentType.startsWith("multipart/form-data") &&
+                request.method.startsWith("POST") &&
+                request is MultiAccessRequestWrapper) {
+            val body = request.getContents().toString()
+            log.info("BODY\n$body")
+        }
+
         return super.preHandle(request, response, handler)
     }
 

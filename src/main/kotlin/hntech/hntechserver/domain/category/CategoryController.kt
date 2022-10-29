@@ -31,6 +31,14 @@ class CategoryController(private val categoryService: CategoryService) {
     fun getMainCategories(): ProductCategoryListResponse =
         categoryService.getMainCategories()
 
+    @GetMapping("/product/parent")
+    fun getParentProductCategories(): ProductCategoryListResponse =
+        categoryService.getParentProductCategories()
+
+    @GetMapping("/product/{parent}/children")
+    fun getChildrenProductCategories(@PathVariable("parent") parent: String): ProductCategoryListResponse =
+        categoryService.getChildrenProductCategories(parent)
+
     /**
      * 관리자 모드
      */

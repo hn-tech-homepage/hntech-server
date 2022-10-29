@@ -50,6 +50,9 @@ class ProductService(
         // 카테고리 가져오기
         val category = categoryService.getCategory(form.categoryName)
 
+        // 가져온 카테고리가 대분류 카테고리면 제품을 추가할 수 없다
+        if (category.parent == null) throw ProductException(INVALID_CATEGORY)
+
         productRepository.adjustSequenceToRightAll()
 
         // 제품 글 저장
@@ -105,8 +108,13 @@ class ProductService(
         // 수정하려는 이름이 현재 이름과 같지 않으면 이름 중복 체크
         if (product.productName != form.productName) checkProductName(form.productName)
 
+        val category = categoryService.getCategory(form.categoryName)
+
+        // 가져온 카테고리가 대분류 카테고리면 제품을 추가할 수 없다
+        if (category.parent == null) throw ProductException(INVALID_CATEGORY)
+
         product.update(
-            productCategory = categoryService.getCategory(form.categoryName),
+            productCategory = category,
             productName = form.productName,
             description = form.description
         )
