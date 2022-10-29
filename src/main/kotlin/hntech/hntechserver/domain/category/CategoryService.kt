@@ -180,12 +180,16 @@ class CategoryService(
 
     /**
      * 카테고리 삭제
+     * 삭제할 카테고리 ID와 이름을 입력받아 이름이 일치하지 않을 경우 예외 발생
      */
     @Transactional
-    fun deleteCategory(categoryId: Long): BoolResponse {
-        // 카테고리 순서 조정
-        categoryRepository.adjustSequenceToLeftAll(getCategory(categoryId).sequence)
-        categoryRepository.deleteById(categoryId)
-        return BoolResponse(true)
-    }
+    fun deleteCategory(categoryId: Long, categoryName: String): BoolResponse =
+        getCategory(categoryId).let { category ->
+            if (category.categoryName != categoryName)
+                throw CategoryException(CATEGORY_NAME_MISMATCH)
+            // 카테고리 순서 조정
+            categoryRepository.adjustSequenceToLeftAll(category.sequence)
+            categoryRepository.delete(category)
+            BoolResponse(true)
+        }
 }
