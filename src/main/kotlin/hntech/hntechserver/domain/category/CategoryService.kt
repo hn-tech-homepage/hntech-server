@@ -122,6 +122,7 @@ class CategoryService(
     // 대분류 카테고리 조회
     fun getParentProductCategories() = ProductCategoryListResponse(
         categoryRepository.findAllParents()
+            .filter { it.type == PRODUCT }
             .sortedBy { it.sequence }
             .map { ProductCategoryResponse(it) }
     )
@@ -129,6 +130,7 @@ class CategoryService(
     // 대분류로 중분류 카테고리 조회
     fun getChildrenProductCategories(parent: String) = ProductCategoryListResponse(
         categoryRepository.findAllChildren(parent)
+            .filter { it.type == PRODUCT }
             .sortedBy { it.sequence }
             .map { ProductCategoryResponse(it) }
     )
