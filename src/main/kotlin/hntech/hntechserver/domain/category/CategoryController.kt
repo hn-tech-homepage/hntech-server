@@ -68,9 +68,9 @@ class CategoryController(private val categoryService: CategoryService) {
 
     // 카테고리 삭제
     @Auth
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping("/{categoryId}/{categoryName}")
     fun deleteCategory(
         @PathVariable("categoryId") id: Long,
-        @RequestBody categoryName: String
+        @PathVariable("categoryName") categoryName: String
     ): BoolResponse = categoryService.deleteCategory(id, categoryName)
 }

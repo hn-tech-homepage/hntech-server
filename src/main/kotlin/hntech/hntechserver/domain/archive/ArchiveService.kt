@@ -32,6 +32,7 @@ class ArchiveService(
     private fun checkNoticeable() {
         if (archiveRepository.countNotice() >= MAX_NOTICE_NUM)
             throw ArchiveException(OVER_MAX_NOTICE_NUM)
+
     }
 
     // 자료실 내용 사진, 첨부 파일 저장

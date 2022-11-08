@@ -42,7 +42,7 @@ interface CategoryRepository : JpaRepository<Category, Long> {
     fun adjustSequenceToLeftAll(@Param("self") self: Int): Int
 
     // 대분류 카테고리 조회 (parent == null)
-    @Query("SELECT c FROM Category c WHERE c.parent IS NULL")
+    @Query("SELECT c FROM Category c WHERE c.role = 'parent' AND c.type = 'product'")
     fun findAllParents(): List<Category>
 
     // 대분류로 중분류 카테고리 조회

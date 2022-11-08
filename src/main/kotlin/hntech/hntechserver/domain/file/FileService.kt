@@ -5,6 +5,8 @@ import hntech.hntechserver.utils.logging.logger
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Service
@@ -23,8 +25,9 @@ class FileService(private val fileRepository: FileRepository) {
         if (file.isEmpty) throw FileException(FILE_IS_EMPTY)
         try {
             val originalFilename: String = file.originalFilename.toString()
-            val extensionType: String = originalFilename.split(".").let { it[it.size - 1] } // 파일 확장자 추출하기
-            val serverFilename: String = UUID.randomUUID().toString() + ".$extensionType"
+            val now = LocalDateTime.now()
+            val prefix = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_hh-mm-ss"))
+            val serverFilename = "${prefix}_${Random().nextInt(1000)}_${originalFilename}"
             val savedPath = when(saveType) {
                 FILE_TYPE_ADMIN -> ADMIN_SAVE_PATH
                 FILE_TYPE_CATEGORY -> CATEGORY_SAVE_PATH

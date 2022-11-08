@@ -30,7 +30,7 @@ class ReactClientRedirector {
         "/",
         "/company",
         "/product/**",
-        "/productCategory/**",
+        "/product/category/**",
         "/document",
         "/question/**",
         "/archive/**"
