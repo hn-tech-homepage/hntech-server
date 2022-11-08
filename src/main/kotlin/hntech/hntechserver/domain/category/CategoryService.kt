@@ -26,10 +26,6 @@ class CategoryService(
         if (categoryRepository.countMainCategories() > MAX_MAIN_CATEGORY_COUNT)
             throw CategoryException(MAXIMUM_NUMBER_OF_CATEGORIES)
     }
-    
-    // 마지막 순서의 카테고리 조회
-    private fun getLastCategory(): Category? =
-        categoryRepository.findFirstByOrderBySequenceDesc()
 
     private fun toListResponse() = ProductCategoryListResponse(
             getAllCategories()
@@ -75,21 +71,27 @@ class CategoryService(
      */
     // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
     private fun getAllCategories(): List<Category> =
-        getAllByType(ARCHIVE).union(getAllByType(PRODUCT)).toList()
+        getAllByType(ARCHIVE)
+            .union(getAllByType(PRODUCT))
+            .sortedBy { it.sequence }
+            .toList()
 
     // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
     fun getAllCategoriesToDto() = AllCategoryListResponse(
-        getAllCategories().map { ArchiveCategoryResponse(it) }
+        getAllCategories()
+            .map { ArchiveCategoryResponse(it) }
     )
 
     // 타입으로 카테고리 전체 조회
     private fun getAllByType(type: String): List<Category> =
         categoryRepository.findAllByType(type)
+            .sortedBy { it.sequence }
 
     // 제품 카테고리 전체 조회
     fun getAllProductCategories() =
         ProductCategoryListResponse(
             getAllByType(PRODUCT)
+                .sortedBy { it.sequence }
                 .map { ProductCategoryResponse(it) }
         )
 
@@ -120,12 +122,14 @@ class CategoryService(
     // 대분류 카테고리 조회
     fun getParentProductCategories() = ProductCategoryListResponse(
         categoryRepository.findAllParents()
+            .sortedBy { it.sequence }
             .map { ProductCategoryResponse(it) }
     )
 
     // 대분류로 중분류 카테고리 조회
     fun getChildrenProductCategories(parent: String) = ProductCategoryListResponse(
         categoryRepository.findAllChildren(parent)
+            .sortedBy { it.sequence }
             .map { ProductCategoryResponse(it) }
     )
 
