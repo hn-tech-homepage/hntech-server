@@ -79,6 +79,7 @@ class CategoryService(
     // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
     fun getAllCategoriesToDto() = AllCategoryListResponse(
         getAllCategories()
+            .sortedBy { it.type }
             .map { ArchiveCategoryResponse(it) }
     )
 
@@ -98,7 +99,9 @@ class CategoryService(
     // 자료실 카테고리 전체 조회
     fun getAllArchiveCategories() =
         ArchiveCategoryListResponse(
-            getAllByType(ARCHIVE).map { ArchiveCategoryResponse(it) }
+            getAllByType(ARCHIVE)
+                .sortedBy { it.type }
+                .map { ArchiveCategoryResponse(it) }
         )
 
     // 메인에 표시될 카테고리만 조회
