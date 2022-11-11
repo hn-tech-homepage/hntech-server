@@ -1,5 +1,6 @@
 package hntech.hntechserver.domain.category
 
+import hntech.hntechserver.common.ARCHIVE
 import hntech.hntechserver.common.REG_BOOL
 import hntech.hntechserver.common.REG_BOOL_MSG
 import org.springframework.web.multipart.MultipartFile
@@ -61,12 +62,12 @@ data class ProductCategoryResponse(
 data class ArchiveCategoryResponse(
     var id: Long,
     var categoryName: String,
-    var showInMain: String,
+    var isArchiveCategory: Boolean,
 ) {
     constructor(category: Category): this(
         id = category.id!!,
         categoryName = category.categoryName,
-        showInMain = category.showInMain
+        isArchiveCategory = category.type == ARCHIVE
     )
 }
 
