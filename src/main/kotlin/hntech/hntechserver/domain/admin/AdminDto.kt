@@ -131,7 +131,7 @@ data class AdminPanelResponse(
         sendEmailAccount = a.sendEmailAccount,
         sendEmailPassword = a.sendEmailPassword,
         receiveEmailAccount = a.receiveEmailAccount,
-        emailSendingTime = (a.emailSendingTime.toInt()+9).toString(),
+        emailSendingTime = (a.emailSendingTime.toInt()).toString(),
         catalogOriginalFilename = catalog,
         materialOriginalFilename = material,
         taxOriginalFilename = tax,

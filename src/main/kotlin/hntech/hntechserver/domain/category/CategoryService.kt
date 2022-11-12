@@ -76,10 +76,11 @@ class CategoryService(
             .sortedBy { it.sequence }
             .toList()
 
-    // 카테고리 전체 조회 (제품, 자료실 카테고리 모두 / id, 이름 응답)
+    // 카테고리 전체 조회 (제품, 자료실 카테고리 모두(부모 카테고리만) / id, 이름 응답)
     fun getAllCategoriesToDto() = AllCategoryListResponse(
         getAllCategories()
             .sortedBy { it.type }
+            .filter { it.parent === null }
             .map { ArchiveCategoryResponse(it) }
     )
 
