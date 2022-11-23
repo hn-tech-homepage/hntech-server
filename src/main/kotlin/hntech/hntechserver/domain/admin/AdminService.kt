@@ -116,7 +116,17 @@ class AdminService(
                 fileService.saveFile(it, FILE_TYPE_ADMIN).update(fileAdmin = admin)
             )
         }
+        return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
+    }
 
+    fun updateHistoryImages(form: AdminImagesRequest): AdminImagesResponse {
+        val admin = getAdmin()
+
+        form.files?.forEach {
+            admin.updateHistoryImages(
+                fileService.saveFile(it, FILE_TYPE_ADMIN).update(fileAdminHistory = admin)
+            )
+        }
         return AdminImagesResponse(admin, fileService.getFile(admin.logoImage))
     }
 
@@ -151,29 +161,19 @@ class AdminService(
         return admin
     }
 
-    // 연혁 수정
-    private fun updateCompanyHistory(newImage: MultipartFile): Admin {
-        val admin = getAdmin()
-        admin.update(
-            newHistoryImage = updateImage(newImage, admin.historyImage, "연혁")
-        )
-        return admin
-    }
-
     // 로고, 조직도, CI, 연혁 등록, 수정
     fun updateOthers(form: AdminImageRequest): AdminImagesResponse {
         val admin = getAdmin()
-        val image = fileService.getFile(admin.logoImage)
+        val logoImage = fileService.getFile(admin.logoImage)
         return if (form.file.isEmpty)
-            AdminImagesResponse(admin, image)
+            AdminImagesResponse(admin, logoImage)
         else
             AdminImagesResponse(
                 when (form.where) {
                     LOGO -> updateLogo(form.file)
                     ORG_CHART -> updateOrgChart(form.file)
-                    CI -> updateCI(form.file)
-                    else -> updateCompanyHistory(form.file) // history
-                }, image
+                    else -> updateCI(form.file)
+                }, logoImage
             )
     }
 
@@ -187,6 +187,7 @@ class AdminService(
      * - 카다록, 자재승인서, 시국세
      */
     // 관리자 패널 정보 조회
+    @Transactional(readOnly = true)
     fun getPanelInfo(): AdminPanelResponse {
         val admin = getAdmin()
         return AdminPanelResponse(admin, admin.catalogFile, admin.materialFile)

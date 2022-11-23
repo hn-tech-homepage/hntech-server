@@ -27,12 +27,14 @@ class InitDummyData(
     @PostConstruct
     fun initDummyData() {
         // 파일 세팅
+/*
         repeat(3) {
             fileRepository.save(File(originalFilename = "test$it", serverFilename = "test$it.jpg"))
         }
+*/
 
         // 어드민 세팅
-        val admin = Admin(
+/*        val admin = Admin(
             password = "1234",
             logoImage = "test0.jpg",
 
@@ -48,7 +50,7 @@ class InitDummyData(
         )
         try {
             adminService.createAdmin(admin)
-        } catch (_: AdminException) {}
+        } catch (_: AdminException) {}*/
 
 //        // 카테고리 세팅
 //        categoryService.createCategory(CreateCategoryForm(categoryName = "스프링클러", type = PRODUCT))

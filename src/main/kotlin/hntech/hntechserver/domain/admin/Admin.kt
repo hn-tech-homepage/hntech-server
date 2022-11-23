@@ -21,6 +21,10 @@ class Admin(
     @OneToMany(mappedBy = "fileAdmin", cascade = [CascadeType.ALL])
     var bannerImages: MutableList<File> = mutableListOf(),
 
+    // 회사 연혁 이미지 서버 저장 이름
+    @OneToMany(mappedBy = "fileAdminHistory", cascade = [CascadeType.ALL])
+    var historyImages: MutableList<File> = mutableListOf(),
+
     // 인사말
     var introduce: String = "",
 
@@ -29,9 +33,6 @@ class Admin(
 
     // CI 소개 이미지 서버 저장 이름
     var compInfoImage: String = "",
-
-    // 회사 연혁 이미지 서버 저장 이름
-    var historyImage: String = "",
 
     // 카다록 파일 서버 저장 이름
     var catalogFile: String = "",
@@ -68,7 +69,6 @@ class Admin(
         newLogoImage: String? = null,
         newOrgChartImage: String? = null,
         newCompInfoImage: String? = null,
-        newHistoryImage: String? = null,
         newCatalogFile: String? = null,
         newMaterialFile: String? = null,
         newTaxFile: String? = null,
@@ -78,13 +78,14 @@ class Admin(
         newLogoImage?.let { this.logoImage = it }
         newOrgChartImage?.let { this.orgChartImage = it }
         newCompInfoImage?.let { this.compInfoImage = it }
-        newHistoryImage?.let { this.historyImage = it }
         newCatalogFile?.let { this.catalogFile = it }
         newMaterialFile?.let { this.materialFile = it }
         newTaxFile?.let { this.taxFile = it }
     }
 
     fun updateBanner(bannerFile: File) { this.bannerImages.add(bannerFile) }
+
+    fun updateHistoryImages(historyFile: File) { this.historyImages.add(historyFile) }
 
     fun updatePanel(form: UpdateAdminPanelForm) {
         this.sendEmailAccount = form.sendEmailAccount

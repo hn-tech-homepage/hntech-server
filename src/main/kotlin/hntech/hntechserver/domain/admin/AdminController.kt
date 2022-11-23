@@ -52,8 +52,8 @@ class AdminController(private val adminService: AdminService) {
 
     // 로고, 조직도, CI, 연혁 등록, 수정
     @ApiOperation(
-        value = "로고, 조직도, CI, 연혁 등록/수정",
-        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 로고 : logo, 조직도 : orgChart, CI : ci, 연혁 : companyHistory")
+        value = "로고, 조직도, CI 등록/수정",
+        notes = "세 개를 범용으로 수정함. where로 어느 부분인지 명시. 로고 : logo, 조직도 : orgChart, CI : ci")
     @Auth
     @PostMapping("/image")
     fun updateOthers(@ModelAttribute form: AdminImageRequest): AdminImagesResponse =
@@ -64,6 +64,12 @@ class AdminController(private val adminService: AdminService) {
     @PostMapping("/banner")
     fun updateBanners(@ModelAttribute form: AdminImagesRequest): AdminImagesResponse =
         adminService.updateBanner(form)
+
+    // 연혁 이미지 등록, 수정
+    @Auth
+    @PostMapping("/history")
+    fun updateHistoryImages(@ModelAttribute form: AdminImagesRequest): AdminImagesResponse =
+        adminService.updateHistoryImages(form)
 
     // 관리자 패널 정보 조회
     @Auth
