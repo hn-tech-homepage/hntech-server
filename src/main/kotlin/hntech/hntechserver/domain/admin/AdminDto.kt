@@ -36,14 +36,14 @@ data class AdminImagesResponse(
     var bannerImages: List<FileResponse> = listOf(),
     var orgChartImage: String = "",
     var compInfoImage: String = "",
-    var historyImage: String = ""
+    var historyImage: List<FileResponse> = listOf(),
 ) {
     constructor(admin: Admin, logoFile: File): this(
         logoImage = FileResponse(logoFile),
         bannerImages = admin.bannerImages.map { FileResponse(it) },
         orgChartImage = admin.orgChartImage,
         compInfoImage = admin.compInfoImage,
-        historyImage = admin.historyImage
+        historyImage = admin.historyImages.map { FileResponse(it) }
     )
 }
 

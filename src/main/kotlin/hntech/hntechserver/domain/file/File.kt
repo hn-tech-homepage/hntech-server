@@ -37,6 +37,10 @@ class File(
     @JoinColumn(name = "admin_id")
     var fileAdmin: Admin? = null,
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_history_id")
+    var fileAdminHistory: Admin? = null,
+
     /**
      * 제품 파일 타입 지정용 프로퍼티
      * 제품 사진, 규격 사진, 문서 파일 등을 구분
@@ -49,6 +53,7 @@ class File(
         fileArchive: Archive? = null,
         fileProduct: Product? = null,
         fileAdmin: Admin? = null,
+        fileAdminHistory: Admin? = null,
         fileQuestion: Question? = null,
         type: String? = null,
         savedPath: String? = null,
@@ -58,6 +63,7 @@ class File(
         fileArchive?.let { this.fileArchive = it }
         fileProduct?.let { this.fileProduct = it }
         fileAdmin?.let { this.fileAdmin = it }
+        fileAdminHistory?.let { this.fileAdminHistory = it }
         fileQuestion?.let { this.fileQuestion = it }
         type?.let { this.type = it }
         savedPath?.let { this.savedPath = it }
